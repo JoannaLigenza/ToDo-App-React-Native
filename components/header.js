@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   component1: {
     // flex: 1,
    // justifyContent: 'flex-start',
-    alignSelf: 'stretch',
+    //alignSelf: 'stretch',
     alignItems: 'center',
     backgroundColor: 'red'
   },
