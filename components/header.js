@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
    // justifyContent: 'flex-start',
     //alignSelf: 'stretch',
     alignItems: 'center',
-    backgroundColor: 'red'
+    backgroundColor: 'red',
+    height: 50,
   },
   welcome: {
     fontSize: 20,
