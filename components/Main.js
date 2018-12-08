@@ -1,12 +1,22 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, CheckBox, Button, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList} from 'react-native';
 import ModalExample from './Modal'
 
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
-    this.state= { isChecked: false, modalVisible: false}
+    this.state= { isChecked: false, modalVisible: false,
+                  tasks: [
+            {key: '1', text: 'Zrobić pranie', isChecked: false},
+            {key: '2', text: 'Kupić zakupy', isChecked: true},
+            {key: '3', text: 'Pokodować jutro', isChecked: false},
+            {key: '4', text: 'Tralalala', isChecked: false},
+            {key: '5', text: 'John', isChecked: false},
+            {key: '6', text: 'Jillian', isChecked: false},
+            {key: '7', text: 'I coś jeszcze', isChecked: false},
+            {key: '8', text: 'Obejrzeć czekoladki do kupienia', isChecked: false}, 
+            ] }
   }
   onPressLearnMore = () => {
     console.log("pressss")
@@ -15,35 +25,46 @@ export default class Main extends Component {
     this.setState( {modalVisible: !this.state.modalVisible})
     console.log("aaas sss")
   }
-  handleInput = () => {
+  handleInput = (key) => {
+    console.log("isChecked ")
     this.setState({ isChecked: !this.state.isChecked })
-    console.log("isChecked ", this.state.isChecked)
+    // const newState = this.state.tasks.map( task => {
+    //   if(task.key === key) {
+    //     console.log("zadanie ", task.isChecked)
+    //     task.isChecked = !task.isChecked
+    //     console.log("zadanie 2 ", task.isChecked)
+    //     return task
+    //   }
+    //   return task
+    // })
+    // this.setState({ tasks: newState })
+    // console.log("newState ", newState)
   }
   render() {
     return (
-      <View style={styles.component2}>
-        <View style={styles.oneTask}>
-          <CheckBox
-            value={this.state.isChecked}
-            onValueChange={this.handleInput}
-            style={styles.checkBox}
-          />
-          <TouchableOpacity style={styles.welcome} onPress={this.showModal}>
-            <ModalExample modalVisible={this.state.modalVisible} showModal={this.showModal}
-              style={styles.modalAnimation}>
-              <View>
-                <Text style={styles.welcome} >
-                  Welcome Main! Welcome Mainuuuuuuuu! Welcome Main! Welcome Mainuuuuuuuu!
-                </Text>
-              </View>
-            </ModalExample>
-          </TouchableOpacity>
-          <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
-        </View>
-        <Text style={styles.welcome2}>Welcome Mainuuuuuuuu!</Text>
-        <Text style={styles.welcome2}>Welcome </Text>
-        
-        
+      <View style={styles.component2}>       
+        <FlatList
+          data={this.state.tasks}
+          renderItem={({item}) => 
+          <View style={styles.oneTask}>
+            <CheckBox
+              //checked={item.isChecked}
+              checked={this.state.isChecked}
+              //value={item.key}
+              onChange={ () => {this.handleInput(item.key)} }
+              style={styles.checkBox}
+            />
+            <TouchableOpacity style={styles.welcome} onPress={this.showModal}>
+                  <Text style={styles.welcome} >
+                    {item.text}
+                  </Text>
+            </TouchableOpacity>
+            <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
+          </View>}
+        />
+
+        <ModalExample modalVisible={this.state.modalVisible} showModal={this.showModal}
+              style={styles.modalAnimation}></ModalExample>
         
       </View>
     );
