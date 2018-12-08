@@ -25,9 +25,10 @@ export default class Main extends Component {
     this.setState( {modalVisible: !this.state.modalVisible})
     console.log("aaas sss")
   }
-  handleInput = (key) => {
-    console.log("isChecked ")
+  handleInput = (value) => {
+    console.log("najpierw ", value); 
     this.setState({ isChecked: !this.state.isChecked })
+    console.log("teraz ", this.state.isChecked) 
     // const newState = this.state.tasks.map( task => {
     //   if(task.key === key) {
     //     console.log("zadanie ", task.isChecked)
@@ -40,9 +41,36 @@ export default class Main extends Component {
     // this.setState({ tasks: newState })
     // console.log("newState ", newState)
   }
+  handleInput2 = (key, value) => {
+    console.log("najpierw ", value); 
+    const newState = this.state.tasks.map( task => {
+      if(task.key === key) {
+        console.log("zadanie ", task.isChecked)
+        task.isChecked = !task.isChecked
+        console.log("zadanie 2 ", task.isChecked)
+        return task
+      }
+      return task
+    })
+    this.setState({ tasks: newState })
+    //console.log("teraz ", this.state.isChecked) 
+    // console.log("newState ", newState)
+  }
   render() {
+    console.log("zazn ", this.state.isChecked)
     return (
       <View style={styles.component2}>       
+        <View>
+          <CheckBox
+              //checked={item.isChecked}
+              checked={this.state.isChecked}
+              value={this.state.isChecked}
+              onValueChange={ () => {this.handleInput() }}
+              style={styles.checkBox}
+            />
+            <Button title="press" onPress={() => {console.log("state ", this.state.isChecked)}}></Button>
+        </View>
+        
         <FlatList
           data={this.state.tasks}
           renderItem={({item}) => 
@@ -50,8 +78,8 @@ export default class Main extends Component {
             <CheckBox
               //checked={item.isChecked}
               checked={this.state.isChecked}
-              //value={item.key}
-              onChange={ () => {this.handleInput(item.key)} }
+              value={this.state.isChecked}
+              onValueChange={ (value) => {this.handleInput2(item.key, value)} }
               style={styles.checkBox}
             />
             <TouchableOpacity style={styles.welcome} onPress={this.showModal}>
