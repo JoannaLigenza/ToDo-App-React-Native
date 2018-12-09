@@ -15,15 +15,7 @@ export default class Main extends Component {
             {key: '5', text: 'John', isChecked: false},
             {key: '6', text: 'Jillian', isChecked: false},
             {key: '7', text: 'I coś jeszcze', isChecked: false},
-            {key: '8', text: 'Obejrzeć czekoladki do kupienia', isChecked: false}, 
-            {key: '9', text: 'Zrobić pranie', isChecked: false},
-            {key: '10', text: 'Kupić zakupy', isChecked: true},
-            {key: '11', text: 'Pokodować jutro', isChecked: false},
-            {key: '12', text: 'Tralalala', isChecked: false},
-            {key: '13', text: 'John', isChecked: false},
-            {key: '14', text: 'Jillian', isChecked: false},
-            {key: '15', text: 'I coś jeszcze', isChecked: false},
-            {key: '16', text: 'Obejrzeć czekoladki do kupienia', isChecked: false},
+            
             ] }
   }
   onPressLearnMore = () => {
@@ -44,7 +36,6 @@ export default class Main extends Component {
     this.setState({ tasks: newState })
   }
   render() {
-    console.log("zazn ", this.state.isChecked)
     return (
       <View style={styles.component2}>               
         <FlatList
@@ -77,7 +68,7 @@ export default class Main extends Component {
 
 const styles = StyleSheet.create({
   component2: {
-    // flex: 5,
+    flex: 1,
     //justifyContent: 'center',
     alignItems: 'stretch',
     //alignSelf: 'stretch',
