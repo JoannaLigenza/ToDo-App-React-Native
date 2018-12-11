@@ -74,7 +74,4 @@ const styles = StyleSheet.create({
   unchecked: {
     textDecorationLine: "none",
   },
-  modalAnimation: {
-    
-  }
 });
