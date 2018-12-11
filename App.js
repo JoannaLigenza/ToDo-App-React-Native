@@ -21,6 +21,20 @@ const styles = StyleSheet.create({
 });
 
 class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state= { 
+            tasks: [
+            {key: '1', text: 'Zrobić pranie', isChecked: false},
+            {key: '2', text: 'Kupić zakupy', isChecked: true},
+            {key: '3', text: 'Pokodować jutro', isChecked: false},
+            {key: '4', text: 'Tralalala', isChecked: false},
+            {key: '5', text: 'John', isChecked: false},
+            {key: '6', text: 'Jillian', isChecked: false},
+            {key: '7', text: 'I coś jeszcze', isChecked: false},
+            
+            ] }
+  }
   static navigationOptions = ({ navigation }) => {
     return {
     title: 'Home', 
@@ -33,11 +47,21 @@ class HomeScreen extends Component {
         />),
     }
   };
+  handleInput = (key) => {
+    const newState = this.state.tasks.map( task => {
+      if(task.key === key) {
+        task.isChecked = !task.isChecked
+        return task
+      }
+      return task
+    })
+    this.setState({ tasks: newState })
+  }
   render() {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <Main editTask={() => {this.props.navigation.navigate('TaskEdit')}}/>
+        <Main tasks={this.state.tasks} handleInput={this.handleInput} editTask={() => {this.props.navigation.navigate('TaskEdit')}} />
         <Button title="Press" onPress={() => {this.props.navigation.navigate('TaskEdit')}}></Button>
         <Footer />
       </View>
