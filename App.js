@@ -76,9 +76,8 @@ class TaskEdit extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <EditTask />
-        <Button title="Home" onPress={() => {this.props.navigation.goBack()}}></Button>
-        <Button title="Home" onPress={() => {this.props.navigation.navigate('Tesst')}}></Button>
+        <EditTask goBack={() => {this.props.navigation.goBack()}}/>
+        {/* <Button title="Home" onPress={() => {this.props.navigation.navigate('Tesst')}}></Button> */}
       </View>
     );
   }

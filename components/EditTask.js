@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, } from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import AppNavigator from '../App';
+import {Text, View, Button} from 'react-native';
 
 export default class EditTask extends Component {
   render() {
@@ -11,6 +9,7 @@ export default class EditTask extends Component {
             Editing Task...
         </Text>
         <Text>Details Screen</Text>
+        <Button title="Home" onPress={this.props.goBack}></Button>
       </View>
     );
   }
