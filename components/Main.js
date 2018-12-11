@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList} from 'react-native';
-import ModalExample from './Modal'
+import {StyleSheet, Text, View, CheckBox, Button, TouchableHighlight, FlatList} from 'react-native';
 
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
-    this.state= { isChecked: false, modalVisible: false,
+    this.state= { isChecked: false,
                   tasks: [
             {key: '1', text: 'Zrobić pranie', isChecked: false},
             {key: '2', text: 'Kupić zakupy', isChecked: true},
@@ -20,10 +19,6 @@ export default class Main extends Component {
   }
   onPressLearnMore = () => {
     console.log("pressss")
-  }
-  showModal = () => {
-    this.setState( {modalVisible: !this.state.modalVisible})
-    console.log("aaas sss")
   }
   handleInput = (key) => {
     const newState = this.state.tasks.map( task => {
@@ -49,18 +44,14 @@ export default class Main extends Component {
               onValueChange={ () => {this.handleInput(item.key)} }
               style={styles.checkBox}
             />
-            <TouchableOpacity style={styles.welcome} onPress={this.showModal}>
+            <TouchableHighlight style={styles.TouchableHighlight} onPress={this.props.editTask}>
                   <Text style={styles.welcome} >
                     {item.text}
                   </Text>
-            </TouchableOpacity>
+            </TouchableHighlight>
             <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
           </View>}
-        />
-
-        <ModalExample modalVisible={this.state.modalVisible} showModal={this.showModal}
-              style={styles.modalAnimation}></ModalExample>
-        
+        />  
       </View>
     );
   }
@@ -78,15 +69,15 @@ const styles = StyleSheet.create({
   welcome: {
     flex: 1,
     fontSize: 20,
+    padding: 10,
     textAlign: 'left',
-    margin: 10,
     backgroundColor: 'blue',
+    borderRadius: 4,
   }, 
-  welcome2: {
-    fontSize: 20,
-    textAlign: 'left',
+  TouchableHighlight: {
+    flex: 1,
     margin: 10,
-    backgroundColor: 'purple',
+    //backgroundColor: 'purple',
   }, 
   oneTask: {
     flex: 1,

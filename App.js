@@ -37,7 +37,7 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <Main />
+        <Main editTask={() => {this.props.navigation.navigate('TaskEdit')}}/>
         <Button title="Press" onPress={() => {this.props.navigation.navigate('TaskEdit')}}></Button>
         <Footer />
       </View>
@@ -116,29 +116,13 @@ const Navi = createStackNavigator(
           transform: [{
             translateX: position.interpolate({
               inputRange: [index - 1, index],       // index means, that transform is working for every screen (screnn index: 0, 1, 2 ... 50)
-              outputRange: [width, 0],            // [-width, 0] - slide is moving from left, [width, 0] - slide is moving from right
-              
+              outputRange: [width, 0],              // [-width, 0] - slide is moving from left, [width, 0] - slide is moving from right
+              // inputRange: [index - 1, index, index + 1],
+              // outputRange: [-width, 0, width]    // or [width, 0, 0]
             }),
           }]
         };
       },
-      // headerTitleInterpolator: sceneProps => {
-      //   const { position, scene } = sceneProps;
-      //   const { index } = scene;
-
-      //   return {
-      //     opacity: position.interpolate({
-      //       inputRange: [index - 1, index, index + 1],
-      //       outputRange: [ 0, 1, 0],
-      //     }),
-      //     transform: [{
-      //       translateX: position.interpolate({
-      //         inputRange: [index - 1, index, index + 1],
-      //         outputRange: [-width, 0, width]                // or [width, 0, 0]
-      //       }),
-      //     }]
-      //   };
-      // },
     }),
   },
 );
