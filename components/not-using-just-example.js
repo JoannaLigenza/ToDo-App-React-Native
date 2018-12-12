@@ -118,7 +118,7 @@ const Navi = createStackNavigator(
         fontWeight: 'bold',
       },
     },
-    //mode: Platform.OS === "ios" ? "modal" : "card",
+    mode: Platform.OS === "ios" ? "modal" : "card",
     //headerMode: 'none',
     
     // navigationOptions: params => ({
@@ -131,24 +131,68 @@ const Navi = createStackNavigator(
         duration: 1000,
       },
       screenInterpolator: sceneProps => {
+        const { layout, position, scene } = sceneProps;
+        const { index } = scene;            // or const index = scene.index
+        const width = layout.initWidth;
+
+        console.log("index ", index, scene.route.routeName)
+
+        if(scene.route.routeName === 'MenuScreen') {
+          return {
+            transform: [{
+              translateX: position.interpolate({
+                // inputRange: [index - 1, index, index + 1],
+                // outputRange: [-width, 100, -50 ]
+                inputRange: [index -1 , index, index +1],
+                outputRange: [-width, (width-(width+(width-200))), 0]
+              }),
+            }]
+          };
+        }
+
+        if(scene.route.routeName !== 'MenuScreen') {
+          return {
+            opacity: position.interpolate({
+              inputRange: [ index, index + 1],
+              outputRange: [1, 1],                    // [1, 0] opacity is from 1 to 0
+            }),
+            transform: [{
+              translateX: position.interpolate({
+                inputRange: [index - 1, index],       // index means, that transform is working for every screen (screen index: 0, 1, 2 ... 50)
+                outputRange: [width, 0],              // [-width, 0] - slide is moving from left, [width, 0] - slide is moving from right
+                // inputRange: [index - 1, index, index + 1],
+                // outputRange: [-width, 0, width]    // or [width, 0, 0]
+              }),
+            }]
+          };
+        }
+      },
+    }),
+  },
+);
+
+const AppContainer = createAppContainer(Navi);
+
+export default class App extends React.Component {
+  render() {
+    return <AppContainer />;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Two slides effect - from right and from left depending on screen:
+
+transitionConfig: () => ({
+      transitionSpec: {
+        duration: 1000,
+      },
+      screenInterpolator: sceneProps => {
       const { position, layout, scene, scenes } = sceneProps
       const index = scene.index
       const width = layout.initWidth
-
-      
-
-      // if(scene.route.routeName === 'MenuScreen') {
-      //     return {
-      //       inputRange: [index -1 , index, index +1],
-      //       outputRange: [width, 0, 0]
-      //     };
-      // }
-      // const translateX = position.interpolate({
-      //   inputRange: [index - 1, index, index + 1],
-      //   outputRange: [width, 0, 0]
-      // })
-
-      
 
       const slideFromLeft = { transform: [{ 
         translateX: position.interpolate({
@@ -173,29 +217,12 @@ const Navi = createStackNavigator(
             })
       }] }
 
-        console.log("index ", scene.route.routeName, index, scene.isFocused)
         if(scene.route.routeName !== 'MenuScreen') { 
-          //console.log("right")
           return slideFromRight }
         if(scene.route.routeName === 'MenuScreen' ) {
-          //console.log("left")
             return slideFromLeft
         }
-
-        //return slideFromRight
       },
     }),
-  },
-);
-
-const AppContainer = createAppContainer(Navi);
-
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
-
-
 
 
