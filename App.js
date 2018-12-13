@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
+import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions } from "react-navigation";
 import Header from './components/header';
 import Main from './components/Main';
 import Footer from './components/Footer';
 import EditTask from './components/EditTask';
-import Menu from './components/Menu'
+import Menu from './components/Menu';
+import DrawerNavigator from './components/DrawerNavigator';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,6 +27,19 @@ const styles = StyleSheet.create({
   }
 });
 
+class MenuButton extends Component {
+  render() {
+    //console.log("this.props ", this.props)
+    return (
+ <View>
+    <TouchableOpacity onPress={() => {this.props.navigation.navigate('MyDrawerNavigator') } }>
+      <Text>Klik</Text>
+    </TouchableOpacity>
+    </View> )
+  }
+  
+}
+
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -45,16 +59,21 @@ class HomeScreen extends Component {
   }
   static navigationOptions = ({ navigation }) => {
     return {
-    title: 'Home', 
-    headerLeft: (
-        <Button
-          onPress={() => navigation.navigate('MenuScreen')}
-          title="X"
-          color="white"
-          style={styles.MenuButton}
-        />),
+      title: 'Home', 
+      headerLeft: (
+         <MenuButton navigation={navigation}/> ),
+                    
+      //),
+      drawerLabel: 'Home',
+      drawerIcon: ({ tintColor }) => (
+        <Image
+          source={require('./world.png')}
+          //style={[styles.icon, {tintColor: tintColor}]}
+        />
+      ),
     }
   };
+  
   handleInput = (key) => {
     const newState = this.state.tasks.map( task => {
       if(task.key === key) {
@@ -69,17 +88,40 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <Main tasks={this.state.tasks} handleInput={this.handleInput} editTask={() => {this.props.navigation.navigate('TaskEdit')}} />
-        <Button title="Press" onPress={() => {this.props.navigation.navigate('TaskEdit')}}></Button>
+        <Main tasks={this.state.tasks} handleInput={this.handleInput} editTask={() => {this.props.navigation.navigate('TaskEdit')} } />
+        <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button>
         <Footer />
       </View>
     );
   }
 }
 
-class TaskEdit extends Component {
+class MenuScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task',
+    drawerLabel: 'Notifications',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('./world.png')}
+        style={[styles.icon, {tintColor: tintColor}]}
+      />
+    ),
+  };
+
+  render() {
+    return (
+      <Button
+        onPress={() => this.props.navigation.goBack()}
+        title="Go back home"
+      />
+    );
+  }
+}
+
+class TaskEdit extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return { 
+      title: 'Edit Task',
+    }
   };
   render() {
     return (
@@ -91,41 +133,64 @@ class TaskEdit extends Component {
   }
 }
 
-class MenuScreen extends Component {
+class MenuScreen2 extends Component {
+  static navigationOptions = {
+    drawerLabel: 'MenuScreen2',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('./world.png')}
+        style={[styles.icon, {tintColor: tintColor}]}
+      />
+    ),
+  };
   render() {
     return (
       <View style={styles.menu}>
+        <Text>To jest text </Text>
         <Menu goBack={() => {this.props.navigation.goBack()}}/>
       </View>
     );
   }
 }
 
-const Navi = createStackNavigator(
-  {
+// const MyDrawerNavigator = createDrawerNavigator({
+//   Home: { screen: HomeScreen },
+//   Notifications: {screen: MenuScreen },
+//   MenuScreen2: { screen: MenuScreen2 },
+// },
+// {
+//     initialRouteName: 'MenuScreen2',
+//     //contentComponent: 'MenuScreen2',
+//     drawerWidth: 300,
+//     drawerPosition: 'left',
+// });
+
+
+const StackNavigator = createStackNavigator(
+  {    
     Home: HomeScreen,
+    MyDrawerNavigator:{ screen: DrawerNavigator },
     TaskEdit: TaskEdit,
     MenuScreen: MenuScreen,
   },
   {
-    initialRouteName: 'Home',     // Main Site
+    initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      headerStyle: {
-        backgroundColor: 'red',
-      },
+      headerStyle: { backgroundColor: 'red' },
       headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
+      headerTitleStyle: { fontWeight: 'bold' },
+      headerMode: 'screen',
+      //headerTitle: 'Home',
+      // headerLeft: navigation => {
+      //   return <Button
+      //     onPress={() => navigation.navigate('MenuScreen')}
+      //     title="X"
+      //     color="white"
+      //     backgroundColor='yellow'
+      //     style={styles.MenuButton}
+      //   />
+      // },
     },
-    //mode: Platform.OS === "ios" ? "modal" : "card",
-    //headerMode: 'none',
-    
-    // navigationOptions: params => ({
-    //   gesturesEnabled: true,
-    //   gesturesDirection: 'inverted',
-    // }),
-    
     transitionConfig: () => ({
       transitionSpec: {
         duration: 1000,
@@ -134,21 +199,6 @@ const Navi = createStackNavigator(
       const { position, layout, scene, scenes } = sceneProps
       const index = scene.index
       const width = layout.initWidth
-
-      
-
-      // if(scene.route.routeName === 'MenuScreen') {
-      //     return {
-      //       inputRange: [index -1 , index, index +1],
-      //       outputRange: [width, 0, 0]
-      //     };
-      // }
-      // const translateX = position.interpolate({
-      //   inputRange: [index - 1, index, index + 1],
-      //   outputRange: [width, 0, 0]
-      // })
-
-      
 
       const slideFromLeft = { transform: [{ 
         translateX: position.interpolate({
@@ -164,16 +214,12 @@ const Navi = createStackNavigator(
             }),
         transform: [{ 
           translateX: position.interpolate({
-                // scene underneath is not sliding
               inputRange: [index - 1, index, index + 1],
               outputRange: [width, 0, 0],
-                // scene underneath is sliding
-              // inputRange: [index - 1, index, index + 1],
-              // outputRange: [width, 0, 0],
             })
       }] }
 
-        console.log("index ", scene.route.routeName, index, scene.isFocused)
+        //console.log("index ", scene.route.routeName, index, scene.isFocused)
         if(scene.route.routeName !== 'MenuScreen') { 
           //console.log("right")
           return slideFromRight }
@@ -181,14 +227,12 @@ const Navi = createStackNavigator(
           //console.log("left")
             return slideFromLeft
         }
-
-        //return slideFromRight
       },
     }),
-  },
+  }
 );
 
-const AppContainer = createAppContainer(Navi);
+const AppContainer = createAppContainer(StackNavigator);
 
 export default class App extends React.Component {
   render() {
