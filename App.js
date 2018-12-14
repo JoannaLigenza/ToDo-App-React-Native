@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
 import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions, createSwitchNavigator } from "react-navigation";
 import Header from './components/header';
 import MainArea from './components/Main';
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: 'yellow',
+    backgroundColor: 'white',
     flexDirection: 'column',
     //justifyContent: 'space-between',
   },
@@ -22,9 +22,6 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: 'yellow',
   },
-  MenuButton: {
-    marginLeft: 15,
-  }
 });
 
 class MenuButton extends Component {
@@ -60,11 +57,6 @@ class HomeScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Home', 
-      // headerLeft: (
-      //    <MenuButton navigation={navigation}/> 
-         
-      // ),
-      title: 'Home', 
       drawerLabel: 'Home',
       drawerIcon: ({ tintColor }) => (
         <Image
@@ -85,13 +77,25 @@ class HomeScreen extends Component {
     })
     this.setState({ tasks: newState })
   }
+
+  handleAddTask = () => {
+
+  }
+
+  handleChangeTaskOrder = () => {
+    const newState = this.state.tasks.filter( task => {
+
+    })
+    this.setState({ tasks: newState })
+  }
+
   render() {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
         <MainArea tasks={this.state.tasks} handleInput={this.handleInput} 
         openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}/>
-        <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button>
+        {/* <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button> */}       
         <Footer />
       </View>
     );

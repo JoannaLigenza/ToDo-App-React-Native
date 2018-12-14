@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
 
-export default class MenuScreen extends React.Component {
+export default class MenuScreen extends Component {
+    static navigationOptions = {
+        drawerLabel: 'Notifications',
+        drawerIcon: ({ tintColor }) => (
+        <Image
+            source={require('../world.png')}
+            style={[ {tintColor: tintColor}]}
+        />
+        ),
+    };
   render() {
       return(
           <View>
@@ -9,7 +18,7 @@ export default class MenuScreen extends React.Component {
                 MenuScreen
             </Text>
             <Button
-                onPress={() => console.log("button pressed")}
+                onPress={() => this.props.navigation.goBack()}
                 title="Go back home"
             />
           </View>

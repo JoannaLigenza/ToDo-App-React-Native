@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import EditTask from './EditTask';
 import MenuScreen from './MenuScreen';
 import Header from './header';
+import AddTask from './AddTask';
 
 
 class Main extends Component {
@@ -17,9 +18,10 @@ class Main extends Component {
   }
   render() {
     return (
-      <View style={styles.component2}>       
+      <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw}/>      
         <FlatList
+          contentContainerStyle={{paddingBottom: 110}}
           data={this.props.screenProps.tasks}
           renderItem={({item}) => 
           <View style={styles.oneTask}>
@@ -39,6 +41,13 @@ class Main extends Component {
             <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
           </View>}
         />  
+        <View>
+          <TouchableHighlight style={styles.addButton}
+          onPress={() => {this.props.navigation.navigate('AddTask', {back: "Lets see - Item data to editing here"})} }>
+            <Text>+</Text>
+          </TouchableHighlight>
+          {/* <Button title="Press" onPress={() => {} }></Button> */}
+        </View>
       </View>
     );
   }
@@ -51,17 +60,18 @@ const StackNavigator = createStackNavigator(
     //TaskEdit: <EditTask goBack={() => {this.props.navigation.goBack()}}/>,
     EditTask: EditTask,
     MenuScreen: MenuScreen,
+    AddTask: AddTask,
   },
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      headerStyle: { backgroundColor: 'red', height: 55 },
+      headerStyle: { backgroundColor: 'red', height: 55, shadowRadius: 0, },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
     },
     transitionConfig: () => ({
       transitionSpec: {
-        duration: 5000,
+        duration: 500,
       },
       screenInterpolator: sceneProps => {
       const { position, layout, scene } = sceneProps
@@ -76,7 +86,7 @@ const StackNavigator = createStackNavigator(
         transform: [{ 
           translateX: position.interpolate({
               inputRange: [index - 1, index, index + 1],
-              outputRange: [width, 0, -width],
+              outputRange: [width, 0, -20],
             })
       }] }
         return slideFromRight
@@ -133,5 +143,22 @@ const styles = StyleSheet.create({
   },
   unchecked: {
     textDecorationLine: "none",
+  },
+  addButton: {
+    //borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    width:100,
+    height:100,
+    backgroundColor:'#fec538',
+    margin: 0,
+    padding: 0,
+    elevation: 6,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    borderRadius: 50,
+    //zIndex: 5, 
   },
 });
