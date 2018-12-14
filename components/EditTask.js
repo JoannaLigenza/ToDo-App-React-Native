@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import {Text, View, Button} from 'react-native';
 
 export default class EditTask extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return { 
+      title: 'Edit Task',
+    }
+  };
   render() {
     const { navigation } = this.props;
     const itemId = navigation.getParam('back');

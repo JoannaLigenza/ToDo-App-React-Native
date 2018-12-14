@@ -3,21 +3,22 @@ import {StyleSheet, Text, View, CheckBox, Button, TouchableHighlight, FlatList} 
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import EditTask from './EditTask';
 import MenuScreen from './MenuScreen';
+import Header from './header';
 
 
 class Main extends Component {
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
-      title: 'Home! Delete Header',
+      header: null,
     }
   };
   onPressLearnMore = () => {
     console.log("pressss")
   }
   render() {
-    //console.log("this.props ", this.props)
     return (
-      <View style={styles.component2}>             
+      <View style={styles.component2}>       
+        <Header openDraw={this.props.screenProps.openDraw}/>      
         <FlatList
           data={this.props.screenProps.tasks}
           renderItem={({item}) => 
@@ -26,7 +27,7 @@ class Main extends Component {
               //checked={item.isChecked}
               checked={item.isChecked}
               value={item.isChecked}
-              onValueChange={ () => {this.props.handleInput(item.key)} }
+              onValueChange={ () => {this.props.screenProps.handleInput(item.key)} }
               style={styles.checkBox}
             />
             <TouchableHighlight style={styles.TouchableHighlight} 
@@ -57,56 +58,30 @@ const StackNavigator = createStackNavigator(
       headerStyle: { backgroundColor: 'red' },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
-      //headerMode: 'screen',
-      //headerTitle: 'Home',
-      headerLeft: navigation => {
-        return <Button
-          onPress={() => navigation.navigate('MenuScreen')}
-          title="X"
-          color="white"
-          backgroundColor='yellow'
-          style={styles.MenuButton}
-        />
-      },
     },
-    // transitionConfig: () => ({
-    //   transitionSpec: {
-    //     duration: 1000,
-    //   },
-    //   screenInterpolator: sceneProps => {
-    //   const { position, layout, scene, scenes } = sceneProps
-    //   const index = scene.index
-    //   const width = layout.initWidth
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 1000,
+      },
+      screenInterpolator: sceneProps => {
+      const { position, layout, scene, scenes } = sceneProps
+      const index = scene.index
+      const width = layout.initWidth
 
-    //   const slideFromLeft = { transform: [{ 
-    //     translateX: position.interpolate({
-    //             inputRange: [index - 1, index, index + 1],
-    //             outputRange: [-width, (width-(width+(width-200))), 0]
-    //         })
-    //   }] }
-
-    //   const slideFromRight = { 
-    //     opacity: position.interpolate({
-    //           inputRange: [ index, index + 1],
-    //           outputRange: [1, 1], 
-    //         }),
-    //     transform: [{ 
-    //       translateX: position.interpolate({
-    //           inputRange: [index - 1, index, index + 1],
-    //           outputRange: [width, 0, 0],
-    //         })
-    //   }] }
-
-    //     //console.log("index ", scene.route.routeName, index, scene.isFocused)
-    //     // if(scene.route.routeName !== 'MenuScreen') { 
-    //     //   //console.log("right")
-    //     //   return slideFromRight }
-    //     // if(scene.route.routeName === 'MenuScreen' ) {
-    //     //   //console.log("left")
-    //     //     return slideFromLeft
-    //     // }
-    //   },
-    // }),
+      const slideFromRight = { 
+        opacity: position.interpolate({
+              inputRange: [ index, index + 1],
+              outputRange: [1, 1], 
+            }),
+        transform: [{ 
+          translateX: position.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [width, 0, -width],
+            })
+      }] }
+        return slideFromRight
+      },
+    }),
   }
 );
 
@@ -114,7 +89,8 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    return <AppContainer screenProps={{tasks: this.props.tasks, handleInput: this.props.handleInput}}/>;
+    return <AppContainer 
+    screenProps={{tasks: this.props.tasks, handleInput: this.props.handleInput, openDraw: this.props.openDraw}}/>;
   }
 }
 

@@ -89,7 +89,8 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <MainArea tasks={this.state.tasks} handleInput={this.handleInput} />
+        <MainArea tasks={this.state.tasks} handleInput={this.handleInput} 
+        openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}/>
         <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button>
         <Footer />
       </View>
