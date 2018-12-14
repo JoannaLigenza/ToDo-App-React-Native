@@ -55,16 +55,16 @@ const StackNavigator = createStackNavigator(
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      headerStyle: { backgroundColor: 'red' },
+      headerStyle: { backgroundColor: 'red', height: 55 },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
     },
     transitionConfig: () => ({
       transitionSpec: {
-        duration: 1000,
+        duration: 5000,
       },
       screenInterpolator: sceneProps => {
-      const { position, layout, scene, scenes } = sceneProps
+      const { position, layout, scene } = sceneProps
       const index = scene.index
       const width = layout.initWidth
 

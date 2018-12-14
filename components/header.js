@@ -27,7 +27,12 @@ const styles = StyleSheet.create({
     //alignSelf: 'stretch',
     //alignItems: 'center',
     backgroundColor: 'red',
-    height: 56,
+    height: 55,
+    shadowOffset: { width: 10, height: 10,  },
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 4,
   },
   welcome: {
     fontSize: 20,
