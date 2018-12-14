@@ -8,7 +8,6 @@ export default class Menu extends Component {
   }
   
   render() {
-    console.log("this.props 2", this.props)
     return (
       <View style={{marginTop: 22}}>
         <View>
@@ -16,7 +15,7 @@ export default class Menu extends Component {
 
           <TouchableHighlight
             onPress={this.props.goBack}>
-            <Text>Hide Modal</Text>
+            <Text>Go Back</Text>
           </TouchableHighlight>
         </View>
       </View>

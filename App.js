@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
-import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions } from "react-navigation";
+import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions, createSwitchNavigator } from "react-navigation";
 import Header from './components/header';
-import Main from './components/Main';
+import MainArea from './components/Main';
 import Footer from './components/Footer';
 import EditTask from './components/EditTask';
 import Menu from './components/Menu';
-import DrawerNavigator from './components/DrawerNavigator';
+import MenuScreen from './components/MenuScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,13 +29,13 @@ const styles = StyleSheet.create({
 
 class MenuButton extends Component {
   render() {
-    //console.log("this.props ", this.props)
     return (
- <View>
-    <TouchableOpacity onPress={() => {this.props.navigation.navigate('MyDrawerNavigator') } }>
-      <Text>Klik</Text>
-    </TouchableOpacity>
-    </View> )
+    <View>
+      <TouchableOpacity onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}>
+        <Text>Klik</Text>
+      </TouchableOpacity>
+    </View> 
+    )
   }
   
 }
@@ -45,7 +45,7 @@ class HomeScreen extends Component {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić pranie', isChecked: false},
+            {key: '1', text: 'Zrobić praniee', isChecked: false},
             {key: '2', text: 'Kupić zakupy', isChecked: true},
             {key: '3', text: 'Pokodować jutro', isChecked: false},
             {key: '4', text: 'Tralalala', isChecked: false},
@@ -60,10 +60,11 @@ class HomeScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Home', 
-      headerLeft: (
-         <MenuButton navigation={navigation}/> ),
-                    
-      //),
+      // headerLeft: (
+      //    <MenuButton navigation={navigation}/> 
+         
+      // ),
+      title: 'Home', 
       drawerLabel: 'Home',
       drawerIcon: ({ tintColor }) => (
         <Image
@@ -88,46 +89,9 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <Main tasks={this.state.tasks} handleInput={this.handleInput} editTask={() => {this.props.navigation.navigate('TaskEdit')} } />
+        <MainArea tasks={this.state.tasks} handleInput={this.handleInput} />
         <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button>
         <Footer />
-      </View>
-    );
-  }
-}
-
-class MenuScreen extends React.Component {
-  static navigationOptions = {
-    drawerLabel: 'Notifications',
-    drawerIcon: ({ tintColor }) => (
-      <Image
-        source={require('./world.png')}
-        style={[styles.icon, {tintColor: tintColor}]}
-      />
-    ),
-  };
-
-  render() {
-    return (
-      <Button
-        onPress={() => this.props.navigation.goBack()}
-        title="Go back home"
-      />
-    );
-  }
-}
-
-class TaskEdit extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return { 
-      title: 'Edit Task',
-    }
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-        <EditTask goBack={() => {this.props.navigation.goBack()}}/>
-        {/* <Button title="Home" onPress={() => {this.props.navigation.navigate('MenuScreen')}}></Button> */}
       </View>
     );
   }
@@ -153,86 +117,54 @@ class MenuScreen2 extends Component {
   }
 }
 
-// const MyDrawerNavigator = createDrawerNavigator({
-//   Home: { screen: HomeScreen },
-//   Notifications: {screen: MenuScreen },
-//   MenuScreen2: { screen: MenuScreen2 },
-// },
-// {
-//     initialRouteName: 'MenuScreen2',
-//     //contentComponent: 'MenuScreen2',
-//     drawerWidth: 300,
-//     drawerPosition: 'left',
-// });
-
-
-const StackNavigator = createStackNavigator(
-  {    
-    Home: HomeScreen,
-    MyDrawerNavigator:{ screen: DrawerNavigator },
-    TaskEdit: TaskEdit,
-    MenuScreen: MenuScreen,
-  },
-  {
-    initialRouteName: 'Home',
-    defaultNavigationOptions: {   // Header style
-      headerStyle: { backgroundColor: 'red' },
-      headerTintColor: '#fff',
-      headerTitleStyle: { fontWeight: 'bold' },
-      headerMode: 'screen',
-      //headerTitle: 'Home',
-      // headerLeft: navigation => {
-      //   return <Button
-      //     onPress={() => navigation.navigate('MenuScreen')}
-      //     title="X"
-      //     color="white"
-      //     backgroundColor='yellow'
-      //     style={styles.MenuButton}
-      //   />
-      // },
-    },
-    transitionConfig: () => ({
-      transitionSpec: {
-        duration: 1000,
-      },
-      screenInterpolator: sceneProps => {
-      const { position, layout, scene, scenes } = sceneProps
-      const index = scene.index
-      const width = layout.initWidth
-
-      const slideFromLeft = { transform: [{ 
-        translateX: position.interpolate({
-                inputRange: [index - 1, index, index + 1],
-                outputRange: [-width, (width-(width+(width-200))), 0]
-            })
-      }] }
-
-      const slideFromRight = { 
-        opacity: position.interpolate({
-              inputRange: [ index, index + 1],
-              outputRange: [1, 1], 
-            }),
-        transform: [{ 
-          translateX: position.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [width, 0, 0],
-            })
-      }] }
-
-        //console.log("index ", scene.route.routeName, index, scene.isFocused)
-        if(scene.route.routeName !== 'MenuScreen') { 
-          //console.log("right")
-          return slideFromRight }
-        if(scene.route.routeName === 'MenuScreen' ) {
-          //console.log("left")
-            return slideFromLeft
-        }
-      },
-    }),
+class Zobacz extends Component {
+  static navigationOptions = {
+    title: 'Zobacz',
+    headerTitle: 'Zobacz',
+    drawerLabel: 'Zobacz',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('./world.png')}
+        style={[styles.icon, {tintColor: tintColor}]}
+      />
+    ),
+  };
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>Zobacz</Text>
+        
+        {/* <Button title="Home" onPress={() => {this.props.navigation.navigate('MenuScreen')}}></Button> */}
+      </View>
+    );
   }
-);
+}
 
-const AppContainer = createAppContainer(StackNavigator);
+const MyDrawerNavigator = createDrawerNavigator({
+  Home: { screen: HomeScreen },
+  Notifications: {screen: MenuScreen },
+  MenuScreen2: { screen: MenuScreen2 },
+  Zobacz: { screen: Zobacz}
+},
+{
+    initialRouteName: 'Home',
+    //contentComponent: 'MenuScreen2',
+    drawerWidth: 300,
+    drawerPosition: 'left',
+    navigationOptions: {
+      headerStyle: { backgroundColor: 'yellow' },
+      //title: 'My Chats'
+      headerLeft: navigation => {
+        //return <MenuButton navigation={navigation}/> 
+         return  <Button title="menu" style={{ paddingLeft: 10 }} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
+      },
+      headerBackTitleVisible: true,
+      headerVisible: true,
+      gesturesEnabled: true,
+    }
+});
+
+const AppContainer = createAppContainer(MyDrawerNavigator);
 
 export default class App extends React.Component {
   render() {

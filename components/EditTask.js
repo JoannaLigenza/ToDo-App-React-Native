@@ -15,4 +15,20 @@ export default class EditTask extends Component {
   }
 }
 
+// class TaskEdit extends Component {
+//   static navigationOptions = ({ navigation }) => {
+//     return { 
+//       title: 'Edit Task',
+//     }
+//   };
+//   render() {
+//     return (
+//       <View style={styles.container}>
+//         <EditTask goBack={() => {this.props.navigation.goBack()}}/>
+//         {/* <Button title="Home" onPress={() => {this.props.navigation.navigate('MenuScreen')}}></Button> */}
+//       </View>
+//     );
+//   }
+// }
+
 
