@@ -3,13 +3,17 @@ import {Text, View, Button} from 'react-native';
 
 export default class EditTask extends Component {
   render() {
+    const { navigation } = this.props;
+    const itemId = navigation.getParam('back');
+    console.log("navigation ", itemId)
+
     return (
       <View style={{marginTop: 22}}>
         <Text>
             Editing Task...
         </Text>
         <Text>Details Screen</Text>
-        <Button title="Home" onPress={this.props.goBack}></Button>
+        <Button title="Home" onPress={() => {navigation.goBack()}}></Button>
       </View>
     );
   }

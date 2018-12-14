@@ -15,7 +15,7 @@ class Main extends Component {
     console.log("pressss")
   }
   render() {
-    console.log("this.props ", this.props)
+    //console.log("this.props ", this.props)
     return (
       <View style={styles.component2}>             
         <FlatList
@@ -29,7 +29,8 @@ class Main extends Component {
               onValueChange={ () => {this.props.handleInput(item.key)} }
               style={styles.checkBox}
             />
-            <TouchableHighlight style={styles.TouchableHighlight} onPress={() => {this.props.navigation.navigate('EditTask')} }>
+            <TouchableHighlight style={styles.TouchableHighlight} 
+            onPress={() => {this.props.navigation.navigate('EditTask', {back: "Lets see - Item data to editing here"})} }>
                   <Text style={styles.welcome} >
                     {item.text}
                   </Text>
