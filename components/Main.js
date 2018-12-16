@@ -8,11 +8,47 @@ import AddTask from './AddTask';
 
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state= { 
+            tasks: [
+            {key: '1', text: 'Zrobić praniee', isChecked: false},
+            {key: '2', text: 'Kupić zakupy', isChecked: true},
+            {key: '3', text: 'Pokodować jutro', isChecked: false},
+            {key: '4', text: 'Tralalala', isChecked: false},
+            {key: '5', text: 'John', isChecked: false},
+            {key: '6', text: 'Jillian', isChecked: false},
+            {key: '7', text: 'I coś jeszcze', isChecked: false},
+            {key: '8', text: 'I coś jeszcze', isChecked: false},
+            {key: '9', text: 'I coś jeszcze', isChecked: false},
+            ],
+            modalVisible: true }
+  }
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
       header: null,
     }
   };
+  handleInput = (key) => {
+    const newState = this.state.tasks.map( task => {
+      if(task.key === key) {
+        task.isChecked = !task.isChecked
+        return task
+      }
+      return task
+    })
+    this.setState({ tasks: newState })
+  }
+  handleAddTask = () => {
+
+  }
+
+  handleChangeTaskOrder = () => {
+    const newState = this.state.tasks.filter( task => {
+
+    })
+    this.setState({ tasks: newState })
+  }
   onPressLearnMore = () => {
     console.log("pressss")
   }
@@ -22,14 +58,14 @@ class Main extends Component {
         <Header openDraw={this.props.screenProps.openDraw}/>      
         <FlatList
           contentContainerStyle={{paddingBottom: 110}}
-          data={this.props.screenProps.tasks}
+          data={this.state.tasks}
           renderItem={({item}) => 
           <View style={styles.oneTask}>
             <CheckBox
               //checked={item.isChecked}
               checked={item.isChecked}
               value={item.isChecked}
-              onValueChange={ () => {this.props.screenProps.handleInput(item.key)} }
+              onValueChange={ () => {this.handleInput(item.key)} }
               style={styles.checkBox}
             />
             <TouchableHighlight style={styles.TouchableHighlight} 
@@ -99,8 +135,7 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    return <AppContainer 
-    screenProps={{tasks: this.props.tasks, handleInput: this.props.handleInput, openDraw: this.props.openDraw}}/>;
+    return <AppContainer screenProps={{openDraw: this.props.openDraw}}/>;
   }
 }
 
