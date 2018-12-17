@@ -60,9 +60,9 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <MainArea openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}/>
+        <MainArea openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}
+                  lists={this.state.lists} />
         {/* <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button> */}       
-        <Footer />
       </View>
     );
   }

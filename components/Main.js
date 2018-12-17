@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import EditTask from './EditTask';
 import MenuScreen from './MenuScreen';
 import Header from './header';
+import Footer from './Footer';
 import AddTask from './AddTask';
 
 
@@ -12,17 +13,17 @@ class Main extends Component {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false},
-            {key: '2', text: 'Kupić zakupy', isChecked: true},
-            {key: '3', text: 'Pokodować jutro', isChecked: false},
-            {key: '4', text: 'Tralalala', isChecked: false},
-            {key: '5', text: 'John', isChecked: false},
-            {key: '6', text: 'Jillian', isChecked: false},
-            {key: '7', text: 'I coś jeszcze', isChecked: false},
-            {key: '8', text: 'I coś jeszcze', isChecked: false},
-            {key: '9', text: 'I coś jeszcze', isChecked: false},
+            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", Date: ""},
+            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", Date: ""},
+            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", Date: ""},
+            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", Date: ""},
+            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", Date: ""},
+            {key: '6', text: 'Jillian', isChecked: false, list: "Private", priority: "High", Date: ""},
+            {key: '7', text: 'I coś jeszcze', isChecked: false, list: "Private", priority: "Low", Date: ""},
+            {key: '8', text: 'I coś jeszcze', isChecked: false, list: "Default", priority: "Middle", Date: ""},
+            {key: '9', text: 'I coś jeszcze', isChecked: false, list: "Work", priority: "High", Date: ""},
             ],
-            modalVisible: true }
+            }
   }
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
@@ -76,14 +77,15 @@ class Main extends Component {
             </TouchableHighlight>
             <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
           </View>}
-        />  
+        />
         <View>
           <TouchableHighlight style={styles.addButton}
-          onPress={() => {this.props.navigation.navigate('AddTask', {back: "Lets see - Item data to editing here"})} }>
+          onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists})} }>
             <Text>+</Text>
           </TouchableHighlight>
           {/* <Button title="Press" onPress={() => {} }></Button> */}
         </View>
+        <Footer />
       </View>
     );
   }
@@ -135,7 +137,7 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    return <AppContainer screenProps={{openDraw: this.props.openDraw}}/>;
+    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists}}/>;
   }
 }
 
@@ -184,8 +186,8 @@ const styles = StyleSheet.create({
     borderColor:'rgba(0,0,0,0.2)',
     alignItems:'center',
     justifyContent:'center',
-    width:100,
-    height:100,
+    width: 80,
+    height: 80,
     backgroundColor:'#fec538',
     margin: 0,
     padding: 0,
