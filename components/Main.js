@@ -23,6 +23,7 @@ class Main extends Component {
             {key: '8', text: 'I coś jeszcze', isChecked: false, list: "Default", priority: "Middle", Date: ""},
             {key: '9', text: 'I coś jeszcze', isChecked: false, list: "Work", priority: "High", Date: ""},
             ],
+            taskKey: '11'
             }
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -40,8 +41,12 @@ class Main extends Component {
     })
     this.setState({ tasks: newState })
   }
-  handleAddTask = () => {
-
+  handleAddTask = (task) => {
+    const newTasks = [...this.state.tasks, task]
+    this.setState({ tasks: newTasks })
+  }
+  handleChangetaskKey = (key) => {
+    this.setState({taskKey: key})
   }
 
   handleChangeTaskOrder = () => {
@@ -80,7 +85,8 @@ class Main extends Component {
         />
         <View>
           <TouchableHighlight style={styles.addButton}
-          onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists})} }>
+          onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists, 
+              addTask: this.handleAddTask, taskKey: this.state.taskKey, handleChangetaskKey: this.handleChangetaskKey}) } }>
             <Text>+</Text>
           </TouchableHighlight>
           {/* <Button title="Press" onPress={() => {} }></Button> */}
