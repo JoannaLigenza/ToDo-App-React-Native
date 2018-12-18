@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Picker, DatePickerAndroid, Dimensions, TouchableOpacity, Modal} from 'react-native';
+import {StyleSheet, Text, TextInput, View, Picker, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
 
 export default class AddTask extends Component {
     constructor() {
@@ -9,7 +9,8 @@ export default class AddTask extends Component {
             choosenList: 'Default',
             choosenPriority: 'None',
             choosenDate: 'Choose Date',
-            modalVisible: false,
+            modalVisible1: false,
+            modalVisible2: false,
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -37,7 +38,8 @@ export default class AddTask extends Component {
         console.log("this.state ", this.state)
         //console.log("this.props ", this.props.screenProps.lists)
         const list = this.props.screenProps.lists.map( list => {
-            return <Picker.Item key={list} label={list} value={list} />
+            return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenPriority: list, modalVisible1: false}) }}>{list}</Text>
+            {/* <Picker.Item key={list} label={list} value={list} /> */}
         
         })
         
@@ -56,44 +58,55 @@ export default class AddTask extends Component {
                 />
 
                 <Text style={styles.text}>List:</Text>
-                <Picker
+                {/* <Picker
                     selectedValue={this.state.choosenList}
                     style={styles.picker}
                     onValueChange={(itemValue, itemIndex) => this.setState({choosenList: itemValue})}>
                     {list}
-                </Picker>
-                
-                <Text style={styles.text}>Date:</Text>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid()}} style={styles.touchableOpacity}>
-                    <Text style={{textAlign: 'left', padding: 5, fontSize: 16,}} >{this.state.choosenDate}</Text>
-                    
-                </TouchableOpacity>
-                <Text style={styles.text}>Priority:</Text>
-                <View style={styles.pickerView}>
-                    <Picker
-                        selectedValue={this.state.choosenPriority}
-                        style={styles.picker}
-                        itemStyle={{ backgroundColor: "grey" }}
-                        onValueChange={(itemValue, itemIndex) => this.setState({choosenPriority: itemValue})}>
-                        <Picker.Item key={"1"} label="None" value="None" color={'black'} />
-                        <Picker.Item key={"2"} label="Low" value="Low" color={'yellow'}/>
-                        <Picker.Item key={"3"} label="Middle" value="Middle" color={'orange'}/>
-                        <Picker.Item key={"4"} label="High" value="High" color={'red'}/>
-                    </Picker>
-                </View>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible: true})}} style={styles.touchableOpacity}>
-                    <Text style={styles.text}>Priority:</Text>
-                    <Text>{this.state.choosenPriority}</Text>
-                    <Modal transparent={true} animationType="fade" visible={this.state.modalVisible} 
-                            onRequestClose={() => {this.setState({modalVisible: false}) }}>
-                        <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible: false}) }}>
+                </Picker> */}
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible1: true})}} style={styles.touchableOpacity}>
+                    <Text style={styles.text}>List:</Text>
+                    <Text style={styles.textUnder}>{this.state.choosenList}</Text>
+                    <Modal transparent={true} animationType="fade" visible={this.state.modalVisible1} 
+                            onRequestClose={() => {this.setState({modalVisible1: false}) }}>
+                        <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible1: false}) }}>
                             <View style={styles.modal}>
                                 <TouchableOpacity disabled={true}>
-                                {/* <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible: false})}} style={styles.touchableOpacity}> */}
-                                <Text style={styles.text} onPress={() => {this.setState({choosenPriority: 'None',modalVisible: false}) }}>None</Text>
-                                <Text style={styles.text} onPress={() => {this.setState({choosenPriority: 'Low', modalVisible: false}) }}>Low</Text>
-                                <Text style={styles.text} onPress={() => {this.setState({choosenPriority: 'Middle', modalVisible: false}) }}>Middle</Text>
-                                <Text style={styles.text} onPress={() => {this.setState({choosenPriority: 'High', modalVisible: false}) }}>High</Text>
+                                    <ScrollView>
+                                        {list}
+                                        {/* <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',modalVisible: false}) }}>None</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low', modalVisible: false}) }}>Low</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle', modalVisible: false}) }}>Middle</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High', modalVisible: false}) }}>High</Text> */}
+                                    </ScrollView>
+                                
+                                </TouchableOpacity>
+                            </View>  
+                        </TouchableOpacity>                           
+                    </Modal>
+                </TouchableOpacity>
+                
+                
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid()}} style={styles.touchableOpacity}>
+                    <Text style={styles.text}>Date:</Text>
+                    <Text style={styles.textUnder} >{this.state.choosenDate}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible2: true})}} style={styles.touchableOpacity}>
+                    <Text style={styles.text}>Priority:</Text>
+                    <Text style={styles.textUnder}>{this.state.choosenPriority}</Text>
+                    <Modal transparent={true} animationType="fade" visible={this.state.modalVisible2} 
+                            onRequestClose={() => {this.setState({modalVisible2: false}) }}>
+                        <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible2: false}) }}>
+                            <View style={styles.modal}>
+                                <TouchableOpacity disabled={true}>
+                                    <ScrollView>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',modalVisible2: false}) }}>None</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low', modalVisible2: false}) }}>Low</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle', modalVisible2: false}) }}>Middle</Text>
+                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High', modalVisible2: false}) }}>High</Text>
+                                    </ScrollView>
+                                
                                 </TouchableOpacity>
                             </View>  
                         </TouchableOpacity>                           
@@ -118,17 +131,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         margin: 5,
     },
+    textUnder: {
+        fontSize: 16,
+        margin: 5,
+        marginLeft: 8,
+        padding: 5,
+        textAlign: 'left',
+    },
     touchableOpacity: {
         backgroundColor: 'rgba(216, 216, 216, 0.5)',
         padding: 10,
         marginTop: 5,
         marginBottom: 5,
-    },
-    pickerView: {
-        borderStyle: 'solid',
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderBottomColor: 'grey'
     },
     picker: {
         maxWidth: Dimensions.get('window').width,
@@ -143,13 +157,22 @@ const styles = StyleSheet.create({
     modal: {
         //flex: 1,
         width: Dimensions.get('window').width - 80,
-        height: 200,
-        padding: 20,
+        height: 'auto',
+        maxHeight: 300,
+        padding: 3,
         margin: 20,
         alignSelf: 'center',
         textAlign: 'center',
         position: 'absolute',
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
         backgroundColor: 'yellow',
+    },
+    select: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 2,
+        padding: 8,
+        backgroundColor: 'white',
+        borderRadius: 3,
     },
 })
