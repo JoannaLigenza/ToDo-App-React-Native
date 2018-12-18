@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, CheckBox, Button, TouchableHighlight, FlatList} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
+import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 import EditTask from './EditTask';
 import MenuScreen from './MenuScreen';
 import Header from './header';
@@ -13,15 +14,11 @@ class Main extends Component {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", Date: ""},
-            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", Date: ""},
-            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", Date: ""},
-            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", Date: ""},
-            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", Date: ""},
-            {key: '6', text: 'Jillian', isChecked: false, list: "Private", priority: "High", Date: ""},
-            {key: '7', text: 'I coś jeszcze', isChecked: false, list: "Private", priority: "Low", Date: ""},
-            {key: '8', text: 'I coś jeszcze', isChecked: false, list: "Default", priority: "Middle", Date: ""},
-            {key: '9', text: 'I coś jeszcze', isChecked: false, list: "Work", priority: "High", Date: ""},
+            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", Date: "", note: 'note1'},
+            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", Date: "", note: 'note1'},
+            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", Date: "", note: 'note1'},
+            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", Date: "", note: 'note1'},
+            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", Date: "", note: 'note1'},
             ],
             taskKey: '11'
             }
@@ -100,8 +97,6 @@ class Main extends Component {
 const StackNavigator = createStackNavigator(
   {    
     Home: Main,
-    //MyDrawerNavigator:{ screen: MyDrawerNavigator },
-    //TaskEdit: <EditTask goBack={() => {this.props.navigation.goBack()}}/>,
     EditTask: EditTask,
     MenuScreen: MenuScreen,
     AddTask: AddTask,
@@ -109,7 +104,7 @@ const StackNavigator = createStackNavigator(
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      headerStyle: { backgroundColor: 'red', height: 55, shadowRadius: 0, },
+      headerStyle: { backgroundColor: colorPrimary, height: 55, shadowRadius: 0, },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
     },
@@ -150,19 +145,17 @@ export default class MainArea extends React.Component {
 const styles = StyleSheet.create({
   component2: {
     flex: 1,
-    //justifyContent: 'center',
     alignItems: 'stretch',
-    //alignSelf: 'stretch',
-    backgroundColor: '#fff',
-    borderColor: 'blue',
+    backgroundColor: background,
   },
   welcome: {
     flex: 1,
     fontSize: 20,
     padding: 10,
     textAlign: 'left',
-    backgroundColor: 'blue',
-    borderRadius: 4,
+    // borderColor: colorPrimary,
+    // borderWidth: 1,
+    // borderRadius: 4,
   }, 
   TouchableHighlight: {
     flex: 1,
@@ -175,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 5,
     alignItems: "center",
-    backgroundColor: 'white',
+    backgroundColor: background,
   },
   checked: {
     textDecorationLine: 'line-through',
@@ -202,6 +195,5 @@ const styles = StyleSheet.create({
     bottom: 10,
     right: 10,
     borderRadius: 50,
-    //zIndex: 5, 
   },
 });

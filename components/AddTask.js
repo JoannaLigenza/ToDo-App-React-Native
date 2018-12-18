@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Picker, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 export default class AddTask extends Component {
     constructor() {
@@ -38,7 +39,7 @@ export default class AddTask extends Component {
     handleAddTask = () => {
         const key = (Number(this.props.navigation.state.params.taskKey) + 1).toString()
         this.props.navigation.state.params.handleChangetaskKey(key)
-        this.props.navigation.state.params.addTask({key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate })
+        this.props.navigation.state.params.addTask({key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate, note: this.state.note })
     }
     render() {
         //console.log("this.state ", this.state)
@@ -46,7 +47,6 @@ export default class AddTask extends Component {
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, modalVisible1: false}) }}>{list}</Text>
         })
-        //console.log("this.props ", this.props.navigation.state.params)
             
         return (
             <View style={{flex: 1}} >
@@ -60,7 +60,7 @@ export default class AddTask extends Component {
                             multiline = {true}
                             maxLength = {200}
                             //NumberOfLines = {4}
-                            autoFocus = {true}
+                            //autoFocus = {true}
                         />
                     </View>
 
@@ -132,7 +132,7 @@ export default class AddTask extends Component {
 
 const styles = StyleSheet.create({
     textInputArea: {
-        backgroundColor: '#ededed',
+        //backgroundColor: colorSecondary,
         padding: 5,
     },
     textInput: {
@@ -157,9 +157,9 @@ const styles = StyleSheet.create({
     },
     touchableOpacity: {
         //backgroundColor: 'rgba(216, 216, 216, 0.5)',
-        borderColor: 'gray', 
+        borderColor: colorPrimary, 
         borderBottomWidth: 2,
-        borderTopWidth: 2,
+        borderTopWidth: 1,
         padding: 3,
         margin: 10,
     },
@@ -174,14 +174,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         position: 'absolute',
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
-        backgroundColor: 'yellow',
+        backgroundColor: colorPrimary,
     },
     select: {
         fontSize: 20,
         fontWeight: 'bold',
         margin: 2,
         padding: 8,
-        backgroundColor: 'white',
+        backgroundColor: background,
         borderRadius: 3,
     },
     addButton: {

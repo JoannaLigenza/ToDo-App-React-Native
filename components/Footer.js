@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import {colorPrimary, colorSecondary} from "./styles/commonStyles";
 
 
 export default class Footer extends Component {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     //alignSelf: 'stretch',
     height: 50,
-    backgroundColor: 'red'
+    backgroundColor: colorPrimary,
   },
 
 });

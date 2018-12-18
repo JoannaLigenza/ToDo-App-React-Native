@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
 import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions, createSwitchNavigator } from "react-navigation";
+import {colorPrimary, colorSecondary} from "./components/styles/commonStyles";
 import Header from './components/header';
 import MainArea from './components/Main';
 import Footer from './components/Footer';
@@ -123,7 +124,7 @@ const MyDrawerNavigator = createDrawerNavigator({
     drawerWidth: 300,
     drawerPosition: 'left',
     navigationOptions: {
-      headerStyle: { backgroundColor: 'yellow' },
+      headerStyle: { backgroundColor: colorPrimary },
       //title: 'My Chats'
       headerLeft: navigation => {
         //return <MenuButton navigation={navigation}/> 

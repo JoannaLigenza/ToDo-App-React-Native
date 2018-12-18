@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {colorPrimary, colorSecondary} from "./styles/commonStyles";
 
 
 export default class Header extends Component {
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     //alignSelf: 'stretch',
     //alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: colorPrimary,
     height: 55,
     shadowOffset: { width: 10, height: 10,  },
     shadowColor: 'black',
@@ -55,7 +56,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
   },
-  headerButton: {
-
-  }
 });
