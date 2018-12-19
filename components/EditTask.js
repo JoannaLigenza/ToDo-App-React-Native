@@ -1,43 +1,221 @@
 import React, {Component} from 'react';
-import {Text, View, Button} from 'react-native';
+import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 export default class EditTask extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return { 
-      title: 'Edit Task',
+    constructor() {
+        super();
+        this.state = { 
+            inputText: '',
+            choosenList: '',
+            choosenPriority: '',
+            choosenDate: '',
+            modalVisible1: false,
+            modalVisible2: false,
+            note: '',
+        }
     }
-  };
-  render() {
-    const { navigation } = this.props;
-    const itemId = navigation.getParam('back');
-    console.log("navigation ", itemId)
+    static navigationOptions = ({ navigation }) => {
+        return { 
+            title: 'Edit Task',
+        }
+    };
+    setDateAndroid = async () => {
+        try {
+            const {action, year, month, day,} = await DatePickerAndroid.open({
+                date: new Date(),
+                mode: 'calendar',
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                this.setState({ choosenDate: `${day}/${month + 1}/${year}` });
+            }
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    };
+    handleEditTask = () => {
+        const key = this.props.navigation.state.params.task.key
+        let text = this.props.navigation.state.params.task.text
+        let isChecked = this.props.navigation.state.params.task.isChecked
+        let list = this.props.navigation.state.params.task.list
+        let priority = this.props.navigation.state.params.task.priority
+        let date = this.props.navigation.state.params.task.date
+        let note = this.props.navigation.state.params.task.note
+        if (this.state.inputText !== '') { text = this.state.inputText }
+        if (this.state.choosenList !== '') { list = this.state.choosenList}
+        if (this.state.choosenPriority !== '') { priority = this.state.choosenPriority }
+        if (this.state.choosenDate !== '') { date = this.state.choosenDate }
+        if (this.state.note !== '') { note = this.state.note }
+        //console.log("date ", date)
+        //console.log("editing ", this.state)
+        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note })
+        console.log("note ", note)
+    }
 
-    return (
-      <View style={{marginTop: 22}}>
-        <Text>
-            Editing Task...
-        </Text>
-        <Text>Details Screen</Text>
-        <Button title="Home" onPress={() => {navigation.goBack()}}></Button>
-      </View>
-    );
-  }
+    render() {
+        //console.log("this.state ", this.state)
+        //console.log("this.props ", this.props.screenProps.lists)
+        const list = this.props.screenProps.lists.map( list => {
+            return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, modalVisible1: false}) }}>{list}</Text>
+        })
+            
+        return (
+            <View style={{flex: 1}} >
+                <ScrollView style={{flex: 1}} >
+                    <View style={styles.textInputArea}>
+                        <Text style={styles.text}>New Task:</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={(text) => this.setState({inputText: text})}
+                            defaultValue={this.props.navigation.state.params.task.text}
+                            editable = {true}
+                            multiline = {true}
+                            maxLength = {200}
+                            //NumberOfLines = {4}
+                            //autoFocus = {true}
+                        />
+                    </View>
+
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible1: true})}} style={styles.touchableOpacity}>
+                        <Text style={styles.text}>List:</Text>
+                        <Text style={styles.textUnder}>
+                          {this.state.choosenList === '' ? (this.props.navigation.state.params.task.list) : (this.state.choosenList)}
+                        </Text>
+                        <Modal transparent={true} animationType="fade" visible={this.state.modalVisible1} 
+                                onRequestClose={() => {this.setState({modalVisible1: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible1: false}) }}>
+                                <View style={styles.modal}>
+                                    <TouchableOpacity disabled={true}>
+                                        <ScrollView>
+                                            {list}
+                                        </ScrollView>
+                                    </TouchableOpacity>
+                                </View>  
+                            </TouchableOpacity>                           
+                        </Modal>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid()}} style={styles.touchableOpacity}>
+                        <Text style={styles.text}>Date:</Text>
+                        <Text style={styles.textUnder} >
+                          {this.state.choosenDate === '' ? (this.props.navigation.state.params.task.date) : (this.state.choosenDate)}
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible2: true})}} style={styles.touchableOpacity}>
+                        <Text style={styles.text}>Priority:</Text>
+                        <Text style={styles.textUnder} >
+                          {this.state.choosenPriority === '' ? (this.props.navigation.state.params.task.priority) : (this.state.choosenPriority)}
+                        </Text>
+                        <Modal transparent={true} animationType="fade" visible={this.state.modalVisible2} 
+                                onRequestClose={() => {this.setState({modalVisible2: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible2: false}) }}>
+                                <View style={styles.modal}>
+                                    <TouchableOpacity disabled={true}>
+                                        <ScrollView>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',modalVisible2: false}) }}>None</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low', modalVisible2: false}) }}>Low</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle', modalVisible2: false}) }}>Middle</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High', modalVisible2: false}) }}>High</Text>
+                                        </ScrollView>
+                                    </TouchableOpacity>
+                                </View>  
+                            </TouchableOpacity>                           
+                        </Modal>
+                    </TouchableOpacity>
+
+                    <View style={styles.textInputArea}>
+                        <Text style={styles.text}>Notes:</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={(text) => this.setState({note: text})}
+                            defaultValue={this.props.navigation.state.params.task.note}
+                            editable = {true}
+                            multiline = {true}
+                            maxLength = {200}
+                            //NumberOfLines = {2}
+                        />
+                    </View>
+                    <View style={{height: 100}}></View>
+                    
+                </ScrollView>
+                <TouchableOpacity activeOpacity={1} style={styles.addButton}
+                    onPress={() => {this.handleEditTask(); this.props.navigation.goBack(); } }>
+                    {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}
+                    <Text>+</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 }
 
-// class TaskEdit extends Component {
-//   static navigationOptions = ({ navigation }) => {
-//     return { 
-//       title: 'Edit Task',
-//     }
-//   };
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//         <EditTask goBack={() => {this.props.navigation.goBack()}}/>
-//         {/* <Button title="Home" onPress={() => {this.props.navigation.navigate('MenuScreen')}}></Button> */}
-//       </View>
-//     );
-//   }
-// }
-
-
+const styles = StyleSheet.create({
+    textInputArea: {
+        //backgroundColor: colorSecondary,
+        padding: 5,
+    },
+    textInput: {
+        marginLeft: 10,
+        marginRight: 10,
+        marginBottom: 30,
+        borderColor: 'gray', 
+        borderBottomWidth: 2,
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 3,
+    },
+    textUnder: {
+        fontSize: 16,
+        margin: 3,
+        marginLeft: 7,
+        marginBottom: 0,
+        padding: 3,
+        textAlign: 'left',
+    },
+    touchableOpacity: {
+        //backgroundColor: 'rgba(216, 216, 216, 0.5)',
+        borderColor: colorPrimary, 
+        borderBottomWidth: 2,
+        borderTopWidth: 1,
+        padding: 3,
+        margin: 10,
+    },
+    modal: {
+        //flex: 1,
+        width: Dimensions.get('window').width - 80,
+        height: 'auto',
+        maxHeight: 300,
+        padding: 3,
+        margin: 20,
+        alignSelf: 'center',
+        textAlign: 'center',
+        position: 'absolute',
+        top: ((Dimensions.get('window').height - 200) / 2)- 50,
+        backgroundColor: colorPrimary,
+    },
+    select: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 2,
+        padding: 8,
+        backgroundColor: background,
+        borderRadius: 3,
+    },
+    addButton: {
+        borderColor:'rgba(0,0,0,0.2)',
+        alignItems:'center',
+        justifyContent:'center',
+        width: 80,
+        height: 80,
+        backgroundColor:'#fec538',
+        margin: 0,
+        padding: 0,
+        elevation: 6,
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        borderRadius: 50, 
+  },
+})

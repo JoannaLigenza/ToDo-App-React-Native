@@ -14,11 +14,11 @@ class Main extends Component {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", Date: "", note: 'note1'},
-            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", Date: "", note: 'note1'},
-            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", Date: "", note: 'note1'},
-            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", Date: "", note: 'note1'},
-            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", Date: "", note: 'note1'},
+            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1'},
+            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2'},
+            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3'},
+            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1'},
+            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1'},
             ],
             taskKey: '11'
             }
@@ -44,6 +44,18 @@ class Main extends Component {
   }
   handleChangetaskKey = (key) => {
     this.setState({taskKey: key})
+  }
+  handleEditTask = (choosenTask) => {
+   // console.log("przekazano", choosenTask)
+    //console.log("state 1", this.state.tasks)
+    const newTasks = this.state.tasks.map( task => {
+      if (task.key === choosenTask.key) {
+        return choosenTask
+      }
+      return task
+    })
+    this.setState({ tasks: newTasks })
+    console.log("state 2", this.state.tasks)
   }
 
   handleChangeTaskOrder = () => {
@@ -72,8 +84,8 @@ class Main extends Component {
               style={styles.checkBox}
             />
             <TouchableHighlight style={styles.TouchableHighlight} 
-            onPress={() => {this.props.navigation.navigate('EditTask', {back: "Lets see - Item data to editing here"})} }>
-                  <Text style={styles.welcome} >
+            onPress={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})} }>
+                  <Text style={item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
                     {item.text}
                   </Text>
             </TouchableHighlight>
@@ -148,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: background,
   },
-  welcome: {
+  taskText: {
     flex: 1,
     fontSize: 20,
     padding: 10,
@@ -157,6 +169,13 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderRadius: 4,
   }, 
+  taskTextDone: {
+    flex: 1,
+    fontSize: 20,
+    padding: 10,
+    textAlign: 'left',
+    textDecorationLine: 'line-through',
+  },
   TouchableHighlight: {
     flex: 1,
     margin: 10,

@@ -20,9 +20,6 @@ export default class AddTask extends Component {
             title: 'Add Task',
         }
     };
-    handleInput = (e) => {
-        e.target.value
-    }
     setDateAndroid = async () => {
         try {
             const {action, year, month, day,} = await DatePickerAndroid.open({
@@ -39,7 +36,7 @@ export default class AddTask extends Component {
     handleAddTask = () => {
         const key = (Number(this.props.navigation.state.params.taskKey) + 1).toString()
         this.props.navigation.state.params.handleChangetaskKey(key)
-        this.props.navigation.state.params.addTask({key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate, note: this.state.note })
+        this.props.navigation.state.params.addTask({key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, date: this.state.choosenDate, note: this.state.note })
     }
     render() {
         //console.log("this.state ", this.state)
