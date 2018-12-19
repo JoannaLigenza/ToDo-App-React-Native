@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, CheckBox, Button, TouchableHighlight, FlatList} from 'react-native';
+import {StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList, Animated, PanResponder,} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -7,6 +7,7 @@ import MenuScreen from './MenuScreen';
 import Header from './header';
 import Footer from './Footer';
 import AddTask from './AddTask';
+import ViewPort from './Dragndrop';
 
 
 class Main extends Component {
@@ -20,8 +21,21 @@ class Main extends Component {
             {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1'},
             {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1'},
             ],
-            taskKey: '11'
-            }
+            taskKey: '11',
+            pan: new Animated.ValueXY(),      //Step 1
+            dropZonePosition: null,
+    };
+    this.panResponder = PanResponder.create({    //Step 2
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y } ]),  //Step 3
+      onPanResponderRelease: (e, gesture) => {        //Step 4
+          // if(this.isDropZone(gesture)) { 
+          //     this.setState({ showDraggable : false }); //Tutaj zmien kolejnosc zadan
+          // } else {
+              Animated.spring(this.state.pan, {toValue:{x:10,y:10}} ).start();
+         // }       
+      } 
+    });
   }
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
@@ -70,36 +84,41 @@ class Main extends Component {
   render() {
     return (
       <View style={styles.component2} >       
-        <Header openDraw={this.props.screenProps.openDraw}/>      
-        <FlatList
-          contentContainerStyle={{paddingBottom: 110}}
-          data={this.state.tasks}
-          renderItem={({item}) => 
-          <View style={styles.oneTask}>
-            <CheckBox
-              //checked={item.isChecked}
-              checked={item.isChecked}
-              value={item.isChecked}
-              onValueChange={ () => {this.handleInput(item.key)} }
-              style={styles.checkBox}
-            />
-            <TouchableHighlight style={styles.TouchableHighlight} 
-            onPress={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})} }>
-                  <Text style={item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
-                    {item.text}
-                  </Text>
-            </TouchableHighlight>
-            <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/>
-          </View>}
-        />
+        <Header openDraw={this.props.screenProps.openDraw}/>     
+        <View onLayout={(event) => {this.setState({dropZonePosition : event.nativeEvent.layout}); console.log("layout ",event.nativeEvent.layout)}} 
+              style={{flex: 1, backgroundColor: 'grey'}}>
+          <FlatList 
+            contentContainerStyle={{paddingBottom: 110}}
+            data={this.state.tasks}
+            renderItem={({item}) => 
+            <Animated.View style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers}
+            onPress={()=> {console.log("layout2 ", this.state.pan.getLayout())}}>
+              <CheckBox
+                //checked={item.isChecked}
+                checked={item.isChecked}
+                value={item.isChecked}
+                onValueChange={ () => {this.handleInput(item.key)} }
+                style={styles.checkBox}
+              />
+              <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
+              onPress={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})} }>
+                    <Text style={item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
+                      {item.text}
+                    </Text>
+              </TouchableOpacity>
+              {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
+            </Animated.View>}
+          />
+        </View> 
+        
         <View>
-          <TouchableHighlight style={styles.addButton}
+          <TouchableOpacity activeOpacity={1} style={styles.addButton}
           onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists, 
               addTask: this.handleAddTask, taskKey: this.state.taskKey, handleChangetaskKey: this.handleChangetaskKey}) } }>
             <Text>+</Text>
-          </TouchableHighlight>
-          {/* <Button title="Press" onPress={() => {} }></Button> */}
+          </TouchableOpacity>
         </View>
+        {/* <ViewPort /> */}
         <Footer />
       </View>
     );
@@ -176,7 +195,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     textDecorationLine: 'line-through',
   },
-  TouchableHighlight: {
+  TouchableOpacity: {
     flex: 1,
     margin: 10,
     //backgroundColor: 'purple',
@@ -188,6 +207,8 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     alignItems: "center",
     backgroundColor: background,
+    borderColor: 'red',
+    borderWidth: 2,
   },
   checked: {
     textDecorationLine: 'line-through',
