@@ -30,6 +30,8 @@ export default class ListItem extends Component {
                   toValue: {x: Dimensions.get('window').width, y: 0},
                   duration: 300,
                 }).start(() => {
+                    console.log("usuniety ")
+                    this.success(this.props.taskKey)
                     // something here
                 });
               }  
@@ -37,8 +39,13 @@ export default class ListItem extends Component {
     });
   }
 
+    success(key) {
+        const newTasks = this.props.allTasks.filter(task => task.key !== key);
+        this.props.handleDeleteTask(newTasks)
+    }
+
   render() {
-      console.log("this.props ", this.props)
+      //console.log("this.props ", this.props)
     return (
         <Animated.View style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers} >
             <CheckBox
@@ -50,7 +57,6 @@ export default class ListItem extends Component {
             />
             <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
                 onPress={this.props.editTask }>
-                {/* onPress={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})} }> */}
                 <Text style={this.props.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
                     {this.props.text}
                 </Text>

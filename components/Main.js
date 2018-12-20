@@ -23,45 +23,7 @@ class Main extends Component {
             {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1', pan: new Animated.ValueXY(),},
             ],
             taskKey: '11',
-            pan: new Animated.ValueXY(),      //Step 1
-            dropZonePosition: null,
-            pan1: new Animated.ValueXY(),
-            pan2: new Animated.ValueXY(),
-            pan3: new Animated.ValueXY(),
     };
-    // this.panResponder = PanResponder.create({    //Step 2
-    //   onMoveShouldSetResponderCapture: () => true,
-    //   onMoveShouldSetPanResponderCapture: () => true,
-    //   onPanResponderMove: (evt, gestureState) => {       //Step 3
-        
-    //     return Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y} ])(evt, gestureState)
-    //   },
-    //   onPanResponderRelease: (evt, gestureState) => {        //Step 4
-    //       // if(this.isDropZone(gesture)) { 
-    //       //     this.setState({ showDraggable : false }); //Tutaj zmien kolejnosc zadan
-    //       // } else {
-    //           // Animated.spring(this.state.pan, {toValue:{x:10,y:10}} ).start();
-    //           //Animated.spring(this.state.pan, {toValue:{x: Dimensions.get('window').width ,y:10,}} ).start();
-    //         console.log("pos ", gestureState.dx, evt.target)
-    //           if (gestureState.dx < 150) {
-    //             Animated.timing(this.state.pan, {
-    //               toValue: {x: 0, y: 0},
-    //               duration: 150,
-    //             }).start(() => {
-    //               //this.setScrollViewEnabled(true);
-    //             });
-    //           } else {
-    //             Animated.timing(this.state.pan, {
-    //               toValue: {x: Dimensions.get('window').width, y: 0},
-    //               duration: 300,
-    //             }).start(() => {
-    //               // this.props.success(this.props.text);
-    //               // this.setScrollViewEnabled(true);
-    //             });
-    //           }
-    //      // }       
-    //   } 
-    // });
   }
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
@@ -84,6 +46,10 @@ class Main extends Component {
   }
   handleChangetaskKey = (key) => {
     this.setState({taskKey: key})
+  }
+  handleDeleteTask = (tasks) => {
+    console.log('task', tasks)
+    this.setState({tasks: tasks})
   }
   handleEditTask = (choosenTask) => {
    // console.log("przekazano", choosenTask)
@@ -108,28 +74,6 @@ class Main extends Component {
     console.log("pressss")
   }
 
-  // render() {
-  //   return (
-  //     <View style={styles.component2} >
-  //         <Header openDraw={this.props.screenProps.openDraw}/>
-  //         <View style={{borderColor: 'red', borderWidth: 1, marginBottom: 2}}>
-  //             <Animated.View style={[{borderColor: 'blue', borderWidth: 1, marginBottom: 2} ,this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
-  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie</Text>
-  //             </Animated.View>
-  //         </View>
-  //         <View >
-  //             <Animated.View style={[ this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
-  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie2</Text>
-  //             </Animated.View>
-  //         </View>
-  //         <View >
-  //             <Animated.View style={[ this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
-  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie3</Text>
-  //             </Animated.View>
-  //         </View>
-  //     </View>
-  //   )
-  // }
   render() {
     return (
       <View style={styles.component2} >       
@@ -139,7 +83,7 @@ class Main extends Component {
             data={this.state.tasks}
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
             renderItem={({item}) => <ListItem handleInput={this.handleInput} isChecked={item.checked}
-                text={item.text} taskKey={item.key}
+                text={item.text} taskKey={item.key} handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})}  } 
                 /> }
         />
