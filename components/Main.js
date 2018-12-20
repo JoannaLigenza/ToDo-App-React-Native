@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList, Animated, PanResponder,} from 'react-native';
+import {StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList, Animated, PanResponder, LayoutAnimation, UIManager,Dimensions,} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -7,35 +7,61 @@ import MenuScreen from './MenuScreen';
 import Header from './header';
 import Footer from './Footer';
 import AddTask from './AddTask';
-import ViewPort from './Dragndrop';
+import ListItem from './ListItem';
 
 
 class Main extends Component {
   constructor(props) {
     super(props);
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1'},
-            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2'},
-            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3'},
-            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1'},
-            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1'},
+            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', pan: new Animated.ValueXY(),},
+            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', pan: new Animated.ValueXY(),},
+            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', pan: new Animated.ValueXY(),},
+            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', pan: new Animated.ValueXY(),},
+            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1', pan: new Animated.ValueXY(),},
             ],
             taskKey: '11',
             pan: new Animated.ValueXY(),      //Step 1
             dropZonePosition: null,
+            pan1: new Animated.ValueXY(),
+            pan2: new Animated.ValueXY(),
+            pan3: new Animated.ValueXY(),
     };
-    this.panResponder = PanResponder.create({    //Step 2
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y } ]),  //Step 3
-      onPanResponderRelease: (e, gesture) => {        //Step 4
-          // if(this.isDropZone(gesture)) { 
-          //     this.setState({ showDraggable : false }); //Tutaj zmien kolejnosc zadan
-          // } else {
-              Animated.spring(this.state.pan, {toValue:{x:10,y:10}} ).start();
-         // }       
-      } 
-    });
+    // this.panResponder = PanResponder.create({    //Step 2
+    //   onMoveShouldSetResponderCapture: () => true,
+    //   onMoveShouldSetPanResponderCapture: () => true,
+    //   onPanResponderMove: (evt, gestureState) => {       //Step 3
+        
+    //     return Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y} ])(evt, gestureState)
+    //   },
+    //   onPanResponderRelease: (evt, gestureState) => {        //Step 4
+    //       // if(this.isDropZone(gesture)) { 
+    //       //     this.setState({ showDraggable : false }); //Tutaj zmien kolejnosc zadan
+    //       // } else {
+    //           // Animated.spring(this.state.pan, {toValue:{x:10,y:10}} ).start();
+    //           //Animated.spring(this.state.pan, {toValue:{x: Dimensions.get('window').width ,y:10,}} ).start();
+    //         console.log("pos ", gestureState.dx, evt.target)
+    //           if (gestureState.dx < 150) {
+    //             Animated.timing(this.state.pan, {
+    //               toValue: {x: 0, y: 0},
+    //               duration: 150,
+    //             }).start(() => {
+    //               //this.setScrollViewEnabled(true);
+    //             });
+    //           } else {
+    //             Animated.timing(this.state.pan, {
+    //               toValue: {x: Dimensions.get('window').width, y: 0},
+    //               duration: 300,
+    //             }).start(() => {
+    //               // this.props.success(this.props.text);
+    //               // this.setScrollViewEnabled(true);
+    //             });
+    //           }
+    //      // }       
+    //   } 
+    // });
   }
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
@@ -81,35 +107,42 @@ class Main extends Component {
   onPressLearnMore = () => {
     console.log("pressss")
   }
+
+  // render() {
+  //   return (
+  //     <View style={styles.component2} >
+  //         <Header openDraw={this.props.screenProps.openDraw}/>
+  //         <View style={{borderColor: 'red', borderWidth: 1, marginBottom: 2}}>
+  //             <Animated.View style={[{borderColor: 'blue', borderWidth: 1, marginBottom: 2} ,this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
+  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie</Text>
+  //             </Animated.View>
+  //         </View>
+  //         <View >
+  //             <Animated.View style={[ this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
+  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie2</Text>
+  //             </Animated.View>
+  //         </View>
+  //         <View >
+  //             <Animated.View style={[ this.state.pan.getLayout()]} {...this.panResponder.panHandlers}>
+  //                 <Text style={{fontSize: 20, margin: 5}}>To jest zadanie3</Text>
+  //             </Animated.View>
+  //         </View>
+  //     </View>
+  //   )
+  // }
   render() {
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw}/>     
-        <View onLayout={(event) => {this.setState({dropZonePosition : event.nativeEvent.layout}); console.log("layout ",event.nativeEvent.layout)}} 
-              style={{flex: 1, backgroundColor: 'grey'}}>
-          <FlatList 
+        <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
-            renderItem={({item}) => 
-            <Animated.View style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers}
-            onPress={()=> {console.log("layout2 ", this.state.pan.getLayout())}}>
-              <CheckBox
-                //checked={item.isChecked}
-                checked={item.isChecked}
-                value={item.isChecked}
-                onValueChange={ () => {this.handleInput(item.key)} }
-                style={styles.checkBox}
-              />
-              <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
-              onPress={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})} }>
-                    <Text style={item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
-                      {item.text}
-                    </Text>
-              </TouchableOpacity>
-              {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
-            </Animated.View>}
-          />
-        </View> 
+            ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
+            renderItem={({item}) => <ListItem handleInput={this.handleInput} isChecked={item.checked}
+                text={item.text} taskKey={item.key}
+                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})}  } 
+                /> }
+        />
         
         <View>
           <TouchableOpacity activeOpacity={1} style={styles.addButton}
@@ -118,7 +151,6 @@ class Main extends Component {
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-        {/* <ViewPort /> */}
         <Footer />
       </View>
     );
@@ -178,47 +210,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: background,
-  },
-  taskText: {
-    flex: 1,
-    fontSize: 20,
-    padding: 10,
-    textAlign: 'left',
-    // borderColor: colorPrimary,
-    // borderWidth: 1,
-    // borderRadius: 4,
-  }, 
-  taskTextDone: {
-    flex: 1,
-    fontSize: 20,
-    padding: 10,
-    textAlign: 'left',
-    textDecorationLine: 'line-through',
-  },
-  TouchableOpacity: {
-    flex: 1,
-    margin: 10,
-    //backgroundColor: 'purple',
-  }, 
-  oneTask: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 5,
-    alignItems: "center",
-    backgroundColor: background,
-    borderColor: 'red',
-    borderWidth: 2,
-  },
-  checked: {
-    textDecorationLine: 'line-through',
-    color: 'red',
-    fontSize: 20,
-    textAlign: 'left',
-    margin: 10,
-  },
-  unchecked: {
-    textDecorationLine: "none",
   },
   addButton: {
     //borderWidth:1,
