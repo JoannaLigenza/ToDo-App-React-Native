@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, CheckBox, Button, TouchableOpacity, FlatList, Animated, PanResponder, LayoutAnimation, UIManager,Dimensions,} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager,} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -48,7 +48,7 @@ class Main extends Component {
     this.setState({taskKey: key})
   }
   handleDeleteTask = (tasks) => {
-    console.log('task', tasks)
+    //console.log('task', tasks)
     this.setState({tasks: tasks})
   }
   handleEditTask = (choosenTask) => {
@@ -82,7 +82,7 @@ class Main extends Component {
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
-            renderItem={({item}) => <ListItem handleInput={this.handleInput} isChecked={item.checked}
+            renderItem={({item}) => <ListItem handleInput={this.handleInput} isChecked={item.isChecked}
                 text={item.text} taskKey={item.key} handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})}  } 
                 /> }

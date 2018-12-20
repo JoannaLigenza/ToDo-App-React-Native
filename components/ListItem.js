@@ -14,10 +14,17 @@ export default class ListItem extends Component {
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderMove: (evt, gestureState) => {       //Step 3
-        return Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y} ])(evt, gestureState)
+        console.log("gestureState ", gestureState)
+        // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
+        if ( gestureState.x0 < Dimensions.get('window').width - 50) {
+            return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState)
+        } 
+         else {
+            return Animated.event([null, {dy: this.state.pan.y} ])(evt, gestureState)
+        }
       },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
-            console.log("pos ", gestureState.dx, evt.target)
+            //console.log("pos ", gestureState.dx, evt.target)
               if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
@@ -61,7 +68,7 @@ export default class ListItem extends Component {
                     {this.props.text}
                 </Text>
             </TouchableOpacity>
-            <View style={styles.button}><Text>.....</Text></View>
+            <View style={styles.moveTaskVertically}><Text>.....</Text></View>
             {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
         </Animated.View>
     );
@@ -109,4 +116,12 @@ const styles = StyleSheet.create({
     // borderColor: 'red',
     // borderWidth: 2,
   }, 
+  moveTaskVertically: {
+    width: 50,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'red',
+    borderWidth: 1,
+  }
 });
