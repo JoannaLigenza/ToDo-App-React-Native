@@ -13,16 +13,16 @@ import ListItem from './ListItem';
 class Main extends Component {
   constructor(props) {
     super(props);
-    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', pan: new Animated.ValueXY(),},
-            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', pan: new Animated.ValueXY(),},
-            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', pan: new Animated.ValueXY(),},
-            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', pan: new Animated.ValueXY(),},
-            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note1', pan: new Animated.ValueXY(),},
+            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1',},
+            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2',},
+            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3',},
+            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4',},
+            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5',},
             ],
             taskKey: '11',
+            refresh: false,
     };
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -61,30 +61,39 @@ class Main extends Component {
       return task
     })
     this.setState({ tasks: newTasks })
-    console.log("state 2", this.state.tasks)
+    //console.log("state 2", this.state.tasks)
   }
 
-  handleChangeTaskOrder = () => {
-    const newState = this.state.tasks.filter( task => {
-
-    })
-    this.setState({ tasks: newState })
-  }
-  onPressLearnMore = () => {
-    console.log("pressss")
+  handleChangeTaskOrder = (item, moveDirection, index) => {
+    if((moveDirection === 'up' && index === 0) || moveDirection === 'down' && index === this.state.tasks.length ) {
+      return
+    }
+    const NewTasks = this.state.tasks;
+    const movedTask = NewTasks.splice(index, 1);
+    if ( moveDirection === 'up') {
+      NewTasks.splice(index-1, 0, movedTask[0]);
+    }
+    if ( moveDirection === 'down') {
+      NewTasks.splice(index+1, 0, movedTask[0]);
+    }
+    this.setState({ tasks: NewTasks, refresh: !this.state.refresh })
   }
 
   render() {
+    console.log('this.state.tasks ', this.state)
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw}/>     
         <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
+            extraData={this.state.refresh}
+            //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
-            renderItem={({item}) => <ListItem handleInput={this.handleInput} isChecked={item.isChecked}
-                text={item.text} taskKey={item.key} handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks}
-                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, back: "Lets see - Item data to editing here"})}  } 
+            renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} 
+                handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks}
+                handleChangeTaskOrder={this.handleChangeTaskOrder}
+                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask })}  } 
                 /> }
         />
         

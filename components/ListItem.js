@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions} from 'react-native';
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 
@@ -14,7 +14,7 @@ export default class ListItem extends Component {
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderMove: (evt, gestureState) => {       //Step 3
-        console.log("gestureState ", gestureState)
+        //console.log("gestureState ", gestureState, evt.nativeEvent,)
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
         if ( gestureState.x0 < Dimensions.get('window').width - 50) {
             return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState)
@@ -38,34 +38,54 @@ export default class ListItem extends Component {
                   duration: 300,
                 }).start(() => {
                     console.log("usuniety ")
-                    this.success(this.props.taskKey)
+                    this.delete(this.props.item.key)
                     // something here
                 });
-              }  
+              }
+              if (gestureState.dy > 50) {
+                Animated.timing(this.state.pan, {
+                  toValue: {x: 0, y: 0},
+                  duration: 150,
+                }).start(() => {
+                  this.props.handleChangeTaskOrder(this.props.item, 'down', this.props.index)
+                  //changeOrder(this.props.item, 'down')
+                });
+              }   
+              if (gestureState.dy < -50) {
+                Animated.timing(this.state.pan, {
+                  toValue: {x: 0, y: 0},
+                  duration: 150,
+                }).start(() => {
+                  this.props.handleChangeTaskOrder(this.props.item, 'up', this.props.index)
+                  //changeOrder(this.props.item, 'up')
+                    // something here
+                });
+              } 
       } 
     });
   }
 
-    success(key) {
-        const newTasks = this.props.allTasks.filter(task => task.key !== key);
-        this.props.handleDeleteTask(newTasks)
-    }
+  delete(key) {
+      const newTasks = this.props.allTasks.filter(task => task.key !== key);
+      //LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
+      this.props.handleDeleteTask(newTasks)
+  }  
 
   render() {
-      //console.log("this.props ", this.props)
+      //console.log("this.props ", this.props.index)
     return (
         <Animated.View style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers} >
             <CheckBox
                   //checked={item.isChecked}
-                  checked={this.props.isChecked}
-                  value={this.props.isChecked}
-                  onValueChange={ () => {this.props.handleInput(this.props.taskKey)} }
+                  checked={this.props.item.isChecked}
+                  value={this.props.item.isChecked}
+                  onValueChange={ () => {this.props.handleInput(this.props.item.key)} }
                   //style={styles.checkBox}
             />
             <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
                 onPress={this.props.editTask }>
-                <Text style={this.props.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
-                    {this.props.text}
+                <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
+                    {this.props.item.text}
                 </Text>
             </TouchableOpacity>
             <View style={styles.moveTaskVertically}><Text>.....</Text></View>
