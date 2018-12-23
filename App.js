@@ -116,7 +116,7 @@ const MyDrawerNavigator = createDrawerNavigator({
   Home: { screen: HomeScreen },
   Notifications: {screen: MenuScreen },
   MenuScreen2: { screen: MenuScreen2 },
-  Zobacz: { screen: Zobacz}
+  Zobacz: { screen:() => <TasksOrder screenProps={"prop"} tasks={this.state.tasks}/> }
 },
 {
     initialRouteName: 'Home',

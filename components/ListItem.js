@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, findNodeHandle} from 'react-native';
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 
@@ -9,22 +9,34 @@ export default class ListItem extends Component {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
             pan: new Animated.ValueXY(),      //Step 1
+            pageX: '',
+            pageY: '',
+            width: '',
+            height: '',
+            measurements: '',
     };
     this.panResponder = PanResponder.create({    //Step 2
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+          if ( gestureState.x0 > Dimensions.get('window').width - 50) {
+            this.props.canScroll(false);
+          }
+        },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
-        //console.log("gestureState ", gestureState, evt.nativeEvent,)
+        console.log("gestureState ", gestureState)
+        //this.props.setTasksCoordination(evt.pageX, evt.pageY, this.state.width, this.state.height, this.props.item.key);
+        //this.setState({pageX: evt.pageX, pageY: evt.pageY,})
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
         if ( gestureState.x0 < Dimensions.get('window').width - 50) {
             return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState)
         } 
          else {
+           
             return Animated.event([null, {dy: this.state.pan.y} ])(evt, gestureState)
         }
       },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
-            //console.log("pos ", gestureState.dx, evt.target)
               if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
@@ -42,39 +54,49 @@ export default class ListItem extends Component {
                     // something here
                 });
               }
-              if (gestureState.dy > 50) {
-                Animated.timing(this.state.pan, {
-                  toValue: {x: 0, y: 0},
-                  duration: 150,
-                }).start(() => {
-                  this.props.handleChangeTaskOrder(this.props.item, 'down', this.props.index)
-                  //changeOrder(this.props.item, 'down')
-                });
-              }   
-              if (gestureState.dy < -50) {
-                Animated.timing(this.state.pan, {
-                  toValue: {x: 0, y: 0},
-                  duration: 150,
-                }).start(() => {
-                  this.props.handleChangeTaskOrder(this.props.item, 'up', this.props.index)
-                  //changeOrder(this.props.item, 'up')
-                    // something here
-                });
-              } 
+              if ( gestureState.x0 > Dimensions.get('window').width - 50) {
+                  if (gestureState.dy > 50) {
+                    Animated.timing(this.state.pan, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                      LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
+                      this.props.handleChangeTaskOrder('down', this.props.index)
+                    });
+                  }   
+                  if (gestureState.dy < -50) {
+                    Animated.timing(this.state.pan, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                      LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
+                      this.props.handleChangeTaskOrder('up', this.props.index)
+                    });
+                  } 
+                  this.props.canScroll(true);
+              }
       } 
     });
   }
 
-  delete(key) {
+  delete = (key) => {
       const newTasks = this.props.allTasks.filter(task => task.key !== key);
       //LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
       this.props.handleDeleteTask(newTasks)
   }  
 
+  taskPosition = () => {
+    UIManager.measure(findNodeHandle(this.refs.my), (x, y, width, height, pageX, pageY) => {
+        this.props.setTasksCoordination(pageX, pageY, width, height, this.props.item.key);
+        //console.log("cos 2",  width, height, pageX, pageY)
+        })
+  }
+  
   render() {
-      //console.log("this.props ", this.props.index)
+      //console.log("state ", )
     return (
-        <Animated.View style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers} >
+        <Animated.View ref="my" style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
+        onLayout={ this.taskPosition }>
             <CheckBox
                   //checked={item.isChecked}
                   checked={this.props.item.isChecked}
@@ -88,7 +110,7 @@ export default class ListItem extends Component {
                     {this.props.item.text}
                 </Text>
             </TouchableOpacity>
-            <View style={styles.moveTaskVertically}><Text>.....</Text></View>
+            <View style={styles.moveTaskVertically} ><Text>.....</Text></View>
             {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
         </Animated.View>
     );
@@ -141,7 +163,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: 'red',
-    borderWidth: 1,
+    // borderColor: 'red',
+    // borderWidth: 1,
   }
 });

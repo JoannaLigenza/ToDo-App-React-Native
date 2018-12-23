@@ -15,14 +15,14 @@ class Main extends Component {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić praniee', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1',},
-            {key: '2', text: 'Kupić zakupy', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2',},
-            {key: '3', text: 'Pokodować jutro', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3',},
-            {key: '4', text: 'Tralalala', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4',},
-            {key: '5', text: 'John', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5',},
+            {key: '1', text: 'Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', coordination: []},
+            {key: '2', text: 'Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', coordination: []},
+            {key: '3', text: 'Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', coordination: []},
+            {key: '4', text: 'Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', coordination: []},
+            {key: '5', text: 'Wyspać się w końcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', coordination: []},
             ],
             taskKey: '11',
-            refresh: false,
+            scrollEnabled: true,
     };
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -64,7 +64,18 @@ class Main extends Component {
     //console.log("state 2", this.state.tasks)
   }
 
-  handleChangeTaskOrder = (item, moveDirection, index) => {
+  setTasksCoordination = (x, y, width, height, key) => {
+    const setCoordination = this.state.tasks.map(task => {
+      if(key === task.key) {
+        task.coordination = [x, y, width, height];
+        return task
+      }
+      return task
+    })
+    this.setState({tasks: setCoordination })
+  }
+
+  handleChangeTaskOrder = (moveDirection, index) => {
     if((moveDirection === 'up' && index === 0) || moveDirection === 'down' && index === this.state.tasks.length ) {
       return
     }
@@ -79,8 +90,12 @@ class Main extends Component {
     this.setState({ tasks: NewTasks, refresh: !this.state.refresh })
   }
 
+  canScroll = (scroll) => {
+    this.setState({scrollEnabled: scroll })
+  }
+
   render() {
-    console.log('this.state.tasks ', this.state)
+    //console.log("tasks ", this.state.tasks)
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw}/>     
@@ -88,11 +103,12 @@ class Main extends Component {
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
             extraData={this.state.refresh}
+            scrollEnabled={this.state.scrollEnabled}
             //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
             renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} 
-                handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks}
-                handleChangeTaskOrder={this.handleChangeTaskOrder}
+                handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks} setTasksCoordination={this.setTasksCoordination}
+                handleChangeTaskOrder={this.handleChangeTaskOrder} canScroll={this.canScroll}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask })}  } 
                 /> }
         />
