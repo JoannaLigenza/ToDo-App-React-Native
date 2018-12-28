@@ -1,42 +1,51 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, findNodeHandle} from 'react-native';
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 
-export default class ListItem extends Component {
+export default class ListItem extends PureComponent {
   constructor(props) {
     super(props);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
             pan: new Animated.ValueXY(),      //Step 1
-            pageX: '',
-            pageY: '',
-            width: '',
-            height: '',
+            value: {x: 0, y: 0},
             measurements: '',
+            moveY: null,
+            locationY: null,
+            refreshing: false,
     };
     this.panResponder = PanResponder.create({    //Step 2
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => {
+        // const { pageX, pageY, x0, y0 } = evt.nativeEvent
+        // //console.log("zobaczmy ", pageX, pageY, x0, y0)
+      },
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (evt, gestureState) => {
-          if ( gestureState.x0 > Dimensions.get('window').width - 50) {
-            this.props.canScroll(false);
-          }
+        //console.log("evt.native ", evt.nativeEvent.touches, evt.currentTarget)
+          this.props.getCoordinations(false)
+          this.props.getgestureState(gestureState.x0)
+          this.setState({locationY: evt.nativeEvent.locationY})
+          // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
+          // }
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
-        console.log("gestureState ", gestureState)
-        //this.props.setTasksCoordination(evt.pageX, evt.pageY, this.state.width, this.state.height, this.props.item.key);
-        //this.setState({pageX: evt.pageX, pageY: evt.pageY,})
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
         if ( gestureState.x0 < Dimensions.get('window').width - 50) {
             return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState)
         } 
-         else {
-           
+         else { 
+            //console.log('jak sie przesuwa ', gestureState)
             return Animated.event([null, {dy: this.state.pan.y} ])(evt, gestureState)
         }
       },
+      onPanResponderEnd: (evt, gestureState) => {
+          //console.log("end")
+          this.setState({moveY: gestureState.dy})
+        },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
+      //console.log("release")
               if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
@@ -61,7 +70,8 @@ export default class ListItem extends Component {
                       duration: 150,
                     }).start(() => {
                       LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                      this.props.handleChangeTaskOrder('down', this.props.index)
+                      this.props.handleChangeTaskOrder('down', this.props.index, this.state.locationY, this.state.moveY)
+                      this.props.getCoordinations(true);
                     });
                   }   
                   if (gestureState.dy < -50) {
@@ -70,10 +80,10 @@ export default class ListItem extends Component {
                       duration: 150,
                     }).start(() => {
                       LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                      this.props.handleChangeTaskOrder('up', this.props.index)
+                      this.props.handleChangeTaskOrder('up', this.props.index, this.state.locationY, this.state.moveY)
+                      this.props.getCoordinations(true);
                     });
                   } 
-                  this.props.canScroll(true);
               }
       } 
     });
@@ -85,18 +95,20 @@ export default class ListItem extends Component {
       this.props.handleDeleteTask(newTasks)
   }  
 
-  taskPosition = () => {
-    UIManager.measure(findNodeHandle(this.refs.my), (x, y, width, height, pageX, pageY) => {
-        this.props.setTasksCoordination(pageX, pageY, width, height, this.props.item.key);
-        //console.log("cos 2",  width, height, pageX, pageY)
-        })
+  taskPosition = () => { 
+      UIManager.measure(findNodeHandle(this.refs.task), (x, y, width, height, pageX, pageY) => {
+            console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
+            this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
+        }) 
   }
   
   render() {
-      //console.log("state ", )
+    //console.log("render ", this.state.refreshing)
     return (
-        <Animated.View ref="my" style={[styles.oneTask, this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
-        onLayout={ this.taskPosition }>
+        <Animated.View ref="task" style={[styles.oneTask, this.state.pan.getLayout()]} 
+        {...this.panResponder.panHandlers} 
+        onLayout={() => {this.props.state.getCoordinations ? (this.taskPosition()) : (null); 
+        } }>
             <CheckBox
                   //checked={item.isChecked}
                   checked={this.props.item.isChecked}
@@ -155,8 +167,8 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     alignItems: "center",
     backgroundColor: background,
-    // borderColor: 'red',
-    // borderWidth: 2,
+    borderColor: 'red',
+    borderWidth: 2,
   }, 
   moveTaskVertically: {
     width: 50,

@@ -49,7 +49,7 @@ export default class EditTask extends Component {
         //console.log("date ", date)
         //console.log("editing ", this.state)
         this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note })
-        console.log("note ", note)
+        //console.log("note ", note)
     }
 
     render() {
@@ -140,7 +140,8 @@ export default class EditTask extends Component {
                     
                 </ScrollView>
                 <TouchableOpacity activeOpacity={1} style={styles.addButton}
-                    onPress={() => {this.handleEditTask(); this.props.navigation.goBack(); } }>
+                    onPress={() => {this.handleEditTask(this.props.navigation.state.params.index); 
+                    this.props.navigation.goBack(); } }>
                     {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}
                     <Text>+</Text>
                 </TouchableOpacity>

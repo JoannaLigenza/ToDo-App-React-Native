@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager,} from 'react-native';
+import React, {Component, PureComponent} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager, Dimensions} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -10,19 +10,26 @@ import AddTask from './AddTask';
 import ListItem from './ListItem';
 
 
-class Main extends Component {
+class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
             tasks: [
-            {key: '1', text: 'Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', coordination: []},
-            {key: '2', text: 'Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', coordination: []},
-            {key: '3', text: 'Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', coordination: []},
-            {key: '4', text: 'Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', coordination: []},
-            {key: '5', text: 'Wyspać się w końcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', coordination: []},
+            {key: '1', text: '1 Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', height: '',},
+            {key: '2', text: '2 Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', height: '', },
+            {key: '3', text: '3 Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', height: '', },
+            {key: '4', text: '4 Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', height: '', },
+            {key: '5', text: '5 Wyspać się wkońcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', height: '', },
+            {key: '6', text: '6 Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', height: '',},
+            {key: '7', text: '7 Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', height: '', },
+            {key: '8', text: '8 Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', height: '', },
+            {key: '9', text: '9 Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', height: '', },
+            {key: '10', text: '10 Wyspać się wkońcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', height: '', },
             ],
             taskKey: '11',
-            scrollEnabled: true,
+            firstTaskPositionY: '',
+            getCoordinations: true,
+            gesturestate: '',
     };
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -52,64 +59,91 @@ class Main extends Component {
     this.setState({tasks: tasks})
   }
   handleEditTask = (choosenTask) => {
-   // console.log("przekazano", choosenTask)
-    //console.log("state 1", this.state.tasks)
     const newTasks = this.state.tasks.map( task => {
       if (task.key === choosenTask.key) {
         return choosenTask
       }
       return task
-    })
+    })    
     this.setState({ tasks: newTasks })
-    //console.log("state 2", this.state.tasks)
   }
 
-  setTasksCoordination = (x, y, width, height, key) => {
-    const setCoordination = this.state.tasks.map(task => {
-      if(key === task.key) {
-        task.coordination = [x, y, width, height];
+  setTasksCoordination = (key, height, pageY, index) => {
+      if (index === 0) { this.setState({firstTaskPositionY: pageY}) }
+      const newTasks = this.state.tasks.map( (task) => {
+        if(task.key === key) {
+          task.height = height;
+          return task
+        }
         return task
-      }
-      return task
-    })
-    this.setState({tasks: setCoordination })
+      })
+      this.setState({ tasks: newTasks })
+    }
+
+  getCoordinations = (bool) => {
+    this.setState({ getCoordinations: bool})
   }
 
-  handleChangeTaskOrder = (moveDirection, index) => {
-    if((moveDirection === 'up' && index === 0) || moveDirection === 'down' && index === this.state.tasks.length ) {
+  getgestureState = (gestureStateX0) => {
+    //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50)
+    if ( gestureStateX0 > Dimensions.get('window').width - 50) {
+      this.setState({gesturestate: true})
+      console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50, this.state.gesturestate)
+    } else { this.setState({gesturestate: false}) }
+  }
+
+  handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
+    console.log('moveY ', locationY, moveY)
+    const onDropTask = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
+    this.state.tasks.map( (task, index) => {
+      if (index === this.state.tasks.length-1 ) { return }
+        return onDropTask.push([index+1, onDropTask[index][2] + 2, onDropTask[index][2] + 2 + task.height])
+    })
+    console.log("onDropTask 1 ", onDropTask)
+
+    const whereToDrop = onDropTask[taskIndex][1] + locationY + moveY
+    const findIndex = onDropTask.findIndex( (task) => {
+        if (whereToDrop >= task[1] && whereToDrop < task[2]) {
+          return task
+        }
+    })
+    console.log("tutaj ", whereToDrop)
+    console.log("findIndex ", findIndex)
+    if (findIndex === -1) {
+      console.log("return")
       return
     }
+
     const NewTasks = this.state.tasks;
-    const movedTask = NewTasks.splice(index, 1);
+    const movedTask = NewTasks.splice(taskIndex, 1);
     if ( moveDirection === 'up') {
-      NewTasks.splice(index-1, 0, movedTask[0]);
+      NewTasks.splice(findIndex, 0, movedTask[0]);
     }
     if ( moveDirection === 'down') {
-      NewTasks.splice(index+1, 0, movedTask[0]);
+      NewTasks.splice(findIndex, 0, movedTask[0]);
     }
-    this.setState({ tasks: NewTasks, refresh: !this.state.refresh })
-  }
-
-  canScroll = (scroll) => {
-    this.setState({scrollEnabled: scroll })
+    this.setState({ tasks: NewTasks })
   }
 
   render() {
-    //console.log("tasks ", this.state.tasks)
+  // console.log("odswiezam " , this.state.gesturestate)
+    
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw}/>     
         <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
-            extraData={this.state.refresh}
-            scrollEnabled={this.state.scrollEnabled}
+            //extraData={this.state}
+            scrollEnabled={this.state.gesturestate ? (false) : (true)}
+            refreshing={this.state.refreshing}
             //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
-            renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} 
+            renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
                 handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks} setTasksCoordination={this.setTasksCoordination}
-                handleChangeTaskOrder={this.handleChangeTaskOrder} canScroll={this.canScroll}
-                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask })}  } 
+                handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
+                getgestureState={this.getgestureState}
+                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index })}  } 
                 /> }
         />
         
