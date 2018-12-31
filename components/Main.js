@@ -8,6 +8,7 @@ import Header from './header';
 import Footer from './Footer';
 import AddTask from './AddTask';
 import ListItem from './ListItem';
+import SortTasks from './SortTask';
 
 
 class Main extends PureComponent {
@@ -130,7 +131,8 @@ class Main extends PureComponent {
     
     return (
       <View style={styles.component2} >       
-        <Header openDraw={this.props.screenProps.openDraw}/>     
+        <Header openDraw={this.props.screenProps.openDraw}/>
+        <SortTasks />
         <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
             data={this.state.tasks}
