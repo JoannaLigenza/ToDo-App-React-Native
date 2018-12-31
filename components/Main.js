@@ -8,7 +8,7 @@ import Header from './header';
 import Footer from './Footer';
 import AddTask from './AddTask';
 import ListItem from './ListItem';
-import SortTasks from './SortTask';
+import FilterTasks from './FilterTask';
 
 
 class Main extends PureComponent {
@@ -31,6 +31,7 @@ class Main extends PureComponent {
             firstTaskPositionY: '',
             getCoordinations: true,
             gesturestate: '',
+            taskFilter: {lists: '', date: '', priority: ''}
     };
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -126,16 +127,51 @@ class Main extends PureComponent {
     this.setState({ tasks: NewTasks })
   }
 
+  getTaskFilter = (list, date, priority) => {
+    console.log("co tu przyszlo ", list, date, priority)
+    if (list !== '') {
+      this.setState({taskFilter: {lists: list, date: '', priority: ''}})
+    }
+    if (date !== '') {
+      this.setState({taskFilter: {lists: '', date: date, priority: ''}})
+    }
+    if (priority !== '') {
+      this.setState({taskFilter: {lists: '', date: '', priority: priority}})
+    }
+  }
+
+  filteredTasks = () => {
+    const filteringTasks = this.state.tasks.filter( task => {
+      if (this.state.taskFilter.lists !== '') {
+        return task.list === this.state.taskFilter.lists
+      }
+      if (this.state.taskFilter.date !== '') {
+        return task.date === this.state.taskFilter.date
+      }
+      if (this.state.taskFilter.priority !== '') {
+        return task.priority === this.state.taskFilter.priority
+      }
+      else {
+        return task
+      }
+    })
+    return filteringTasks
+  }
+
+  noTasksInfo = () => {
+    return <View><Text style={{fontSize: 20, color: 'black', textAlign: 'center'}}>No Tasks Yet</Text></View>
+  }
+
   render() {
-  // console.log("odswiezam " , this.state.gesturestate)
+   console.log("odswiezam " , this.state.taskFilter)
     
     return (
       <View style={styles.component2} >       
-        <Header openDraw={this.props.screenProps.openDraw}/>
-        <SortTasks />
+        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter}/>
+        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} />
         <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
-            data={this.state.tasks}
+            data={this.filteredTasks()}
             //extraData={this.state}
             scrollEnabled={this.state.gesturestate ? (false) : (true)}
             refreshing={this.state.refreshing}

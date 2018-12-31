@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     alignItems: "center",
     backgroundColor: background,
-    borderColor: 'red',
-    borderWidth: 2,
+    // borderColor: 'red',
+    // borderWidth: 2,
   }, 
   moveTaskVertically: {
     width: 50,

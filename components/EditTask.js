@@ -10,8 +10,8 @@ export default class EditTask extends Component {
             choosenList: '',
             choosenPriority: '',
             choosenDate: '',
-            modalVisible1: false,
-            modalVisible2: false,
+            listModalVisibility: false,
+            priorityModalVisibility: false,
             note: '',
         }
     }
@@ -56,7 +56,7 @@ export default class EditTask extends Component {
         //console.log("this.state ", this.state)
         //console.log("this.props ", this.props.screenProps.lists)
         const list = this.props.screenProps.lists.map( list => {
-            return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, modalVisible1: false}) }}>{list}</Text>
+            return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, listModalVisibility: false}) }}>{list}</Text>
         })
             
         return (
@@ -76,14 +76,14 @@ export default class EditTask extends Component {
                         />
                     </View>
 
-                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible1: true})}} style={styles.touchableOpacity}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={styles.touchableOpacity}>
                         <Text style={styles.text}>List:</Text>
                         <Text style={styles.textUnder}>
                           {this.state.choosenList === '' ? (this.props.navigation.state.params.task.list) : (this.state.choosenList)}
                         </Text>
-                        <Modal transparent={true} animationType="fade" visible={this.state.modalVisible1} 
-                                onRequestClose={() => {this.setState({modalVisible1: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible1: false}) }}>
+                        <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
+                                onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({listModalVisibility: false}) }}>
                                 <View style={styles.modal}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
@@ -102,21 +102,21 @@ export default class EditTask extends Component {
                         </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({modalVisible2: true})}} style={styles.touchableOpacity}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={styles.touchableOpacity}>
                         <Text style={styles.text}>Priority:</Text>
                         <Text style={styles.textUnder} >
                           {this.state.choosenPriority === '' ? (this.props.navigation.state.params.task.priority) : (this.state.choosenPriority)}
                         </Text>
-                        <Modal transparent={true} animationType="fade" visible={this.state.modalVisible2} 
-                                onRequestClose={() => {this.setState({modalVisible2: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible2: false}) }}>
+                        <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
+                                onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
                                 <View style={styles.modal}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
-                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',modalVisible2: false}) }}>None</Text>
-                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low', modalVisible2: false}) }}>Low</Text>
-                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle', modalVisible2: false}) }}>Middle</Text>
-                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High', modalVisible2: false}) }}>High</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',priorityModalVisibility: false}) }}>None</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low', priorityModalVisibility: false}) }}>Low</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle', priorityModalVisibility: false}) }}>Middle</Text>
+                                            <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High', priorityModalVisibility: false}) }}>High</Text>
                                         </ScrollView>
                                     </TouchableOpacity>
                                 </View>  

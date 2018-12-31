@@ -7,14 +7,17 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.component1}>
-        <TouchableOpacity onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
+        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
           <Image
             style={styles.headerButton}
             source={require('../world.png')}
           />
         </TouchableOpacity>
         {/* <Button title="Press" onPress={()=> {console.log("presniety")}}></Button> */}
-        <Text style={styles.welcome}>Home</Text>
+        <Text style={styles.headerText}>Home</Text>
+        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('','','')}} >
+            <Text style={styles.headerText}>All Tasks</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -35,7 +38,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 4,
   },
-  welcome: {
+  headerText: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
@@ -45,10 +48,8 @@ const styles = StyleSheet.create({
     // borderStyle: 'solid',
     // borderColor: 'yellow',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  headerText2: {
+    alignSelf: 'flex-end',
   },
   touchableButton: {
     width: 50,
