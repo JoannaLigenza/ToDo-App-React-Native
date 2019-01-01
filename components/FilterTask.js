@@ -9,9 +9,9 @@ export default class FilterTasks extends Component {
             listModalVisibility: false,
             dateModalVisibility: false,
             priorityModalVisibility: false,
-            choosenList: 'Default',
+            choosenList: '',
             choosenDate: '',
-            choosenPriority: 'None',
+            choosenPriority: '',
         }
     }
 
@@ -33,7 +33,8 @@ export default class FilterTasks extends Component {
     render() {
         //console.log("this.state ", this.state)
         const list = this.props.lists.map( list => {
-            return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list}) }}>{list}</Text>
+            return <Text key={list} style={this.state.choosenList !== list ? (styles.items) : (styles.selectedItem) } 
+            onPress={() => {this.setState({choosenList: list}) }}>{list}</Text>
         })
         return(
             <View style={styles.tabContainer}>
@@ -47,7 +48,7 @@ export default class FilterTasks extends Component {
                                     <ScrollView>
                                         {list}
                                         {/* OnPress button wywoluje funkcje sortowania w main */}
-                                        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter(this.state.choosenList, '', ''); this.setState({listModalVisibility: false }); console.log("pressniety")}} >
+                                        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter(this.state.choosenList, '', ''); this.setState({listModalVisibility: false, choosenList: "", }) }} >
                                             <Text style={styles.text}>Save</Text>
                                         </TouchableOpacity>
                                     </ScrollView>
@@ -67,12 +68,12 @@ export default class FilterTasks extends Component {
                             <View style={styles.modal}>
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
-                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',}) }}>None</Text>
-                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Low',}) }}>Low</Text>
-                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'Middle',}) }}>Middle</Text>
-                                        <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'High',}) }}>High</Text>
+                                        <Text onPress={() => {this.setState({choosenPriority: 'None',}) }}   style={this.state.choosenPriority !== 'None' ? (styles.items) : (styles.selectedItem) }>None</Text>
+                                        <Text onPress={() => {this.setState({choosenPriority: 'Low',}) }}    style={this.state.choosenPriority !== 'Low' ? (styles.items) : (styles.selectedItem) }>Low</Text>
+                                        <Text onPress={() => {this.setState({choosenPriority: 'Middle',}) }} style={this.state.choosenPriority !== 'Middle' ? (styles.items) : (styles.selectedItem) }>Middle</Text>
+                                        <Text onPress={() => {this.setState({choosenPriority: 'High',}) }}   style={this.state.choosenPriority !== 'High' ? (styles.items) : (styles.selectedItem) }>High</Text>
                                     </ScrollView>
-                                    <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('', '', this.state.choosenPriority); this.setState({priorityModalVisibility: false }); console.log("pressniety")}} >
+                                    <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('', '', this.state.choosenPriority); this.setState({priorityModalVisibility: false, choosenPriority: "" })}} >
                                             <Text style={styles.text}>Save</Text>
                                     </TouchableOpacity>
                                 </TouchableOpacity>
@@ -121,13 +122,21 @@ const styles = StyleSheet.create({
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
         backgroundColor: colorPrimary,
     },
-    select: {
+    items: {
         fontSize: 20,
         fontWeight: 'bold',
         margin: 2,
         padding: 8,
-        backgroundColor: background,
         borderRadius: 3,
+        backgroundColor: background,
+    },
+    selectedItem: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 2,
+        padding: 8,
+        borderRadius: 3,
+        backgroundColor: '#dbdbdb',
     },
     button: {
         backgroundColor: colorPrimary,
