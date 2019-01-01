@@ -138,6 +138,9 @@ class Main extends PureComponent {
     if (priority !== '') {
       this.setState({taskFilter: {lists: '', date: '', priority: priority}})
     }
+    if (list === '' && date === '' && priority === '') {
+      this.setState({taskFilter: {lists: '', date: '', priority: ''}})
+    }
   }
 
   filteredTasks = () => {

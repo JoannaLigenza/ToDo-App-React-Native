@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanRespond
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 
+
 export default class ListItem extends PureComponent {
   constructor(props) {
     super(props);
@@ -97,7 +98,7 @@ export default class ListItem extends PureComponent {
 
   taskPosition = () => { 
       UIManager.measure(findNodeHandle(this.refs.task), (x, y, width, height, pageX, pageY) => {
-            console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
+            //console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
             this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
         }) 
   }

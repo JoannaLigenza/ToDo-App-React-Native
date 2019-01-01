@@ -7,14 +7,17 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.component1}>
-        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
-          <Image
-            style={styles.headerButton}
-            source={require('../world.png')}
-          />
-        </TouchableOpacity>
-        {/* <Button title="Press" onPress={()=> {console.log("presniety")}}></Button> */}
-        <Text style={styles.headerText}>Home</Text>
+        <View style={styles.component2}>
+            <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
+              <Image
+                style={styles.headerButton}
+                source={require('../world.png')}
+              />
+            </TouchableOpacity>
+            {/* <Button title="Press" onPress={()=> {console.log("presniety")}}></Button> */}
+            <Text style={styles.headerText}>Home</Text>
+        </View>
+        
         <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('','','')}} >
             <Text style={styles.headerText}>All Tasks</Text>
         </TouchableOpacity>
@@ -27,16 +30,20 @@ const styles = StyleSheet.create({
   component1: {
     //flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     //alignSelf: 'stretch',
     //alignItems: 'center',
     backgroundColor: colorPrimary,
     height: 55,
-    shadowOffset: { width: 10, height: 10,  },
-    shadowColor: 'black',
-    shadowOpacity: 1,
-    shadowRadius: 0,
+    // shadowOffset: { width: 10, height: 10,  },
+    // shadowColor: 'black',
+    // shadowOpacity: 1,
+    // shadowRadius: 0,
     elevation: 4,
+  },
+  component2: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   headerText: {
     fontSize: 20,
@@ -47,9 +54,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: 'solid',
     // borderColor: 'yellow',
-  },
-  headerText2: {
-    alignSelf: 'flex-end',
   },
   touchableButton: {
     width: 50,
