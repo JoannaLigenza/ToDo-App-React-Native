@@ -1,6 +1,6 @@
 import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, findNodeHandle} from 'react-native';
-import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
+import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 
 
 
@@ -15,6 +15,8 @@ export default class ListItem extends PureComponent {
             moveY: null,
             locationY: null,
             refreshing: false,
+            backgroundColor: '#fff',
+            zIndex: 1,
     };
     this.panResponder = PanResponder.create({    //Step 2
       onStartShouldSetPanResponderCapture: (evt, gestureState) => {
@@ -28,8 +30,9 @@ export default class ListItem extends PureComponent {
           this.props.getCoordinations(false)
           this.props.getgestureState(gestureState.x0)
           this.setState({locationY: evt.nativeEvent.locationY})
-          // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
-          // }
+          if ( gestureState.x0 > Dimensions.get('window').width - 50) {
+            this.setState({ backgroundColor: '#ededed' })
+          }
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
@@ -41,9 +44,42 @@ export default class ListItem extends PureComponent {
             return Animated.event([null, {dy: this.state.pan.y} ])(evt, gestureState)
         }
       },
+      onPanResponderTerminate: (evt, gestureState) => {
+                if (gestureState.dx < 150) {
+                Animated.timing(this.state.pan, {
+                  toValue: {x: 0, y: 0},
+                  duration: 150,
+                }).start(() => {
+                });
+              } else {
+                Animated.timing(this.state.pan, {
+                  toValue: {x: Dimensions.get('window').width, y: 0},
+                  duration: 300,
+                }).start(() => {
+                    console.log("usuniety ")
+                    this.delete(this.props.item.key)
+                });
+              }
+              if ( gestureState.x0 > Dimensions.get('window').width - 50) {
+                  if (gestureState.dy > 50) {
+                    Animated.timing(this.state.pan, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                    });
+                  }   
+                  if (gestureState.dy < -50) {
+                    Animated.timing(this.state.pan, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                    });
+                  } 
+              }
+        },
       onPanResponderEnd: (evt, gestureState) => {
           //console.log("end")
-          this.setState({moveY: gestureState.dy})
+          this.setState({moveY: gestureState.dy, backgroundColor: '#fff'})
         },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
       //console.log("release")
@@ -106,7 +142,7 @@ export default class ListItem extends PureComponent {
   render() {
     //console.log("render ", this.state.refreshing)
     return (
-        <Animated.View ref="task" style={[styles.oneTask, this.state.pan.getLayout()]} 
+        <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor}, this.state.pan.getLayout()]} 
         {...this.panResponder.panHandlers} 
         onLayout={() => {this.props.state.getCoordinations ? (this.taskPosition()) : (null); 
         } }>

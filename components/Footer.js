@@ -6,7 +6,7 @@ import {colorPrimary, colorSecondary} from "./styles/commonStyles";
 export default class Footer extends Component {
   render() {
     return (
-      <View style={styles.component3}>
+      <View style={[styles.component3, {backgroundColor: this.props.primaryColor }]}>
         <Text style={styles.welcome}>Footer!</Text>
       </View>
     );
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     //alignSelf: 'stretch',
     height: 50,
-    backgroundColor: colorPrimary,
+    //backgroundColor: colorPrimary,
   },
 
 });

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView,} from 'react-native';
-import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
+import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 
 export default class FilterTasks extends Component {
     constructor() {
@@ -38,12 +38,12 @@ export default class FilterTasks extends Component {
         })
         return(
             <View style={styles.tabContainer}>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={styles.touchableOpacity}>
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={styles.text}>List</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                         onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
                         <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({listModalVisibility: false}) }}>
-                            <View style={styles.modal}>
+                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor}]}>
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
                                         {list}
@@ -57,15 +57,15 @@ export default class FilterTasks extends Component {
                         </TouchableOpacity>                           
                     </Modal>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={styles.touchableOpacity}>
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={styles.text}>Date</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={styles.touchableOpacity}>
+                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={styles.text}>Priority</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                         onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
                         <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
-                            <View style={styles.modal}>
+                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor}]}>
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
                                         <Text onPress={() => {this.setState({choosenPriority: 'None',}) }}   style={this.state.choosenPriority !== 'None' ? (styles.items) : (styles.selectedItem) }>None</Text>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     touchableOpacity: {
-        backgroundColor: colorPrimary,
+        //backgroundColor: colorPrimary,
         width: Dimensions.get('window').width / 3,
         height: 50, 
         borderColor: 'white',
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         position: 'absolute',
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
-        backgroundColor: colorPrimary,
+        //backgroundColor: colorPrimary,
     },
     items: {
         fontSize: 20,
@@ -136,9 +136,6 @@ const styles = StyleSheet.create({
         margin: 2,
         padding: 8,
         borderRadius: 3,
-        backgroundColor: '#dbdbdb',
-    },
-    button: {
-        backgroundColor: colorPrimary,
+        backgroundColor: greyColor,
     },
 })

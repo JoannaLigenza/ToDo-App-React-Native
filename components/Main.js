@@ -1,9 +1,8 @@
 import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager, Dimensions} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
+import {ThemeColor, kolorowy, colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 import EditTask from './EditTask';
-import MenuScreen from './MenuScreen';
 import Header from './header';
 import Footer from './Footer';
 import AddTask from './AddTask';
@@ -31,7 +30,7 @@ class Main extends PureComponent {
             firstTaskPositionY: '',
             getCoordinations: true,
             gesturestate: '',
-            taskFilter: {lists: '', date: '', priority: ''}
+            taskFilter: {lists: '', date: '', priority: ''},
     };
   }
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -161,17 +160,13 @@ class Main extends PureComponent {
     return filteringTasks
   }
 
-  noTasksInfo = () => {
-    return <View><Text style={{fontSize: 20, color: 'black', textAlign: 'center'}}>No Tasks Yet</Text></View>
-  }
-
   render() {
-   console.log("odswiezam " , this.state.taskFilter)
-    
+   console.log("odswiezam " , this.props.screenProps)
+    const primaryColor = this.props.screenProps.primaryColor
     return (
       <View style={styles.component2} >       
-        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter}/>
-        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} />
+        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
+        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
         <FlatList 
             contentContainerStyle={{paddingBottom: 110}}
             data={this.filteredTasks()}
@@ -179,23 +174,23 @@ class Main extends PureComponent {
             scrollEnabled={this.state.gesturestate ? (false) : (true)}
             refreshing={this.state.refreshing}
             //numColumns={4} // grid
-            ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: 'grey', alignSelf: 'center' } } /> }
+            ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center' } } /> }
             renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
                 handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks} setTasksCoordination={this.setTasksCoordination}
                 handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
-                getgestureState={this.getgestureState}
-                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index })}  } 
+                getgestureState={this.getgestureState} primaryColor={primaryColor}
+                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
                 /> }
         />
-        
         <View>
-          <TouchableOpacity activeOpacity={1} style={styles.addButton}
+          <TouchableOpacity activeOpacity={1} style={[styles.addButton, {backgroundColor: primaryColor }]}
           onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists, 
-              addTask: this.handleAddTask, taskKey: this.state.taskKey, handleChangetaskKey: this.handleChangetaskKey}) } }>
+              addTask: this.handleAddTask, taskKey: this.state.taskKey, handleChangetaskKey: this.handleChangetaskKey,
+              primaryColor: primaryColor}) } }>
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-        <Footer />
+        <Footer primaryColor={primaryColor}/>
       </View>
     );
   }
@@ -205,13 +200,13 @@ const StackNavigator = createStackNavigator(
   {    
     Home: Main,
     EditTask: EditTask,
-    MenuScreen: MenuScreen,
     AddTask: AddTask,
   },
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      headerStyle: { backgroundColor: colorPrimary, height: 55, shadowRadius: 0, },
+      //headerStyle: { backgroundColor: ThemeColor.background[kolorowy], height: 55, shadowRadius: 0, },
+      headerStyle: { height: 55, shadowRadius: 0, },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
     },
@@ -245,7 +240,8 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists}}/>;
+    console.log('show me props ', this.props)
+    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor }} />;
   }
 }
 

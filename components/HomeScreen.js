@@ -1,62 +1,50 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import Header from './components/header';
-import Main from './components/Main';
-import Footer from './components/Footer';
-import EditTask from './components/EditTask';
+import {StyleSheet, Text, View, Button, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
+import { DrawerActions, } from "react-navigation";
+import {colorPrimary} from "./styles/commonStyles";
+import MainArea from './Main';
 
-class HomeScreen extends Component {
+export default class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state= { 
+            lists: ['Default', 'Private', 'Work'] ,
+            }
+  }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Home', 
+      drawerLabel: 'Home',
+      drawerIcon: ({ tintColor }) => (
+        <Image
+          source={require('../world.png')}
+          //style={[styles.icon, {tintColor: tintColor}]}
+        />
+      ),
+    }
+  };
+
   render() {
+      const primaryColor = this.props.navigation.getParam('primaryColor') || '#fec538';
+      console.log("propsyyyyyyyy ", primaryColor)
     return (
       <View style={styles.container}>
-        <Header />
-        <Main />
-        <Button title="Press" onPress={() => {this.props.navigation.navigate('TaskEdit')}}></Button>
-        <Footer />
+        {/* <Header /> */}
+        <MainArea openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}
+                  lists={this.state.lists} primaryColor={primaryColor} />
+        {/* <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button> */}       
       </View>
     );
   }
 }
-
-class TaskEdit extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <EditTask />
-        <Button title="Home" onPress={() => {this.props.navigation.goback()}}></Button>
-      </View>
-    );
-  }
-}
-
-const RootStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-    TaskEdit: TaskEdit,
-  },
-  {
-    initialRouteName: 'Home',
-  }
-);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     //justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: 'yellow',
+    backgroundColor: 'white',
     flexDirection: 'column',
     //justifyContent: 'space-between',
   },
 });
-
-const AppContainer = createAppContainer(RootStack);
-
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
-
-

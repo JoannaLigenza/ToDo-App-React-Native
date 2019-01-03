@@ -18,6 +18,7 @@ export default class EditTask extends Component {
     static navigationOptions = ({ navigation }) => {
         return { 
             title: 'Edit Task',
+            headerStyle: { backgroundColor: navigation.state.params.primaryColor, height: 55, shadowRadius: 0, },
         }
     };
     setDateAndroid = async () => {
@@ -76,7 +77,7 @@ export default class EditTask extends Component {
                         />
                     </View>
 
-                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={styles.touchableOpacity}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {borderColor: this.props.screenProps.primaryColor}]}>
                         <Text style={styles.text}>List:</Text>
                         <Text style={styles.textUnder}>
                           {this.state.choosenList === '' ? (this.props.navigation.state.params.task.list) : (this.state.choosenList)}
@@ -84,7 +85,7 @@ export default class EditTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                                 onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({listModalVisibility: false}) }}>
-                                <View style={styles.modal}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             {list}
@@ -95,14 +96,14 @@ export default class EditTask extends Component {
                         </Modal>
                     </TouchableOpacity>
                     
-                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid()}} style={styles.touchableOpacity}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid()}} style={[styles.touchableOpacity, {borderColor: this.props.screenProps.primaryColor}]}>
                         <Text style={styles.text}>Date:</Text>
                         <Text style={styles.textUnder} >
                           {this.state.choosenDate === '' ? (this.props.navigation.state.params.task.date) : (this.state.choosenDate)}
                         </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={styles.touchableOpacity}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {borderColor: this.props.screenProps.primaryColor}]}>
                         <Text style={styles.text}>Priority:</Text>
                         <Text style={styles.textUnder} >
                           {this.state.choosenPriority === '' ? (this.props.navigation.state.params.task.priority) : (this.state.choosenPriority)}
@@ -110,7 +111,7 @@ export default class EditTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                                 onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
-                                <View style={styles.modal}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',priorityModalVisibility: false}) }}>None</Text>
@@ -139,7 +140,7 @@ export default class EditTask extends Component {
                     <View style={{height: 100}}></View>
                     
                 </ScrollView>
-                <TouchableOpacity activeOpacity={1} style={styles.addButton}
+                <TouchableOpacity activeOpacity={1} style={[styles.addButton, { backgroundColor: this.props.screenProps.primaryColor}]}
                     onPress={() => {this.handleEditTask(this.props.navigation.state.params.index); 
                     this.props.navigation.goBack(); } }>
                     {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     },
     touchableOpacity: {
         //backgroundColor: 'rgba(216, 216, 216, 0.5)',
-        borderColor: colorPrimary, 
+       // borderColor: colorPrimary, 
         borderBottomWidth: 2,
         borderTopWidth: 1,
         padding: 3,
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         position: 'absolute',
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
-        backgroundColor: colorPrimary,
+        //backgroundColor: colorPrimary,
     },
     select: {
         fontSize: 20,
@@ -210,7 +211,6 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         width: 80,
         height: 80,
-        backgroundColor:'#fec538',
         margin: 0,
         padding: 0,
         elevation: 6,
