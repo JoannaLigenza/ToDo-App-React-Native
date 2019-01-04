@@ -127,9 +127,9 @@ class Main extends PureComponent {
   }
 
   getTaskFilter = (list, date, priority) => {
-    console.log("co tu przyszlo ", list, date, priority)
+    //console.log("co tu przyszlo ", list, date, priority)
     if (list !== '') {
-      this.setState({taskFilter: {lists: list, date: '', priority: ''}})
+      this.setState({taskFilter: {lists: list[0], date: '', priority: ''}})
     }
     if (date !== '') {
       this.setState({taskFilter: {lists: '', date: date, priority: ''}})
@@ -161,7 +161,7 @@ class Main extends PureComponent {
   }
 
   render() {
-   console.log("odswiezam " , this.props.screenProps)
+   //console.log("odswiezam " , this.props.screenProps)
     const primaryColor = this.props.screenProps.primaryColor
     return (
       <View style={styles.component2} >       
@@ -240,7 +240,7 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    console.log('show me props ', this.props)
+    //console.log('show me props ', this.props)
     return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor }} />;
   }
 }

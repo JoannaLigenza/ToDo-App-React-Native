@@ -32,9 +32,9 @@ export default class FilterTasks extends Component {
     
     render() {
         //console.log("this.state ", this.state)
-        const list = this.props.lists.map( list => {
-            return <Text key={list} style={this.state.choosenList !== list ? (styles.items) : (styles.selectedItem) } 
-            onPress={() => {this.setState({choosenList: list}) }}>{list}</Text>
+        const list = this.props.lists.map( (list, index) => {
+            return <Text key={index} style={this.state.choosenList[1] !== index ? (styles.items) : (styles.selectedItem) } 
+            onPress={() => {this.setState({choosenList: [list , index]}) }}>{list}</Text>
         })
         return(
             <View style={styles.tabContainer}>
