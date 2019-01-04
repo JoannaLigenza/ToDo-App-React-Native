@@ -5,7 +5,7 @@ export default class PickColor extends Component {
     constructor(props) {
         super(props);
         this.state= {
-            choosenColor: 'red',
+            choosenColor: '#fec538',        // read from data base
         }
     }
     static navigationOptions = {
@@ -48,11 +48,14 @@ export default class PickColor extends Component {
                 <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#d267f1'}]}
                     onPress={() => {this.setAppColor('#d267f1');  }}>
                 </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: 'red'}]}
+                    onPress={() => {this.setAppColor('red');  }}>
+                </TouchableOpacity>
             </View>
             
             <Button
                 //onPress={() => this.props.navigation.goBack()}
-                onPress={() => this.props.navigation.navigate('Home', {primaryColor: this.state.choosenColor})}
+                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setPrimaryColor(this.state.choosenColor)}} 
                 title="Go back home"
             />
            

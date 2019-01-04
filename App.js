@@ -5,13 +5,14 @@ import {colorPrimary, colorSecondary} from "./components/styles/commonStyles";
 import MainArea from './components/Main';
 import HomeScreen from './components/HomeScreen';
 import PickColor from './components/PickColor';
+import AddDeleteList from './components/AddDeleteList';
 
 
 
 const MyDrawerNavigator = createDrawerNavigator({
   Home: { screen: HomeScreen },
   'App Color': {screen: PickColor },
-  'Add List' : {screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> },
+  'Add/Delete List' : {screen: AddDeleteList },
   Zobacz: { screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> }
 },
 {
@@ -35,8 +36,25 @@ const MyDrawerNavigator = createDrawerNavigator({
 const AppContainer = createAppContainer(MyDrawerNavigator);
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state= { 
+            lists: ['Default', 'Private', 'Work'],    // read from data base
+            primaryColor: colorPrimary
+            }
+  }
+
+  setLists = (lists) => {
+    this.setState({ lists: lists})
+  }
+
+  setPrimaryColor = (color) => {
+    this.setState({ primaryColor: color})
+  }
+
   render() {
-    return <AppContainer />;
+    return <AppContainer screenProps={{ lists: this.state.lists, setLists: this.setLists, 
+        primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor }} />;
   }
 }
 
