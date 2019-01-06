@@ -5,7 +5,7 @@ import {ThemeColor, colorPrimary, colorSecondary, kolorowy} from "./styles/commo
 
 export default class Header extends Component {
   render() {
-    console.log("header props ", this.props)
+    //console.log("header props ", this.props)
     return (
       <View style={[styles.component1, {backgroundColor: this.props.primaryColor }]}>
       {/* <View style={[styles.component1, {backgroundColor: ThemeColor.background[kolorowy]}]}> */}

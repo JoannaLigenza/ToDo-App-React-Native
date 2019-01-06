@@ -21,65 +21,94 @@ export default class AddDeleteList extends Component {
     };
 
   render() {
-      console.log("props adddelete", this.props, )
-      console.log("state adddelete", this.state, )
       const lists = this.state.lists.map( (list, index) => {
           return <View key={index} style={styles.row}>
                     <Text style={styles.items} > {list} </Text>
-                    <TouchableOpacity activeOpacity={1} style={styles.touchaleopacity} ><Text style={styles.text} >X</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={1} style={styles.touchaleopacity} ><Text style={[styles.button, styles.xButton]} >X</Text></TouchableOpacity>
                 </View>
       })
       return(
-          <View style={styles.container}> 
-            <ScrollView style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
-                {lists}
-            </ScrollView> 
-            <View>
+          <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}> 
+            <View style={styles.row}>
                 <TextInput
                 style={styles.textInput}
                 onChangeText={(text) => this.setState({inputText: text})}
-                maxLength = {50}>
+                multiline = {false}
+                maxLength = {40}>
 
                 </TextInput>
+                <TouchableOpacity activeOpacity={1} >
+                    <Text style={[styles.button, styles.addTaskButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
+                </TouchableOpacity>
             </View>
-            <Button
-                //onPress={() => this.props.navigation.goBack()}
-                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists)}} 
-                title="Go back home"
-            />
-           
-            <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: this.state.choosenColor}]} >
-            </TouchableOpacity>            
+            <View style={[styles.csrollViewContainer, {backgroundColor: this.props.screenProps.primaryColor}]} >
+                <ScrollView style={[styles.scrollView, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                    {lists}
+                    <View style={{height: 15}}></View>
+                </ScrollView> 
+            </View>
+            
+            <TouchableOpacity activeOpacity={1} 
+                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists)}} >
+                <Text style={[styles.button, styles.goBackButton]} >Go back</Text>
+            </TouchableOpacity>
+                    
           </View>
       )
   }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    containerAll: {
         flex: 1,
-        backgroundColor: background,
+    },
+    // csrollViewContainer: {
+    //     padding: 20,
+    // },
+    scrollView: {
+        width: Dimensions.get('window').width - 10,
+        height: 'auto',
+        maxHeight: Dimensions.get('window').height - 250,
+        padding: 2,
+        margin: 10,
+        alignSelf: 'center',
+        textAlign: 'center',
+        // borderWidth: 2,
+        // borderColor: 'red',
+        // position: 'absolute',
+        // bottom: ((Dimensions.get('window').height - 200) / 2)- 50,
     },
     row: {
-        flex: 1,
+        //flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: background,
-        borderWidth: 2,
-        borderColor: 'blue',
+        height: 'auto',
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 3,
+        borderColor: 'gray', 
+        borderBottomWidth: 1,
+        // borderWidth: 2,
+        // borderColor: 'blue',
+    },
+    items: {
+        flex: 1,
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 0,
+        padding: 8,
+        backgroundColor: background,
     },
     textInput: {
+        ///width: 200,
+        //height: 50,
+        width: '60%',
         marginLeft: 10,
-        marginRight: 10,
+        marginRight: 5,
         marginBottom: 30,
         borderColor: 'gray', 
         borderBottomWidth: 2,
-    },
-    text: {
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: 'bold',
-        margin: 3,
         // borderWidth: 2,
         // borderColor: 'red',
     },
@@ -89,26 +118,33 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    modal: {
-        width: Dimensions.get('window').width - 80,
-        height: 'auto',
-        maxHeight: 300,
-        padding: 3,
-        margin: 20,
-        alignSelf: 'center',
+    button: {
         textAlign: 'center',
-        // borderWidth: 2,
-        // borderColor: 'red',
-        // position: 'absolute',
-        // bottom: ((Dimensions.get('window').height - 200) / 2)- 50,
-    },
-    items: {
-        //flex: 1,
         fontSize: 20,
         fontWeight: 'bold',
-        margin: 2,
-        padding: 8,
+        padding: 3,
+        // borderWidth: 2,
+        // borderColor: 'red',
+    },
+    xButton: {
+        width: 50,
+        margin: 3,
+        paddingRight: 10,
+        paddingLeft: 10,
+    },
+    addTaskButton: {
+        width: 'auto',
+        marginRight: 10,
+        marginTop: 15,
+        padding: 10,
         borderRadius: 3,
+    },
+    goBackButton: {
+        padding: 15,
+        margin: 10,
+        marginTop: 25,
+        marginBottom: 25,
         backgroundColor: background,
     },
+    
 })

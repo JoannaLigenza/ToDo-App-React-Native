@@ -25,7 +25,7 @@ export default class HomeScreen extends Component {
 
 
   render() {
-    console.log("props homescreen",  this.props)
+    //console.log("props homescreen",  this.props)
     return (
       <View style={styles.container}>
         {/* <Header /> */}
