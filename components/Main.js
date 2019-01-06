@@ -161,7 +161,15 @@ class Main extends PureComponent {
   }
 
   render() {
-   //console.log("odswiezam " , this.props.screenProps)
+    if (this.props.screenProps.deletedList !== '') {
+        this.state.tasks.map( task => {
+          if (this.props.screenProps.deletedList === task.list ) {
+            task.list = 'Default'
+            return task
+          }
+          return task
+        })
+    }
     const primaryColor = this.props.screenProps.primaryColor
     return (
       <View style={styles.component2} >       
@@ -240,8 +248,9 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    //console.log('show me props ', this.props)
-    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor }} />;
+    console.log('show me props ', this.props)
+    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor, 
+            deletedList: this.props.deletedList }} />;
   }
 }
 

@@ -22,30 +22,25 @@ export default class AddDeleteList extends Component {
     };
 
     handleDeleteList = (dispatchList) => {
-        console.log('delete list', dispatchList);
         const newLists = this.state.lists.filter( list => {
             return list !== dispatchList
         })
-        console.log('newLists', newLists);
         this.setState({ lists: newLists })
+        this.props.screenProps.setDeletedList(dispatchList)
     }
 
     handleAddList = () => {
-        console.log('add list', this.state)
         if (this.state.inputText === '') {return}
         const isListExist = []
         this.state.lists.map( list => {
             if (list === this.state.inputText) {
-                console.log('the same list', this.state)
                 this.setState({ addListInfo: 'This list already exist!', })
                 isListExist.push(list)
             }
         })
-        console.log('isListExist ', isListExist.length)
         if (isListExist.length > 0) { return }
         const newTasks = [...this.state.lists, this.state.inputText]
         this.setState({ lists: newTasks, inputText: '', addListInfo: '' })
-        console.log('add list', this.state)
     }
 
   render() {
@@ -85,7 +80,8 @@ export default class AddDeleteList extends Component {
             </View>
             
             <TouchableOpacity activeOpacity={1} 
-                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists) }} >
+                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists);
+                                this.props.screenProps.setDeletedList('') }} >
                 <Text style={[styles.button, styles.goBackButton]} >Go back</Text>
             </TouchableOpacity>
                     

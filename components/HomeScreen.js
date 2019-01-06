@@ -30,7 +30,8 @@ export default class HomeScreen extends Component {
       <View style={styles.container}>
         {/* <Header /> */}
         <MainArea openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}
-                  lists={this.props.screenProps.lists} primaryColor={this.props.screenProps.primaryColor} />
+                  lists={this.props.screenProps.lists} primaryColor={this.props.screenProps.primaryColor}
+                  deletedList={this.props.screenProps.deletedList} />
         {/* <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button> */}       
       </View>
     );

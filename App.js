@@ -39,8 +39,9 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state= { 
-            lists: ['Default', 'Private', 'Work', 'cos', 'cos innego', 'jeszcze jedna lista', 'i jeszcze jedna'],    // read from data base
-            primaryColor: colorPrimary
+            lists: ['Default', 'Private', 'Work'],    // read from data base
+            primaryColor: colorPrimary,
+            deletedList: '',
             }
   }
 
@@ -52,9 +53,15 @@ export default class App extends React.Component {
     this.setState({ primaryColor: color})
   }
 
+  setDeletedList = (list) => {
+    console.log('deleted list', list)
+    this.setState({ deletedList: list});
+  }
+
   render() {
     return <AppContainer screenProps={{ lists: this.state.lists, setLists: this.setLists, 
-        primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor }} />;
+        primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor,
+        deletedList: this.state.deletedList, setDeletedList: this.setDeletedList }} />;
   }
 }
 
