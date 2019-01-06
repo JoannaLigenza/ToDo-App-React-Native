@@ -8,6 +8,7 @@ export default class AddDeleteList extends Component {
         this.state= {
             lists: this.props.screenProps.lists,
             inputText: '',
+            addListInfo: '',
         }
     }
     static navigationOptions = {
@@ -20,24 +21,59 @@ export default class AddDeleteList extends Component {
         ),
     };
 
+    handleDeleteList = (dispatchList) => {
+        console.log('delete list', dispatchList);
+        const newLists = this.state.lists.filter( list => {
+            return list !== dispatchList
+        })
+        console.log('newLists', newLists);
+        this.setState({ lists: newLists })
+    }
+
+    handleAddList = () => {
+        console.log('add list', this.state)
+        if (this.state.inputText === '') {return}
+        const isListExist = []
+        this.state.lists.map( list => {
+            if (list === this.state.inputText) {
+                console.log('the same list', this.state)
+                this.setState({ addListInfo: 'This list already exist!', })
+                isListExist.push(list)
+            }
+        })
+        console.log('isListExist ', isListExist.length)
+        if (isListExist.length > 0) { return }
+        const newTasks = [...this.state.lists, this.state.inputText]
+        this.setState({ lists: newTasks, inputText: '', addListInfo: '' })
+        console.log('add list', this.state)
+    }
+
   render() {
       const lists = this.state.lists.map( (list, index) => {
           return <View key={index} style={styles.row}>
                     <Text style={styles.items} > {list} </Text>
-                    <TouchableOpacity activeOpacity={1} style={styles.touchaleopacity} ><Text style={[styles.button, styles.xButton]} >X</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={1} style={styles.touchaleopacity} >
+                        <Text style={[styles.button, styles.xButton]} onPress={() => {this.handleDeleteList(list)} } >X</Text>
+                    </TouchableOpacity>
                 </View>
       })
       return(
           <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}> 
             <View style={styles.row}>
-                <TextInput
-                style={styles.textInput}
-                onChangeText={(text) => this.setState({inputText: text})}
-                multiline = {false}
-                maxLength = {40}>
+                <View style={{ width: '65%',}}>
+                    <TextInput
+                        style={styles.textInput}
+                        onChangeText={(text) => this.setState({inputText: text})}
+                        multiline = {false}
+                        maxLength = {40}
+                        defaultValue={this.state.inputText} >
 
-                </TextInput>
-                <TouchableOpacity activeOpacity={1} >
+                    </TextInput>
+                    <View style={{height: 20, backgroundColor: background}}>
+                        <Text style={styles.text}> {this.state.addListInfo} </Text>
+                    </View>
+                </View>
+                <TouchableOpacity activeOpacity={1} onPress={this.handleAddList} >
                     <Text style={[styles.button, styles.addTaskButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
                 </TouchableOpacity>
             </View>
@@ -49,7 +85,7 @@ export default class AddDeleteList extends Component {
             </View>
             
             <TouchableOpacity activeOpacity={1} 
-                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists)}} >
+                onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists) }} >
                 <Text style={[styles.button, styles.goBackButton]} >Go back</Text>
             </TouchableOpacity>
                     
@@ -68,7 +104,7 @@ const styles = StyleSheet.create({
     scrollView: {
         width: Dimensions.get('window').width - 10,
         height: 'auto',
-        maxHeight: Dimensions.get('window').height - 250,
+        maxHeight: Dimensions.get('window').height - 280,
         padding: 2,
         margin: 10,
         alignSelf: 'center',
@@ -103,7 +139,6 @@ const styles = StyleSheet.create({
     textInput: {
         ///width: 200,
         //height: 50,
-        width: '60%',
         marginLeft: 10,
         marginRight: 5,
         marginBottom: 30,

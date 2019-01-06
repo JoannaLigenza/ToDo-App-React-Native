@@ -39,7 +39,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state= { 
-            lists: ['Default', 'Private', 'Work'],    // read from data base
+            lists: ['Default', 'Private', 'Work', 'cos', 'cos innego', 'jeszcze jedna lista', 'i jeszcze jedna'],    // read from data base
             primaryColor: colorPrimary
             }
   }
