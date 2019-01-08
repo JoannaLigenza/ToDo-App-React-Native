@@ -127,7 +127,7 @@ export default class ListItem extends PureComponent {
   }
 
   delete = (key) => {
-      const newTasks = this.props.allTasks.filter(task => task.key !== key);
+      const newTasks = this.props.state.tasks.filter(task => task.key !== key);
       //LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
       this.props.handleDeleteTask(newTasks)
   }  
