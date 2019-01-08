@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager, Dimensions, AsyncStorage} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {ThemeColor, kolorowy, colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -11,34 +11,62 @@ import FilterTasks from './FilterTask';
 
 
 class Main extends PureComponent {
+  componentDidMount() {
+        this.getDataFromAsyncStore();
+  }
   constructor(props) {
     super(props);
     this.state= { 
-            tasks: [
-            {key: '1', text: '1 Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', height: '',},
-            {key: '2', text: '2 Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', height: '', },
-            {key: '3', text: '3 Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', height: '', },
-            {key: '4', text: '4 Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', height: '', },
-            {key: '5', text: '5 Wyspać się wkońcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', height: '', },
-            {key: '6', text: '6 Zrobić pranie', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note1', height: '',},
-            {key: '7', text: '7 Kupić warzywa na obiad', isChecked: true, list: "Private", priority: "Middle", date: "", note: 'note2', height: '', },
-            {key: '8', text: '8 Skończyć projekt "Moja Lista"', isChecked: false, list: "Default", priority: "High", date: "", note: 'note3', height: '', },
-            {key: '9', text: '9 Poczytać książkę', isChecked: false, list: "Work", priority: "Low", date: "", note: 'note4', height: '', },
-            {key: '10', text: '10 Wyspać się wkońcu :)', isChecked: false, list: "Work", priority: "Middle", date: "", note: 'note5', height: '', },
-            ],
-            taskKey: '11',
+            tasks: [],
+            taskKey: '',
             firstTaskPositionY: '',
             getCoordinations: true,
             gesturestate: '',
             taskFilter: {lists: '', date: '', priority: ''},
     };
   }
+
   static navigationOptions = ({ navigation, screenProps }) => {
     return { 
       header: null,
     }
   };
-  handleInput = (key) => {
+
+  getDataFromAsyncStore = async () => {
+        try {
+            const initTask = {key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}
+            let tasks = await AsyncStorage.getItem('tasks');
+            let taskKey = await AsyncStorage.getItem('taskKey');
+            if (tasks === null) {
+                tasks = [initTask]
+                await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+            if (taskKey === null) {
+                taskKey = '2'
+                await AsyncStorage.setItem('taskKey', JSON.stringify(tasks));
+            }
+            console.log('key ' , taskKey );
+            tasks = JSON.parse(tasks);
+            this.setState({ tasks: tasks, taskKey: taskKey })
+        } catch (error) {
+            console.log('storage get data error in main', error.message)
+        }
+  }
+
+  setDataToAsyncStore = async () => {
+      try {
+            let saveTasks = this.state.tasks;
+            await AsyncStorage.setItem('tasks', JSON.stringify(saveTasks));
+            // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
+            // await AsyncStorage.multiRemove([ '12', '13' ]);
+            // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
+            // console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+        } catch (error) {
+            console.log('storage set data error in main', error.message)
+      }
+  }
+
+  handleInput = async (key) => {
     const newState = this.state.tasks.map( task => {
       if(task.key === key) {
         task.isChecked = !task.isChecked
@@ -46,27 +74,42 @@ class Main extends PureComponent {
       }
       return task
     })
-    this.setState({ tasks: newState })
+    await this.setState({ tasks: newState });
+    this.setDataToAsyncStore();
   }
-  handleAddTask = (task) => {
-    const newTasks = [...this.state.tasks, task]
-    this.setState({ tasks: newTasks })
+
+  handleAddTask = async (task) => {
+    const newTasks = [...this.state.tasks, task];
+    await this.setState({ tasks: newTasks });
+    this.setDataToAsyncStore();
+    console.log('this.state 1 ', this.state.tasks)
   }
-  handleChangetaskKey = (key) => {
-    this.setState({taskKey: key})
+
+  handleChangetaskKey = async (key) => {
+    await this.setState({taskKey: key})
+    try {
+        let savetaskKey = this.state.taskKey;
+        AsyncStorage.setItem('taskKey', savetaskKey);  
+    } catch (error) {
+        console.log('storage handleChangetaskKey error in main component', error.message)
+    }
   }
-  handleDeleteTask = (tasks) => {
+
+  handleDeleteTask = async (tasks) => {
     //console.log('task', tasks)
-    this.setState({tasks: tasks})
+    await this.setState({tasks: tasks})
+    this.setDataToAsyncStore();
   }
-  handleEditTask = (choosenTask) => {
+
+  handleEditTask = async (choosenTask) => {
     const newTasks = this.state.tasks.map( task => {
       if (task.key === choosenTask.key) {
         return choosenTask
       }
       return task
     })    
-    this.setState({ tasks: newTasks })
+    await this.setState({ tasks: newTasks });
+    this.setDataToAsyncStore();
   }
 
   setTasksCoordination = (key, height, pageY, index) => {
@@ -93,7 +136,7 @@ class Main extends PureComponent {
     } else { this.setState({gesturestate: false}) }
   }
 
-  handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
+  handleChangeTaskOrder = async (moveDirection, taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
     const onDropTask = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
     this.state.tasks.map( (task, index) => {
@@ -123,7 +166,8 @@ class Main extends PureComponent {
     if ( moveDirection === 'down') {
       NewTasks.splice(findIndex, 0, movedTask[0]);
     }
-    this.setState({ tasks: NewTasks })
+    await this.setState({ tasks: NewTasks })
+    this.setDataToAsyncStore();
   }
 
   getTaskFilter = (list, date, priority) => {
@@ -184,7 +228,7 @@ class Main extends PureComponent {
             //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center' } } /> }
             renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
-                handleDeleteTask={this.handleDeleteTask} allTasks={this.state.tasks} setTasksCoordination={this.setTasksCoordination}
+                handleDeleteTask={this.handleDeleteTask} setTasksCoordination={this.setTasksCoordination}
                 handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
                 getgestureState={this.getgestureState} primaryColor={primaryColor}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
