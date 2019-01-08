@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView, AsyncStorage} from 'react-native';
+import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
 import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
 
 export default class AddTask extends Component {
     constructor() {
         super();
         this.state = { 
-            tasks: [],
             inputText: '',
             choosenList: 'Default',
             choosenPriority: 'None',
@@ -16,9 +15,7 @@ export default class AddTask extends Component {
             note: '',
         }
     }
-    // componentDidMount() {
-    //     this.getDataFromAsyncStore();
-    // }
+
     static navigationOptions = ({ navigation }) => {
         //console.log(" add Task props " , navigation.state.params.primaryColor  )
         return { 
@@ -44,40 +41,9 @@ export default class AddTask extends Component {
         this.props.navigation.state.params.handleChangetaskKey(key)
         this.props.navigation.state.params.addTask({key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, date: this.state.choosenDate, note: this.state.note, height: '' })
     }
-    // getDataFromAsyncStore = async () => {
-        
-    //     // savedTasks = JSON.parse(savedTasks);
-    //     // this.setState({ tasks: tasks })
-    //     // console.log(' state.tasks ', this.state.tasks)
-    //     try {
-    //         const savedTasks = await AsyncStorage.getItem('tasks');
-    //         savedTasks = JSON.parse(savedTasks);
-    //         console.log(' state.tasks ', savedTasks)
-    //     } catch (error) {
-    //         console.log('storage error in AddTask', error.message)
-    //     }
-    // }
-    // storeData = async () => {
-    //     const key = (Number(this.props.navigation.state.params.taskKey) + 1).toString()
-    //     const newTask = {key: key, text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, date: this.state.choosenDate, note: this.state.note, coordination: [] }
-    //     try {
-    //         // const savedTasks = await AsyncStorage.getItem('tasks');
-    //         // savedTasks = JSON.parse(savedTasks);
-    //         //savedTasks.push(newTask);
-    //         //await AsyncStorage.setItem('tasks', JSON.stringify(savedTasks));
-    //         //await AsyncStorage.setItem(key, JSON.stringify(newTask));
-    //         //await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
-    //         //await AsyncStorage.multiRemove([ '12', '13' ]);
-    //        // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
-    //         //console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );
-    //     } catch (error) {
-    //         // Error saving data
-    //     }
-    // }
 
     render() {
         //console.log("this.state.add.tasks ", this.state.tasks)
-        //console.log("this.props ", this.props.screenProps.lists)
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, modalVisible1: false}) }}>{list}</Text>
         })
@@ -166,7 +132,6 @@ export default class AddTask extends Component {
 
 const styles = StyleSheet.create({
     textInputArea: {
-        //backgroundColor: colorSecondary,
         padding: 5,
     },
     textInput: {
@@ -190,15 +155,12 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
     touchableOpacity: {
-        //backgroundColor: 'rgba(216, 216, 216, 0.5)',
-        //borderColor: colorPrimary, 
         borderBottomWidth: 2,
         borderTopWidth: 1,
         padding: 3,
         margin: 10,
     },
     modal: {
-        //flex: 1,
         width: Dimensions.get('window').width - 80,
         height: 'auto',
         maxHeight: 300,
@@ -208,7 +170,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         position: 'absolute',
         top: ((Dimensions.get('window').height - 200) / 2)- 50,
-       // backgroundColor: colorPrimary,
     },
     select: {
         fontSize: 20,
