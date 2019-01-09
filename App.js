@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
-import { createDrawerNavigator, createStackNavigator, createAppContainer, DrawerActions, createSwitchNavigator } from "react-navigation";
-import {colorPrimary, colorSecondary} from "./components/styles/commonStyles";
-import MainArea from './components/Main';
+import { AsyncStorage} from 'react-native';
+import { createDrawerNavigator, createAppContainer} from "react-navigation";
+import {colorPrimary} from "./components/styles/commonStyles";
 import HomeScreen from './components/HomeScreen';
 import PickColor from './components/PickColor';
 import AddDeleteList from './components/AddDeleteList';
@@ -24,8 +23,7 @@ const MyDrawerNavigator = createDrawerNavigator({
       headerStyle: { backgroundColor: colorPrimary },
       //title: 'My Chats'
       headerLeft: navigation => {
-        //return <MenuButton navigation={navigation}/> 
-         return  <Button title="menu" style={{ paddingLeft: 10 }} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
+        return  <Button title="menu" style={{ paddingLeft: 10 }} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
       },
       headerBackTitleVisible: true,
       headerVisible: true,
@@ -35,30 +33,73 @@ const MyDrawerNavigator = createDrawerNavigator({
 
 const AppContainer = createAppContainer(MyDrawerNavigator);
 
-export default class App extends React.Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state= { 
-            lists: ['Default', 'Private', 'Work'],    // read from data base
-            primaryColor: colorPrimary,
+            lists: ['Default', 'Private', 'Work'], 
+            primaryColor: '',
             deletedList: '',
             }
   }
 
-  setLists = (lists) => {
-    this.setState({ lists: lists})
+  componentDidMount() {
+      this.getDataFromAsyncStore();
   }
 
-  setPrimaryColor = (color) => {
-    this.setState({ primaryColor: color})
+  getDataFromAsyncStore = async () => {
+        try {
+            const initLists = ['Default', 'Private', 'Work'];
+            const initColor = colorPrimary;
+            let lists = await AsyncStorage.getItem('lists');
+            let primaryColor = await AsyncStorage.getItem('primaryColor');
+            if (lists === null ) {
+                lists = initLists;
+                await AsyncStorage.setItem('lists', JSON.stringify(lists));
+            }
+            if (primaryColor === null) {
+                primaryColor = initColor;
+                await AsyncStorage.setItem( 'primaryColor', primaryColor);
+            }
+            lists = JSON.parse(lists);
+            this.setState({ lists: lists, primaryColor: primaryColor})
+        } catch (error) {
+            console.log('storage get data error in App', error.message)
+        }
   }
 
-  setDeletedList = (list) => {
+  setDataToAsyncStore = async () => {
+      try {
+            const saveLists = this.state.lists;
+            const savePrimaryColor = this.state.primaryColor;
+            await AsyncStorage.multiSet([['lists', JSON.stringify(saveLists)], ['primaryColor', savePrimaryColor] ]);
+            // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
+            // await AsyncStorage.multiRemove([ '12', '13' ]);
+            // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
+             console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+        } catch (error) {
+            console.log('storage set data error in App', error.message)
+      }
+  }
+
+  setLists = async (lists) => {
+    await this.setState({ lists: lists});
+    this.setDataToAsyncStore();
+  }
+
+  setPrimaryColor = async (color) => {
+    await this.setState({ primaryColor: color});
+    this.setDataToAsyncStore();
+  }
+
+  setDeletedList = async (list) => {
     console.log('deleted list', list)
-    this.setState({ deletedList: list});
+    await this.setState({ deletedList: list});
+    this.setDataToAsyncStore();
   }
 
   render() {
+    console.log('state app ', this.state)
     return <AppContainer screenProps={{ lists: this.state.lists, setLists: this.setLists, 
         primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor,
         deletedList: this.state.deletedList, setDeletedList: this.setDeletedList }} />;
