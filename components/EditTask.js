@@ -42,6 +42,7 @@ export default class EditTask extends Component {
         let priority = this.props.navigation.state.params.task.priority
         let date = this.props.navigation.state.params.task.date
         let note = this.props.navigation.state.params.task.note
+        let height = this.props.navigation.state.params.task.height
         if (this.state.inputText !== '') { text = this.state.inputText }
         if (this.state.choosenList !== '') { list = this.state.choosenList}
         if (this.state.choosenPriority !== '') { priority = this.state.choosenPriority }
@@ -49,7 +50,7 @@ export default class EditTask extends Component {
         if (this.state.note !== '') { note = this.state.note }
         //console.log("date ", date)
         //console.log("editing ", this.state)
-        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note })
+        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note, height: ''})
         //console.log("note ", note)
     }
 

@@ -134,17 +134,17 @@ export default class ListItem extends PureComponent {
 
   taskPosition = () => { 
       UIManager.measure(findNodeHandle(this.refs.task), (x, y, width, height, pageX, pageY) => {
-            //console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
+            console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
             this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
         }) 
   }
   
   render() {
-    //console.log("render ", this.state.refreshing)
+    console.log("render ", )
     return (
         <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor}, this.state.pan.getLayout()]} 
         {...this.panResponder.panHandlers} 
-        onLayout={() => {this.props.state.getCoordinations ? (this.taskPosition()) : (null); 
+        onLayout={() => {this.props.index ? (this.taskPosition()) : (null); 
         } }>
             <CheckBox
                   //checked={item.isChecked}

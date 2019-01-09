@@ -16,7 +16,7 @@ class Main extends PureComponent {
     this.state= { 
             tasks: [],
             taskKey: '',
-            firstTaskPositionY: '',
+            firstTaskPositionY: 115.04762268066406,
             getCoordinations: true,
             gesturestate: '',
             taskFilter: {lists: '', date: '', priority: ''},
@@ -61,7 +61,7 @@ class Main extends PureComponent {
             // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
             // await AsyncStorage.multiRemove([ '12', '13' ]);
             // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
-             console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+            // console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
         } catch (error) {
             console.log('storage set data error in main', error.message)
       }
@@ -103,6 +103,7 @@ class Main extends PureComponent {
   }
 
   handleEditTask = async (choosenTask) => {
+    console.log('choosenTask ', choosenTask, choosenTask.key)
     const newTasks = this.state.tasks.map( task => {
       if (task.key === choosenTask.key) {
         return choosenTask
@@ -110,11 +111,12 @@ class Main extends PureComponent {
       return task
     })    
     await this.setState({ tasks: newTasks });
+   // console.log('a teraz' , this.state.tasks)
     this.setDataToAsyncStore();
   }
 
   setTasksCoordination = (key, height, pageY, index) => {
-      if (index === 0) { this.setState({firstTaskPositionY: pageY}) }
+      //if (index === 0) { this.setState({firstTaskPositionY: pageY}) }
       const newTasks = this.state.tasks.map( (task) => {
         if(task.key === key) {
           task.height = height;
@@ -137,14 +139,16 @@ class Main extends PureComponent {
     } else { this.setState({gesturestate: false}) }
   }
 
-  handleChangeTaskOrder = async (moveDirection, taskIndex, locationY, moveY) => {
+  handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
     const onDropTask = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
-    this.state.tasks.map( (task, index) => {
-      if (index === this.state.tasks.length-1 ) { return }
-        return onDropTask.push([index+1, onDropTask[index][2] + 2, onDropTask[index][2] + 2 + task.height])
-    })
     console.log("onDropTask 1 ", onDropTask)
+    this.state.tasks.map( (task, index) => {
+      if ( index === 0 ) { return }
+      console.log('task height ', index, task.height)
+      return onDropTask.push([index, onDropTask[index-1][2] + 2, onDropTask[index-1][2] + 2 + task.height])
+    })
+    console.log("onDropTask full ", onDropTask)
 
     const whereToDrop = onDropTask[taskIndex][1] + locationY + moveY
     const findIndex = onDropTask.findIndex( (task) => {
@@ -167,7 +171,7 @@ class Main extends PureComponent {
     if ( moveDirection === 'down') {
       NewTasks.splice(findIndex, 0, movedTask[0]);
     }
-    await this.setState({ tasks: NewTasks })
+    this.setState({ tasks: NewTasks })
     this.setDataToAsyncStore();
   }
 
@@ -206,6 +210,7 @@ class Main extends PureComponent {
   }
 
   render() {
+    //console.log('odswiezam ', this.state.tasks)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
           if (this.props.screenProps.deletedList === task.list ) {
