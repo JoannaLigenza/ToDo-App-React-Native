@@ -11,9 +11,6 @@ import FilterTasks from './FilterTask';
 
 
 class Main extends PureComponent {
-  componentDidMount() {
-        this.getDataFromAsyncStore();
-  }
   constructor(props) {
     super(props);
     this.state= { 
@@ -32,6 +29,10 @@ class Main extends PureComponent {
     }
   };
 
+  componentDidMount() {
+        this.getDataFromAsyncStore();
+  }
+
   getDataFromAsyncStore = async () => {
         try {
             const initTask = {key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}
@@ -43,7 +44,7 @@ class Main extends PureComponent {
             }
             if (taskKey === null) {
                 taskKey = '2'
-                await AsyncStorage.setItem('taskKey', JSON.stringify(tasks));
+                await AsyncStorage.setItem('taskKey', taskKey );
             }
             console.log('key ' , taskKey );
             tasks = JSON.parse(tasks);
@@ -60,7 +61,7 @@ class Main extends PureComponent {
             // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
             // await AsyncStorage.multiRemove([ '12', '13' ]);
             // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
-            // console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+             console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
         } catch (error) {
             console.log('storage set data error in main', error.message)
       }
@@ -292,7 +293,7 @@ const AppContainer = createAppContainer(StackNavigator);
 
 export default class MainArea extends React.Component {
   render() {
-    console.log('show me props ', this.props)
+    //console.log('show me props ', this.props)
     return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor, 
             deletedList: this.props.deletedList }} />;
   }
