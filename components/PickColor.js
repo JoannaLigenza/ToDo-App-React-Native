@@ -6,7 +6,7 @@ export default class PickColor extends Component {
     constructor(props) {
         super(props);
         this.state= {
-            choosenColor: '#fec538',        // read from data base
+            choosenColor: this.props.screenProps.primaryColor, 
         }
     }
     static navigationOptions = {
