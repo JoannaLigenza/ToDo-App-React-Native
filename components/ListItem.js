@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, Animated, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, findNodeHandle} from 'react-native';
+import {StyleSheet, Text, View, Animated, Image, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, findNodeHandle} from 'react-native';
 import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 
 
@@ -132,36 +132,45 @@ export default class ListItem extends PureComponent {
       this.props.handleDeleteTask(newTasks)
   }  
 
-  taskPosition = () => { 
-      UIManager.measure(findNodeHandle(this.refs.task), (x, y, width, height, pageX, pageY) => {
-            console.log("jest ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
-            this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
-        }) 
-  }
+  // Not using, but keep for the future
+  // taskPosition = () => { 
+  //     UIManager.measure(findNodeHandle(this.refs.task), (x, y, width, height, pageX, pageY) => {
+  //           console.log("show measure ", this.props.item.key, this.props.index, x, y, width, height, pageX, pageY)          
+  //           this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
+  //       }) 
+  // }
   
   render() {
-    console.log("render ", )
+    //console.log("render ", )
     return (
-        <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor}, this.state.pan.getLayout()]} 
-        {...this.panResponder.panHandlers} 
-        onLayout={() => {this.props.index ? (this.taskPosition()) : (null); 
-        } }>
-            <CheckBox
-                  //checked={item.isChecked}
-                  checked={this.props.item.isChecked}
-                  value={this.props.item.isChecked}
-                  onValueChange={ () => {this.props.handleInput(this.props.item.key)} }
-                  //style={styles.checkBox}
-            />
-            <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
-                onPress={this.props.editTask }>
-                <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
-                    {this.props.item.text}
-                </Text>
-            </TouchableOpacity>
-            <View style={styles.moveTaskVertically} ><Text>.....</Text></View>
-            {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
-        </Animated.View>
+      <View style={{backgroundColor: this.props.primaryColor}}>
+          <Image source={require('../img/trashIcon.png')} style={styles.image}/>
+          <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor}, this.state.pan.getLayout()]} 
+          {...this.panResponder.panHandlers} 
+          //onLayout={() => {this.props.index ? (this.taskPosition()) : (null); 
+          onLayout={(event) => { this.props.setTasksCoordination(this.props.item.key, event.nativeEvent.layout.height); 
+          } }>
+              <CheckBox
+                    checked={this.props.item.isChecked}
+                    value={this.props.item.isChecked}
+                    onValueChange={ () => {this.props.handleInput(this.props.item.key)} }
+                    //style={styles.checkBox}
+                    containerStyle={{  backgroundColor: 'pink'}}
+              />
+              <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
+                  onPress={this.props.editTask }>
+                  <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
+                      {this.props.item.text}
+                  </Text>
+                  <Text style={styles.taskTextUnder}>List: {this.props.item.list}, Priority: {this.props.item.priority} </Text>
+              </TouchableOpacity>
+              <View style={styles.moveTaskVertically} >
+                <Text>.....</Text>
+              </View>
+              {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
+          </Animated.View>
+      </View>
+        
     );
 }
 
@@ -174,6 +183,22 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: background,
   },
+  image: {
+    width: 40,
+    height: 33,
+    position: 'absolute',
+    left: 10,
+    top: '33%',
+    // borderColor: 'white',
+    // borderWidth: 2,
+  },
+  TouchableOpacity: {
+    flex: 1,
+    margin: 10,
+    // borderColor: 'red',
+    // borderWidth: 2,
+    //backgroundColor: 'purple',
+  }, 
   taskText: {
     flex: 1,
     fontSize: 20,
@@ -190,13 +215,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     textDecorationLine: 'line-through',
   },
-  TouchableOpacity: {
+  taskTextUnder: {
     flex: 1,
-    margin: 10,
-    // borderColor: 'red',
-    // borderWidth: 2,
-    //backgroundColor: 'purple',
-  }, 
+    fontSize: 14,
+    padding: 3,
+    paddingTop: 0,
+    paddingLeft: 10,
+    textAlign: 'left',
+  },
   oneTask: {
     flex: 1,
     flexDirection: 'row',
