@@ -50,13 +50,13 @@ export default class EditTask extends Component {
         if (this.state.note !== '') { note = this.state.note }
         //console.log("date ", date)
         //console.log("editing ", this.state)
-        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note, height: ''})
+        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note, height: height})
         //console.log("note ", note)
     }
 
     render() {
         //console.log("this.state ", this.state)
-        //console.log("this.props ", this.props.screenProps.lists)
+        //sconsole.log("this.props ", this.props.screenProps.lists)
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, listModalVisibility: false}) }}>{list}</Text>
         })
