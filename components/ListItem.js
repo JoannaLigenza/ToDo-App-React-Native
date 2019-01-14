@@ -10,6 +10,7 @@ export default class ListItem extends PureComponent {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
             pan: new Animated.ValueXY(),      //Step 1
+            pan2: new Animated.ValueXY(), 
             value: {x: 0, y: 0},
             measurements: '',
             moveY: null,
@@ -40,7 +41,7 @@ export default class ListItem extends PureComponent {
         if ( this.state.canMove === true) { 
             //console.log('jak sie przesuwa ', gestureState)
             this.setState({ backgroundColor: '#ededed', elevation: 5, zIndex: 10 });
-            return Animated.event([null, {dy: this.state.pan.y} ])(evt, gestureState);
+            return Animated.event([null, {dy: this.state.pan2.y} ])(evt, gestureState);
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {
@@ -79,8 +80,15 @@ export default class ListItem extends PureComponent {
                 });
               }
               if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
+                  if (gestureState.dy < 50 || gestureState.dy > -50) {
+                    Animated.timing(this.state.pan2, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                    });
+                    }
                   if (gestureState.dy > 50) {
-                    Animated.timing(this.state.pan, {
+                    Animated.timing(this.state.pan2, {
                       toValue: {x: 0, y: 0},
                       duration: 150,
                     }).start(() => {
@@ -90,7 +98,7 @@ export default class ListItem extends PureComponent {
                     });
                   }   
                   if (gestureState.dy < -50) {
-                    Animated.timing(this.state.pan, {
+                    Animated.timing(this.state.pan2, {
                       toValue: {x: 0, y: 0},
                       duration: 150,
                     }).start(() => {
@@ -128,7 +136,7 @@ export default class ListItem extends PureComponent {
   render() {
     console.log("render ", this.props.state.canScroll)
     return (
-      <View style={{backgroundColor: this.props.primaryColor}}>
+      <Animated.View style={[{backgroundColor: this.props.primaryColor}, this.state.pan2.getLayout()]}>
           <Image source={require('../img/trashIcon.png')} style={styles.image}/>
           <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation, zIndex: this.state.zIndex}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
@@ -155,7 +163,7 @@ export default class ListItem extends PureComponent {
                   </View>
               </TouchableWithoutFeedback>
           </Animated.View>
-      </View>
+      </Animated.View>
         
     );
 }
