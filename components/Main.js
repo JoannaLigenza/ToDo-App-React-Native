@@ -18,9 +18,8 @@ class Main extends PureComponent {
             taskKey: '',
             firstTaskPositionY: 115.04762268066406,
             getCoordinations: true,
-            // gesturestate: '',
             taskFilter: {lists: '', date: '', priority: ''},
-            chwila: true,
+            canScroll: true,
     };
   }
 
@@ -58,11 +57,7 @@ class Main extends PureComponent {
   setDataToAsyncStore = async () => {
       try {
             let saveTasks = this.state.tasks;
-            await AsyncStorage.setItem('tasks', JSON.stringify(saveTasks));
-            // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
-            // await AsyncStorage.multiRemove([ '12', '13' ]);
-            // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
-            // console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+            await AsyncStorage.setItem('tasks', JSON.stringify(saveTasks));        
         } catch (error) {
             console.log('storage set data error in main', error.message)
       }
@@ -98,7 +93,6 @@ class Main extends PureComponent {
   }
 
   handleDeleteTask = async (tasks) => {
-    //console.log('task', tasks)
     await this.setState({tasks: tasks})
     this.setDataToAsyncStore();
   }
@@ -112,12 +106,10 @@ class Main extends PureComponent {
       return task
     })    
     await this.setState({ tasks: newTasks });
-   // console.log('a teraz' , this.state.tasks)
     this.setDataToAsyncStore();
   }
 
   setTasksCoordination = async (key, height) => {
-      //if (index === 0) { this.setState({firstTaskPositionY: pageY}) }
       const newTasks = this.state.tasks.map( (task) => {
         if(task.key === key) {
           task.height = height;
@@ -132,14 +124,6 @@ class Main extends PureComponent {
   getCoordinations = (bool) => {
     this.setState({ getCoordinations: bool})
   }
-
-  // getgestureState = (gestureStateX0) => {
-  //   //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50)
-  //   if ( gestureStateX0 > Dimensions.get('window').width - 50) {
-  //     this.setState({gesturestate: true})
-  //     //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50, this.state.gesturestate)
-  //   } else { this.setState({gesturestate: false}) }
-  // }
 
   handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
@@ -177,7 +161,6 @@ class Main extends PureComponent {
   }
 
   getTaskFilter = (list, date, priority) => {
-    //console.log("co tu przyszlo ", list, date, priority)
     if (list !== '') {
       this.setState({taskFilter: {lists: list[0], date: '', priority: ''}})
     }
@@ -210,16 +193,9 @@ class Main extends PureComponent {
     return filteringTasks
   }
 
-  setChwila = (bool) => {
-    this.setState({ chwila: bool })
+  setScroll = (bool) => {
+    this.setState({ canScroll: bool })
   }
-
-  // flatListMeasure = () => {
-  //     UIManager.measure(findNodeHandle(this.refs.flatList), (x, y, width, height, pageX, pageY) => {
-  //           console.log("show flatList measure ",  x, y, width, height, pageX, pageY)          
-  //           //this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
-  //       }) 
-  // }
 
   render() {
     //console.log('odswiezam ', this.state.tasks)
@@ -240,19 +216,13 @@ class Main extends PureComponent {
         <FlatList ref='flatList'
             contentContainerStyle={{paddingBottom: 110}}
             data={this.filteredTasks()}
-            //extraData={this.state}
-            //onScrollEndDrag={() => { this.setState({gesturestate: true}); console.log("end")}}
-            //onScrollBeginDrag={() => { this.flatListMeasure(); console.log("start")}}
-            //directionalLockEnabled={true}
-            //scrollEnabled={this.state.gesturestate ? (false) : (true)}
-            scrollEnabled={this.state.chwila}
+            scrollEnabled={this.state.canScroll}
             //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center' } } /> }
             renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
                 handleDeleteTask={this.handleDeleteTask} setTasksCoordination={this.setTasksCoordination}
                 handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
-                //getgestureState={this.getgestureState} 
-                primaryColor={primaryColor} setChwila={this.setChwila}
+                primaryColor={primaryColor} setScroll={this.setScroll}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
                 /> }
         />
@@ -279,7 +249,6 @@ const StackNavigator = createStackNavigator(
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: {   // Header style
-      //headerStyle: { backgroundColor: ThemeColor.background[kolorowy], height: 55, shadowRadius: 0, },
       headerStyle: { height: 55, shadowRadius: 0, },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
@@ -327,7 +296,6 @@ const styles = StyleSheet.create({
     backgroundColor: background,
   },
   addButton: {
-    //borderWidth:1,
     borderColor:'rgba(0,0,0,0.2)',
     alignItems:'center',
     justifyContent:'center',

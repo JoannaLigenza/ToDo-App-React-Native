@@ -1,6 +1,6 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, Animated, Image, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, TouchableWithoutFeedback, findNodeHandle} from 'react-native';
-import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
+import {StyleSheet, Text, View, Animated, Image, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import { background } from "./styles/commonStyles";
 
 
 
@@ -21,15 +21,12 @@ export default class ListItem extends PureComponent {
             canMove: false,
     };
     this.panResponder = PanResponder.create({    //Step 2
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponderCapture: () => false,
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (evt, gestureState) => {
-        //console.log("evt.native ", evt.nativeEvent.touches, evt.currentTarget)
           this.props.getCoordinations(false)
-          //this.props.getgestureState(gestureState.x0)
           this.setState({locationY: evt.nativeEvent.locationY})
-          console.log('start ')
           // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
           //   this.setState({ backgroundColor: '#ededed', elevation: 5, zIndex: 10 })
           // }
@@ -60,27 +57,8 @@ export default class ListItem extends PureComponent {
                 }).start(() => {
                 });
               }
-              // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
-              //     if (gestureState.dy > 50) {
-              //       Animated.timing(this.state.pan, {
-              //         toValue: {x: 0, y: 0},
-              //         duration: 150,
-              //       }).start(() => {
-              //       });
-              //     }   
-              //     if (gestureState.dy < -50) {
-              //       Animated.timing(this.state.pan, {
-              //         toValue: {x: 0, y: 0},
-              //         duration: 150,
-              //       }).start(() => {
-              //       });
-              //     } 
-              // }
-          //this.props.setChwila(true);
-          //this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0, zIndex: 1})
         },
       onPanResponderEnd: (evt, gestureState) => {
-          //console.log("end")
           this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0, zIndex: 1})
         },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
@@ -90,7 +68,6 @@ export default class ListItem extends PureComponent {
                   toValue: {x: 0, y: 0},
                   duration: 150,
                 }).start(() => {
-                    // something here
                 });
               } else {
                 Animated.timing(this.state.pan, {
@@ -99,7 +76,6 @@ export default class ListItem extends PureComponent {
                 }).start(() => {
                     console.log("usuniety ")
                     this.delete(this.props.item.key)
-                    // something here
                 });
               }
               if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
@@ -124,7 +100,7 @@ export default class ListItem extends PureComponent {
                     });
                   } 
               }
-          this.props.setChwila(true);
+          this.props.setScroll(true);
           this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0, zIndex: 1})
       } 
     });
@@ -132,14 +108,13 @@ export default class ListItem extends PureComponent {
 
   delete = (key) => {
       const newTasks = this.props.state.tasks.filter(task => task.key !== key);
-      //LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
       this.props.handleDeleteTask(newTasks)
   }  
 
   setOneTaskLayout = () => {
     console.log('out')
     this.setState({ backgroundColor: '#fff', elevation: 0, zIndex: 1});
-    this.props.setChwila(true);
+    this.props.setScroll(true);
   }
 
   // Not using, but keep for the future
@@ -151,37 +126,34 @@ export default class ListItem extends PureComponent {
   // }
   
   render() {
-    console.log("render ", this.props.state.chwila)
+    console.log("render ", this.props.state.canScroll)
     return (
       <View style={{backgroundColor: this.props.primaryColor}}>
           <Image source={require('../img/trashIcon.png')} style={styles.image}/>
           <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation, zIndex: this.state.zIndex}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
-          //onLayout={() => {this.props.index ? (this.taskPosition()) : (null); 
           onLayout={(event) => { this.props.setTasksCoordination(this.props.item.key, event.nativeEvent.layout.height); 
           } }>
               <CheckBox
                     checked={this.props.item.isChecked}
                     value={this.props.item.isChecked}
                     onValueChange={ () => {this.props.handleInput(this.props.item.key)} }
-                    //style={styles.checkBox}
                     containerStyle={{  backgroundColor: 'pink'}}
               />
               <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
-                  onPress={() => {this.props.editTask(); this.props.setChwila(true)} }>
+                  onPress={() => {this.props.editTask(); this.props.setScroll(true)} }>
                   <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
                       {this.props.item.text}
                   </Text>
                   <Text style={styles.taskTextUnder}>List: {this.props.item.list}, Priority: {this.props.item.priority} </Text>
               </TouchableOpacity>
-              <TouchableWithoutFeedback onPressIn={() => {this.props.setChwila(false); console.log('in ', this.props.index)}}
+              <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); console.log('in ', this.props.index)}}
                 onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5, zIndex: 10 }); console.log('press') }} 
                 onPressOut={this.state.onPressOut ? (null) : (this.setOneTaskLayout) } >
                   <View style={styles.moveTaskVertically} >
                     <Text>.....</Text>
                   </View>
               </TouchableWithoutFeedback>
-              {/* <Button title="X" onPress={this.onPressLearnMore} style={styles.button}/> */}
           </Animated.View>
       </View>
         
