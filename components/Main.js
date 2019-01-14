@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList, Animated, UIManager, Dimensions, AsyncStorage} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList, UIManager, findNodeHandle, Dimensions, AsyncStorage, Animated} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {ThemeColor, kolorowy, colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -18,12 +18,13 @@ class Main extends PureComponent {
             taskKey: '',
             firstTaskPositionY: 115.04762268066406,
             getCoordinations: true,
-            gesturestate: '',
+            // gesturestate: '',
             taskFilter: {lists: '', date: '', priority: ''},
+            chwila: true,
     };
   }
 
-  static navigationOptions = ({ navigation, screenProps }) => {
+  static navigationOptions = ({ }) => {
     return { 
       header: null,
     }
@@ -115,7 +116,7 @@ class Main extends PureComponent {
     this.setDataToAsyncStore();
   }
 
-  setTasksCoordination = (key, height, pageY, index) => {
+  setTasksCoordination = async (key, height) => {
       //if (index === 0) { this.setState({firstTaskPositionY: pageY}) }
       const newTasks = this.state.tasks.map( (task) => {
         if(task.key === key) {
@@ -124,28 +125,28 @@ class Main extends PureComponent {
         }
         return task
       })
-      this.setState({ tasks: newTasks })
+      await this.setState({ tasks: newTasks })
+      this.setDataToAsyncStore();
     }
 
   getCoordinations = (bool) => {
     this.setState({ getCoordinations: bool})
   }
 
-  getgestureState = (gestureStateX0) => {
-    //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50)
-    if ( gestureStateX0 > Dimensions.get('window').width - 50) {
-      this.setState({gesturestate: true})
-      console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50, this.state.gesturestate)
-    } else { this.setState({gesturestate: false}) }
-  }
+  // getgestureState = (gestureStateX0) => {
+  //   //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50)
+  //   if ( gestureStateX0 > Dimensions.get('window').width - 50) {
+  //     this.setState({gesturestate: true})
+  //     //console.log("gesturestate x0 ",gestureStateX0,  Dimensions.get('window').width - 50, this.state.gesturestate)
+  //   } else { this.setState({gesturestate: false}) }
+  // }
 
   handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
     const onDropTask = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
-    console.log("onDropTask 1 ", onDropTask)
     this.state.tasks.map( (task, index) => {
       if ( index === 0 ) { return }
-      console.log('task height ', index, task.height)
+      //console.log('task height ', index, task.height)
       return onDropTask.push([index, onDropTask[index-1][2] + 2, onDropTask[index-1][2] + 2 + task.height])
     })
     console.log("onDropTask full ", onDropTask)
@@ -209,6 +210,17 @@ class Main extends PureComponent {
     return filteringTasks
   }
 
+  setChwila = (bool) => {
+    this.setState({ chwila: bool })
+  }
+
+  // flatListMeasure = () => {
+  //     UIManager.measure(findNodeHandle(this.refs.flatList), (x, y, width, height, pageX, pageY) => {
+  //           console.log("show flatList measure ",  x, y, width, height, pageX, pageY)          
+  //           //this.props.setTasksCoordination(this.props.item.key, height, pageY, this.props.index);
+  //       }) 
+  // }
+
   render() {
     //console.log('odswiezam ', this.state.tasks)
     if (this.props.screenProps.deletedList !== '') {
@@ -225,18 +237,22 @@ class Main extends PureComponent {
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
         <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
-        <FlatList 
+        <FlatList ref='flatList'
             contentContainerStyle={{paddingBottom: 110}}
             data={this.filteredTasks()}
             //extraData={this.state}
-            scrollEnabled={this.state.gesturestate ? (false) : (true)}
-            refreshing={this.state.refreshing}
+            //onScrollEndDrag={() => { this.setState({gesturestate: true}); console.log("end")}}
+            //onScrollBeginDrag={() => { this.flatListMeasure(); console.log("start")}}
+            //directionalLockEnabled={true}
+            //scrollEnabled={this.state.gesturestate ? (false) : (true)}
+            scrollEnabled={this.state.chwila}
             //numColumns={4} // grid
             ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center' } } /> }
             renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
                 handleDeleteTask={this.handleDeleteTask} setTasksCoordination={this.setTasksCoordination}
                 handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
-                getgestureState={this.getgestureState} primaryColor={primaryColor}
+                //getgestureState={this.getgestureState} 
+                primaryColor={primaryColor} setChwila={this.setChwila}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
                 /> }
         />
