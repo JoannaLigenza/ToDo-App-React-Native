@@ -1,5 +1,6 @@
+<script src="http://localhost:8097"></script>
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList, UIManager, findNodeHandle, Dimensions, AsyncStorage, Animated} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, FlatList, UIManager, findNodeHandle, Dimensions, AsyncStorage, Animated, ScrollView} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {ThemeColor, kolorowy, colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
 import EditTask from './EditTask';
@@ -20,6 +21,7 @@ class Main extends PureComponent {
             getCoordinations: true,
             taskFilter: {lists: '', date: '', priority: ''},
             canScroll: true,
+            isActive: -1,
     };
   }
 
@@ -79,7 +81,7 @@ class Main extends PureComponent {
     const newTasks = [...this.state.tasks, task];
     await this.setState({ tasks: newTasks });
     this.setDataToAsyncStore();
-    console.log('this.state 1 ', this.state.tasks)
+    //console.log('this.state 1 ', this.state.tasks)
   }
 
   handleChangetaskKey = async (key) => {
@@ -109,7 +111,7 @@ class Main extends PureComponent {
     this.setDataToAsyncStore();
   }
 
-  setTasksCoordination = async (key, height) => {
+  setTasksCoordinations = async (key, height) => {
       const newTasks = this.state.tasks.map( (task) => {
         if(task.key === key) {
           task.height = height;
@@ -127,16 +129,16 @@ class Main extends PureComponent {
 
   handleChangeTaskOrder = (moveDirection, taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
-    const onDropTask = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
+    const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
     this.state.tasks.map( (task, index) => {
       if ( index === 0 ) { return }
       //console.log('task height ', index, task.height)
-      return onDropTask.push([index, onDropTask[index-1][2] + 2, onDropTask[index-1][2] + 2 + task.height])
+      return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 2, allTasksHeightArray[index-1][2] + 2 + task.height])
     })
-    console.log("onDropTask full ", onDropTask)
+    console.log("onDropTask full ", allTasksHeightArray)
 
-    const whereToDrop = onDropTask[taskIndex][1] + locationY + moveY
-    const findIndex = onDropTask.findIndex( (task) => {
+    const whereToDrop = allTasksHeightArray[taskIndex][1] + locationY + moveY
+    const findIndex = allTasksHeightArray.findIndex( (task) => {
         if (whereToDrop >= task[1] && whereToDrop < task[2]) {
           return task
         }
@@ -175,7 +177,7 @@ class Main extends PureComponent {
     }
   }
 
-  filteredTasks = () => {
+  returnFilteredTasks = () => {
     const filteringTasks = this.state.tasks.filter( task => {
       if (this.state.taskFilter.lists !== '') {
         return task.list === this.state.taskFilter.lists
@@ -197,8 +199,14 @@ class Main extends PureComponent {
     this.setState({ canScroll: bool })
   }
 
+  setActiveItem =(index) => {
+    console.log('show index active item', index)
+    this.setState({ isActive: index})
+  }
+
+
   render() {
-    //console.log('odswiezam ', this.state.tasks)
+    console.log('isActive ', this.state.isActive)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
           if (this.props.screenProps.deletedList === task.list ) {
@@ -208,24 +216,30 @@ class Main extends PureComponent {
           return task
         })
     }
+
     const primaryColor = this.props.screenProps.primaryColor
+    const item = this.returnFilteredTasks().map( (item, index) => {
+        return <View key={item.key}>
+            <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
+            handleDeleteTask={this.handleDeleteTask} setTasksCoordinations={this.setTasksCoordinations}
+            handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
+            primaryColor={primaryColor} setScroll={this.setScroll} setActiveItem={this.setActiveItem}
+            editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
+              />
+            <View style={{width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center'}}></View>
+         </View> 
+    })
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
         <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
-        <FlatList ref='flatList'
+        <ScrollView ref='flatList'
             contentContainerStyle={{paddingBottom: 110}}
-            data={this.filteredTasks()}
-            scrollEnabled={this.state.canScroll}
-            //numColumns={4} // grid
-            ItemSeparatorComponent={ () => <View style={ { width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center' } } /> }
-            renderItem={({item, index}) => <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
-                handleDeleteTask={this.handleDeleteTask} setTasksCoordination={this.setTasksCoordination}
-                handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations}
-                primaryColor={primaryColor} setScroll={this.setScroll}
-                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
-                /> }
-        />
+            scrollEnabled={this.state.canScroll}>
+            <View>
+                {item}
+            </View>
+        </ScrollView>
         <View>
           <TouchableOpacity activeOpacity={1} style={[styles.addButton, {backgroundColor: primaryColor }]}
           onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists, 

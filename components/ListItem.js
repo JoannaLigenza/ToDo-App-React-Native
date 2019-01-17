@@ -11,17 +11,14 @@ export default class ListItem extends PureComponent {
     this.state= { 
             pan: new Animated.ValueXY(),      //Step 1
             pan2: new Animated.ValueXY(), 
-            value: {x: 0, y: 0},
-            measurements: '',
             moveY: null,
             locationY: null,
-            refreshing: false,
             backgroundColor: '#fff',
             elevation: 0,
-            zIndex: 1,
             canMove: false,
     };
     this.panResponder = PanResponder.create({    //Step 2
+      //onStartShouldSetPanResponder: () => true,
       onStartShouldSetPanResponderCapture: () => false,
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
@@ -29,7 +26,7 @@ export default class ListItem extends PureComponent {
           this.props.getCoordinations(false)
           this.setState({locationY: evt.nativeEvent.locationY})
           // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
-          //   this.setState({ backgroundColor: '#ededed', elevation: 5, zIndex: 10 })
+          //   this.setState({ backgroundColor: '#ededed', elevation: 5, })
           // }
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
@@ -39,13 +36,13 @@ export default class ListItem extends PureComponent {
         } 
         //if ( gestureState.x0 > Dimensions.get('window').width - 50) { 
         if ( this.state.canMove === true) { 
-            //console.log('jak sie przesuwa ', gestureState)
-            this.setState({ backgroundColor: '#ededed', elevation: 5, zIndex: 10 });
+            //console.log('jak sie przesuwa ', gestureState, evt.nativeEvent.target)
+            this.setState({ backgroundColor: '#ededed', elevation: 5 });
             return Animated.event([null, {dy: this.state.pan2.y} ])(evt, gestureState);
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {
-                if (gestureState.dx < 150) {
+            if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
                   duration: 150,
@@ -58,12 +55,19 @@ export default class ListItem extends PureComponent {
                 }).start(() => {
                 });
               }
+            if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
+                    Animated.timing(this.state.pan2, {
+                      toValue: {x: 0, y: 0},
+                      duration: 150,
+                    }).start(() => {
+                    }); 
+            }
         },
       onPanResponderEnd: (evt, gestureState) => {
-          this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0, zIndex: 1})
+          this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
         },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
-      //console.log("release")
+      console.log("release")
               if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
@@ -109,7 +113,7 @@ export default class ListItem extends PureComponent {
                   } 
               }
           this.props.setScroll(true);
-          this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0, zIndex: 1})
+          this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
       } 
     });
   }
@@ -118,12 +122,6 @@ export default class ListItem extends PureComponent {
       const newTasks = this.props.state.tasks.filter(task => task.key !== key);
       this.props.handleDeleteTask(newTasks)
   }  
-
-  setOneTaskLayout = () => {
-    console.log('out')
-    this.setState({ backgroundColor: '#fff', elevation: 0, zIndex: 1});
-    this.props.setScroll(true);
-  }
 
   // Not using, but keep for the future
   // taskPosition = () => { 
@@ -134,14 +132,16 @@ export default class ListItem extends PureComponent {
   // }
   
   render() {
-    console.log("render ", this.props.state.canScroll)
+   //console.log("render ", this.props.index, this.props.state.isActive, this.props.state.isActive===this.props.index)
+  //console.log("index ", this.props.index)
     return (
-      <Animated.View style={[{backgroundColor: this.props.primaryColor}, this.state.pan2.getLayout()]}>
+      <Animated.View style={[styles.component, {backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]}>
           <Image source={require('../img/trashIcon.png')} style={styles.image}/>
-          <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation, zIndex: this.state.zIndex}, 
+          <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
-          onLayout={(event) => { this.props.setTasksCoordination(this.props.item.key, event.nativeEvent.layout.height); 
-          } }>
+          onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
+          } }
+          >
               <CheckBox
                     checked={this.props.item.isChecked}
                     value={this.props.item.isChecked}
@@ -155,8 +155,8 @@ export default class ListItem extends PureComponent {
                   </Text>
                   <Text style={styles.taskTextUnder}>List: {this.props.item.list}, Priority: {this.props.item.priority} </Text>
               </TouchableOpacity>
-              <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); console.log('in ', this.props.index)}}
-                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5, zIndex: 10 }); console.log('press') }} 
+              <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('in ', this.props.index)}}
+                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('press') }} 
                 onPressOut={this.state.onPressOut ? (null) : (this.setOneTaskLayout) } >
                   <View style={styles.moveTaskVertically} >
                     <Text>.....</Text>
@@ -164,7 +164,6 @@ export default class ListItem extends PureComponent {
               </TouchableWithoutFeedback>
           </Animated.View>
       </Animated.View>
-        
     );
 }
 
@@ -172,10 +171,13 @@ export default class ListItem extends PureComponent {
 
 
 const styles = StyleSheet.create({
-  component2: {
-    flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: background,
+  component: {
+    // position: 'absolute',
+    // left: 0,
+    // right: 0,
+    // height: 200,
+    // borderColor: 'red',
+    // borderWidth: 2,
   },
   image: {
     width: 40,
