@@ -10,6 +10,7 @@ export default class EditTask extends Component {
             choosenList: '',
             choosenPriority: '',
             choosenDate: '',
+            isChecked: '',
             listModalVisibility: false,
             priorityModalVisibility: false,
             note: '',
@@ -36,27 +37,22 @@ export default class EditTask extends Component {
     };
     handleEditTask = () => {
         const key = this.props.navigation.state.params.task.key
-        let text = this.props.navigation.state.params.task.text
-        let isChecked = this.props.navigation.state.params.task.isChecked
-        let list = this.props.navigation.state.params.task.list
-        let priority = this.props.navigation.state.params.task.priority
-        let date = this.props.navigation.state.params.task.date
-        let note = this.props.navigation.state.params.task.note
         let height = this.props.navigation.state.params.task.height
-        if (this.state.inputText !== '') { text = this.state.inputText }
-        if (this.state.choosenList !== '') { list = this.state.choosenList}
-        if (this.state.choosenPriority !== '') { priority = this.state.choosenPriority }
-        if (this.state.choosenDate !== '') { date = this.state.choosenDate }
-        if (this.state.note !== '') { note = this.state.note }
-        //console.log("date ", date)
-        //console.log("editing ", this.state)
-        this.props.navigation.state.params.handleEditTask({key: key, text: text, isChecked: isChecked, list: list, priority: priority, date: date, note: note, height: height})
-        //console.log("note ", note)
+        this.props.navigation.state.params.handleEditTask({key: key, text: this.state.inputText, isChecked: this.state.isChecked, list: this.state.choosenList, priority: this.state.choosenPriority, date: this.state.choosenDate, note: this.state.note, height: height})
+    }
+
+    componentDidMount() {
+        this.setState({ 
+            inputText: this.props.navigation.state.params.task.text,
+            choosenList: this.props.navigation.state.params.task.list,
+            choosenPriority: this.props.navigation.state.params.task.priority,
+            choosenDate: this.props.navigation.state.params.task.date,
+            isChecked: this.props.navigation.state.params.task.isChecked,
+            note: this.props.navigation.state.params.task.note,
+         })
     }
 
     render() {
-        //console.log("this.state ", this.state)
-        //sconsole.log("this.props ", this.props.screenProps.lists)
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, listModalVisibility: false}) }}>{list}</Text>
         })
@@ -65,7 +61,7 @@ export default class EditTask extends Component {
             <View style={{flex: 1}} >
                 <ScrollView style={{flex: 1}} >
                     <View style={styles.textInputArea}>
-                        <Text style={styles.text}>New Task:</Text>
+                        <Text style={styles.text}>Edit Task:</Text>
                         <TextInput
                             style={styles.textInput}
                             onChangeText={(text) => this.setState({inputText: text})}
@@ -124,6 +120,13 @@ export default class EditTask extends Component {
                                 </View>  
                             </TouchableOpacity>                           
                         </Modal>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({isChecked: !this.state.isChecked})}} style={[styles.touchableOpacity, {borderColor: this.props.screenProps.primaryColor}]}>
+                        <Text style={styles.text}>Status:</Text>
+                        <Text style={styles.textUnder} >
+                          {this.state.isChecked ? ('Done') : ('In Progress')}
+                        </Text>
                     </TouchableOpacity>
 
                     <View style={styles.textInputArea}>
