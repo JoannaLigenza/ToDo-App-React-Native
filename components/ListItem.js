@@ -25,9 +25,7 @@ export default class ListItem extends PureComponent {
       onPanResponderGrant: (evt, gestureState) => {
           this.props.getCoordinations(false)
           this.setState({locationY: evt.nativeEvent.locationY})
-          // if ( gestureState.x0 > Dimensions.get('window').width - 50) {
-          //   this.setState({ backgroundColor: '#ededed', elevation: 5, })
-          // }
+
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
@@ -37,7 +35,20 @@ export default class ListItem extends PureComponent {
         //if ( gestureState.x0 > Dimensions.get('window').width - 50) { 
         if ( this.state.canMove === true) { 
             //console.log('jak sie przesuwa ', gestureState, evt.nativeEvent.target)
+            // if ( gestureState.moveY > Dimensions.get('window').height - 200 ) {
+            //   console.log('is bigger', this.state.pan2.y._value)
+            //   this.props.scrollTo('down')
+            //   //this.state.pan2.setOffset( { x: 0, y: this.state.pan2.y._value + 30} )
+            // }
+            // if ( gestureState.moveY < 150 ) {
+            //   console.log('is less')
+            //   this.props.scrollTo('up')
+            // }
+            // else { this.props.setScroll(false) }
             this.setState({ backgroundColor: '#ededed', elevation: 5 });
+            // if(gestureState.dy > this.props.state.tasks[this.props.index+1].height/2) {
+            //   console.log('jestem nastepny ');
+            // }
             return Animated.event([null, {dy: this.state.pan2.y} ])(evt, gestureState);
         }
       },
@@ -62,6 +73,7 @@ export default class ListItem extends PureComponent {
                     }).start(() => {
                     }); 
             }
+            this.props.setActiveItem(-1);
         },
       onPanResponderEnd: (evt, gestureState) => {
           this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
@@ -91,28 +103,19 @@ export default class ListItem extends PureComponent {
                     }).start(() => {
                     });
                     }
-                  if (gestureState.dy > 50) {
+                  if (gestureState.dy > 50 || gestureState.dy < -50) {
                     Animated.timing(this.state.pan2, {
                       toValue: {x: 0, y: 0},
                       duration: 150,
                     }).start(() => {
                       LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                      this.props.handleChangeTaskOrder('down', this.props.index, this.state.locationY, this.state.moveY)
+                      this.props.handleChangeTaskOrder(this.props.index, this.state.locationY, this.state.moveY)
                       this.props.getCoordinations(true);
                     });
                   }   
-                  if (gestureState.dy < -50) {
-                    Animated.timing(this.state.pan2, {
-                      toValue: {x: 0, y: 0},
-                      duration: 150,
-                    }).start(() => {
-                      LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                      this.props.handleChangeTaskOrder('up', this.props.index, this.state.locationY, this.state.moveY)
-                      this.props.getCoordinations(true);
-                    });
-                  } 
               }
           this.props.setScroll(true);
+          this.props.setActiveItem(-1);
           this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
       } 
     });
@@ -122,6 +125,10 @@ export default class ListItem extends PureComponent {
       const newTasks = this.props.state.tasks.filter(task => task.key !== key);
       this.props.handleDeleteTask(newTasks)
   }  
+
+  // setOneTaskLayout = () => {
+  //   this.setState({ canMove: false, backgroundColor: '#fff', elevation: 0});   BLOCK onPress OUT layout
+  // }
 
   // Not using, but keep for the future
   // taskPosition = () => { 
@@ -134,26 +141,30 @@ export default class ListItem extends PureComponent {
   render() {
    //console.log("render ", this.props.index, this.props.state.isActive, this.props.state.isActive===this.props.index)
   //console.log("index ", this.props.index)
+    const taskNumberBackgroundColor = () => {
+      if( this.props.item.priority === 'None') { return null}
+      if( this.props.item.priority === 'Low') { return 'yellow'}
+      if( this.props.item.priority === 'Middle') { return 'orange'}
+      if( this.props.item.priority === 'High') { return 'red'}
+    }
     return (
-      <Animated.View style={[styles.component, {backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]}>
+      <Animated.View style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]}>
           <Image source={require('../img/trashIcon.png')} style={styles.image}/>
           <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
           onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
           } }
           >
-              <CheckBox
-                    checked={this.props.item.isChecked}
-                    value={this.props.item.isChecked}
-                    onValueChange={ () => {this.props.handleInput(this.props.item.key)} }
-                    containerStyle={{  backgroundColor: 'pink'}}
-              />
+              <TouchableOpacity activeOpacity={1} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
+                  onPress={() => {this.props.openModal(this.props.index, this.props.item)}}>
+                  <Text style={styles.taskNumber}>{this.props.index+1}</Text>
+              </TouchableOpacity>
+              
               <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
                   onPress={() => {this.props.editTask(); this.props.setScroll(true)} }>
                   <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
                       {this.props.item.text}
                   </Text>
-                  <Text style={styles.taskTextUnder}>List: {this.props.item.list}, Priority: {this.props.item.priority} </Text>
               </TouchableOpacity>
               <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('in ', this.props.index)}}
                 onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('press') }} 
@@ -171,14 +182,6 @@ export default class ListItem extends PureComponent {
 
 
 const styles = StyleSheet.create({
-  component: {
-    // position: 'absolute',
-    // left: 0,
-    // right: 0,
-    // height: 200,
-    // borderColor: 'red',
-    // borderWidth: 2,
-  },
   image: {
     width: 40,
     height: 33,
@@ -188,6 +191,16 @@ const styles = StyleSheet.create({
     // borderColor: 'white',
     // borderWidth: 2,
   },
+  oneTask: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 5,
+    alignItems: "center",
+    backgroundColor: background,
+    // borderColor: 'red',
+    // borderWidth: 2,
+  }, 
   TouchableOpacity: {
     flex: 1,
     margin: 10,
@@ -195,6 +208,18 @@ const styles = StyleSheet.create({
     // borderWidth: 2,
     //backgroundColor: 'purple',
   }, 
+  TouchableOpacityNumber: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+    height: '100%',
+  }, 
+  taskNumber: {
+    padding: 2,
+    //paddingLeft: 15,
+    fontSize: 20,
+    alignSelf: 'center',
+  },
   taskText: {
     flex: 1,
     fontSize: 20,
@@ -211,24 +236,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     textDecorationLine: 'line-through',
   },
-  taskTextUnder: {
-    flex: 1,
-    fontSize: 14,
-    padding: 3,
-    paddingTop: 0,
-    paddingLeft: 10,
-    textAlign: 'left',
-  },
-  oneTask: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 5,
-    alignItems: "center",
-    backgroundColor: background,
-    // borderColor: 'red',
-    // borderWidth: 2,
-  }, 
   moveTaskVertically: {
     width: 50,
     height: '100%',
