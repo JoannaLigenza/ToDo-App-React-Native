@@ -5,6 +5,9 @@ import {colorPrimary} from "./components/styles/commonStyles";
 import HomeScreen from './components/HomeScreen';
 import PickColor from './components/PickColor';
 import AddDeleteList from './components/AddDeleteList';
+import TestComponent from './components/testComponent';
+import TestFlatList from './components/TestFlatList';
+import SortableFlatList from './components/TestFlatList3'
 
 
 
@@ -12,7 +15,10 @@ const MyDrawerNavigator = createDrawerNavigator({
   Home: { screen: HomeScreen },
   'App Color': {screen: PickColor },
   'Add/Delete List' : {screen: AddDeleteList },
-  Zobacz: { screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> }
+  'Test Component ': { screen: TestComponent },
+  ' Test FlatList ' : { screen: TestFlatList},
+  ' Test FlatList 3' : { screen: SortableFlatList},
+  // Zobacz: { screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> }
 },
 {
     initialRouteName: 'Home',
@@ -76,7 +82,7 @@ export default class App extends Component {
             // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
             // await AsyncStorage.multiRemove([ '12', '13' ]);
             // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
-             console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
+             //console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            
         } catch (error) {
             console.log('storage set data error in App', error.message)
       }
@@ -99,7 +105,6 @@ export default class App extends Component {
   }
 
   render() {
-    console.log('state app ', this.state)
     return <AppContainer screenProps={{ lists: this.state.lists, setLists: this.setLists, 
         primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor,
         deletedList: this.state.deletedList, setDeletedList: this.setDeletedList }} />;
