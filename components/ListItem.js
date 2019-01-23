@@ -156,7 +156,7 @@ export default class ListItem extends PureComponent {
           } }
           >
               <TouchableOpacity activeOpacity={1} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
-                  onPress={() => {this.props.openModal(this.props.index, this.props.item)}}>
+                  onPress={() => { (this.props.state.taskFilter.lists === '' && this.props.state.taskFilter.date === '' && this.props.state.taskFilter.priority === '') ? (this.props.openModal(this.props.index, this.props.item)) : (null) }}>
                   <Text style={styles.taskNumber}>{this.props.index+1}</Text>
               </TouchableOpacity>
               

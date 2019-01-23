@@ -133,7 +133,7 @@ class Main extends PureComponent {
   handleChangeTaskOrder = (taskIndex, locationY, moveY) => {
     console.log('moveY ', locationY, moveY)
     const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
-    this.state.tasks.map( (task, index) => {
+    this.returnFilteredTasks().map( (task, index) => {
       if ( index === 0 ) { return }
       //console.log('task height ', index, task.height)
       return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 2, allTasksHeightArray[index-1][2] + 2 + task.height])
@@ -153,12 +153,67 @@ class Main extends PureComponent {
       return
     }
 
-    const NewTasks = this.state.tasks;
+    const NewTasks = this.returnFilteredTasks();
     const movedTask = NewTasks.splice(taskIndex, 1);
     NewTasks.splice(findIndex, 0, movedTask[0]);
 
-    this.setState({ tasks: NewTasks })
+    console.log('this.state.taskFilter ', this.state.taskFilter)
+    if (this.state.taskFilter.lists !== '') {
+      console.log('list list list list')
+      let counter = 0
+      const NewFilteredTasks = this.state.tasks.map( task => {
+        if (this.state.taskFilter.lists === task.list) {
+          console.log('counter ', counter )
+          task = NewTasks[counter]
+          counter += 1
+          console.log(' here we go ', )
+          return task
+        }
+        console.log(' not go',)
+        return task
+      })
+        this.setState({ tasks: NewFilteredTasks })
+    } 
+    if (this.state.taskFilter.date !== '') {
+      console.log('date date date dagte')
+      let counter2 = 0
+      const NewFilteredTasks2 = this.state.tasks.map( task => {
+        if (this.state.taskFilter.date === task.date) {
+          console.log('counter ', counter2 )
+          task = NewTasks[counter2]
+          counter2 += 1
+          console.log(' here we go ', )
+          return task
+        }
+        console.log(' not go',)
+        return task
+      })
+        this.setState({ tasks: NewFilteredTasks2 })
+    }
+    if (this.state.taskFilter.priority !== '') {
+      console.log('priority priority priority')
+      let counter2 = 0
+      const NewFilteredTasks2 = this.state.tasks.map( task => {
+        if (this.state.taskFilter.priority === task.priority) {
+          console.log('counter ', counter2 )
+          task = NewTasks[counter2]
+          counter2 += 1
+          console.log(' here we go ', )
+          return task
+        }
+        console.log(' not go',)
+        return task
+      })
+        this.setState({ tasks: NewFilteredTasks2 })
+    }
+    if (this.state.taskFilter.lists === '' && this.state.taskFilter.date === '' && this.state.taskFilter.priority === '') {
+        this.setState({ tasks: NewTasks })
+    }
     this.setDataToAsyncStore();
+    
+
+    // this.setState({ tasks: NewTasks })
+    // this.setDataToAsyncStore();
   }
 
   handleChangeTaskOrderLeft = (from, to) => {
@@ -217,7 +272,7 @@ class Main extends PureComponent {
   }
 
   render() {
-    console.log('isActive ', this.state.from, this.state.to)
+   // console.log('isActive ', this.state.from, this.state.to)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
           if (this.props.screenProps.deletedList === task.list ) {
@@ -244,7 +299,7 @@ class Main extends PureComponent {
     return (
       <View style={styles.component2} >       
         <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
-        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
+        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} />
         <ScrollView ref={(ref) => this.scrollList = ref}
             contentContainerStyle={{paddingBottom: 110}}
             scrollEnabled={this.state.canScroll}
@@ -387,5 +442,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: background,
     borderWidth: 3,
-  },
+    },
 });
