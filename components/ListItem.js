@@ -149,7 +149,7 @@ export default class ListItem extends PureComponent {
     }
     return (
       <Animated.View style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]}>
-          <Image source={require('../img/trashIcon.png')} style={styles.image}/>
+          <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (this.props.item.height-33)/2 }]}/>
           <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
           onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
@@ -180,14 +180,13 @@ export default class ListItem extends PureComponent {
 
 }
 
-
 const styles = StyleSheet.create({
   image: {
     width: 40,
     height: 33,
     position: 'absolute',
     left: 10,
-    top: '33%',
+    //top: '33%',
     // borderColor: 'white',
     // borderWidth: 2,
   },
