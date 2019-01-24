@@ -16,16 +16,18 @@ export default class ListItem extends PureComponent {
             backgroundColor: '#fff',
             elevation: 0,
             canMove: false,
+            onPressOutEvtLocationY: null,
     };
     this.panResponder = PanResponder.create({    //Step 2
       //onStartShouldSetPanResponder: () => true,
       onStartShouldSetPanResponderCapture: () => false,
+      onStartShouldSetPanResponder: () => false,
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (evt, gestureState) => {
           this.props.getCoordinations(false)
           this.setState({locationY: evt.nativeEvent.locationY})
-
+          console.log('move')
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
@@ -45,7 +47,7 @@ export default class ListItem extends PureComponent {
             //   this.props.scrollTo('up')
             // }
             // else { this.props.setScroll(false) }
-            this.setState({ backgroundColor: '#ededed', elevation: 5 });
+            this.setState({ backgroundColor: '#ededed', elevation: 5});
             // if(gestureState.dy > this.props.state.tasks[this.props.index+1].height/2) {
             //   console.log('jestem nastepny ');
             // }
@@ -126,9 +128,11 @@ export default class ListItem extends PureComponent {
       this.props.handleDeleteTask(newTasks)
   }  
 
-  // setOneTaskLayout = () => {
-  //   this.setState({ canMove: false, backgroundColor: '#fff', elevation: 0});   BLOCK onPress OUT layout
-  // }
+  onPressOut = () => {
+    //console.log('out ', )
+    this.setState({ canMove: false, backgroundColor: '#fff', elevation: 0}); 
+    
+  }
 
   // Not using, but keep for the future
   // taskPosition = () => { 
@@ -140,7 +144,7 @@ export default class ListItem extends PureComponent {
   
   render() {
    //console.log("render ", this.props.index, this.props.state.isActive, this.props.state.isActive===this.props.index)
-  //console.log("index ", this.props.index)
+  // console.log("onPressOutEvtLocationY ", this.state.onPressOutEvtLocationY)
     const taskNumberBackgroundColor = () => {
       if( this.props.item.priority === 'None') { return null}
       if( this.props.item.priority === 'Low') { return 'yellow'}
@@ -166,9 +170,10 @@ export default class ListItem extends PureComponent {
                       {this.props.item.text}
                   </Text>
               </TouchableOpacity>
-              <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('in ', this.props.index)}}
+              <TouchableWithoutFeedback onPressIn={(evt) => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ onPressOutEvtLocationY: evt.nativeEvent.locationY}); console.log('in ')}}
                 onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('press') }} 
-                onPressOut={this.state.onPressOut ? (null) : (this.setOneTaskLayout) } >
+                onPressOut={(evt) => {this.state.onPressOutEvtLocationY === evt.nativeEvent.locationY ? (this.onPressOut()) : (null)} } 
+                >
                   <View style={styles.moveTaskVertically} >
                     <Text>.....</Text>
                   </View>
