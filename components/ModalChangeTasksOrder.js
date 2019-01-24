@@ -3,6 +3,28 @@ import {StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions} from 'r
 import {background} from "./styles/commonStyles";
 
 export default class ModalChangeTasksOrder extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalText: '',
+        }
+    }
+
+    modalTextChange = () => {
+        //this.setState({ modalText: text})
+        if (this.props.state.to > this.props.state.tasks.length) {
+            this.setState({ modalText: 'You have only ' + this.props.state.tasks.length + ' tasks'});
+            return
+        }
+        if (this.props.state.to < 1) {
+            this.setState({ modalText: 'Please write positive number'});
+            return
+        }
+        this.props.handleChangeTaskOrderLeft(parseInt(this.props.state.from), parseInt(this.props.state.to));
+        this.props.changeTaskOrderModalVisibility(false); 
+        this.props.setToOrderNumber('');
+    }
+
     render() {
         return (
             <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.props.changeTaskOrderModalVisibility(false) }}>
@@ -20,7 +42,8 @@ export default class ModalChangeTasksOrder extends Component {
                                 //NumberOfLines = {4}
                                 //autoFocus = {true}
                             />
-                        <TouchableOpacity activeOpacity={1} onPress={()=> { this.props.handleChangeTaskOrderLeft(parseInt(this.props.state.from), parseInt(this.props.state.to)); this.props.changeTaskOrderModalVisibility(false); this.props.setToOrderNumber('') }} 
+                            <Text style={{margin: 10}}> {this.state.modalText} </Text>
+                        <TouchableOpacity activeOpacity={1} onPress={()=> { this.modalTextChange(); }} 
                             style={{backgroundColor: this.props.primaryColor, width: '100%'}} >
                           <Text style={styles.text}>Save</Text>
                         </TouchableOpacity>
