@@ -133,13 +133,13 @@ class Main extends PureComponent {
 
   handleChangeTaskOrder = (taskIndex, locationY, moveY) => {
     //console.log('moveY ', locationY, moveY)
-    const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.state.tasks[0].height],]
+    const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.returnFilteredTasks()[0].height],]
     this.returnFilteredTasks().map( (task, index) => {
       if ( index === 0 ) { return }
       //console.log('task height ', index, task.height)
       return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 2, allTasksHeightArray[index-1][2] + 2 + task.height])
     })
-    //console.log("onDropTask full ", allTasksHeightArray)
+    console.log("onDropTask full ", allTasksHeightArray)
 
     const whereToDrop = allTasksHeightArray[taskIndex][1] + locationY + moveY
     const findIndex = allTasksHeightArray.findIndex( (task) => {
@@ -147,8 +147,8 @@ class Main extends PureComponent {
           return task
         }
     })
-    // console.log("tutaj ", whereToDrop)
-    // console.log("findIndex ", findIndex)
+     console.log("tutaj ", whereToDrop)
+     console.log("findIndex ", findIndex)
     if (findIndex === -1) {
       return
     }
@@ -261,7 +261,7 @@ class Main extends PureComponent {
   }
 
   setActiveItem =(index) => {
-    console.log('show index active item', index)
+   // console.log('show index active item', index)
     this.setState({ isActive: index})
   }
 
