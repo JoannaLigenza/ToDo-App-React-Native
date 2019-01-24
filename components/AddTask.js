@@ -69,7 +69,7 @@ export default class AddTask extends Component {
                         <Text style={styles.textUnder}>{this.state.choosenList}</Text>
                         <Modal transparent={true} animationType="fade" visible={this.state.modalVisible1} 
                                 onRequestClose={() => {this.setState({modalVisible1: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible1: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({modalVisible1: false}) }}>
                                 <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
@@ -91,7 +91,7 @@ export default class AddTask extends Component {
                         <Text style={styles.textUnder}>{this.state.choosenPriority}</Text>
                         <Modal transparent={true} animationType="fade" visible={this.state.modalVisible2} 
                                 onRequestClose={() => {this.setState({modalVisible2: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({modalVisible2: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({modalVisible2: false}) }}>
                                 <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
@@ -160,16 +160,21 @@ const styles = StyleSheet.create({
         padding: 3,
         margin: 10,
     },
+    aboveModal: {
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'center'
+    },
     modal: {
         width: Dimensions.get('window').width - 80,
         height: 'auto',
-        maxHeight: 300,
+        maxHeight: Dimensions.get('window').height - 60,
         padding: 3,
         margin: 20,
         alignSelf: 'center',
         textAlign: 'center',
         position: 'absolute',
-        top: ((Dimensions.get('window').height - 200) / 2)- 50,
+        //top: ((Dimensions.get('window').height - 200) / 2)- 50,
     },
     select: {
         fontSize: 20,

@@ -81,7 +81,7 @@ export default class EditTask extends Component {
                         </Text>
                         <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                                 onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({listModalVisibility: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({listModalVisibility: false}) }}>
                                 <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
@@ -107,7 +107,7 @@ export default class EditTask extends Component {
                         </Text>
                         <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                                 onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
-                            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
+                            <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
                                 <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
@@ -188,17 +188,22 @@ const styles = StyleSheet.create({
         padding: 3,
         margin: 10,
     },
+    aboveModal: {
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'center'
+    },
     modal: {
         //flex: 1,
         width: Dimensions.get('window').width - 80,
         height: 'auto',
-        maxHeight: 300,
+        maxHeight: Dimensions.get('window').height - 60,
         padding: 3,
         margin: 20,
         alignSelf: 'center',
         textAlign: 'center',
         position: 'absolute',
-        top: ((Dimensions.get('window').height - 200) / 2)- 50,
+        //top: ((Dimensions.get('window').height - 200) / 2)- 50,
         //backgroundColor: colorPrimary,
     },
     select: {

@@ -5,9 +5,9 @@ import {colorPrimary} from "./components/styles/commonStyles";
 import HomeScreen from './components/HomeScreen';
 import PickColor from './components/PickColor';
 import AddDeleteList from './components/AddDeleteList';
-import TestComponent from './components/testComponent';
-import TestFlatList from './components/TestFlatList';
-import SortableFlatList from './components/TestFlatList3'
+//import TestComponent from './components/testComponent';
+//import TestFlatList from './components/TestFlatList';
+//import SortableFlatList from './components/TestFlatList3'
 
 
 
@@ -15,9 +15,6 @@ const MyDrawerNavigator = createDrawerNavigator({
   Home: { screen: HomeScreen },
   'App Color': {screen: PickColor },
   'Add/Delete List' : {screen: AddDeleteList },
-  'Test Component ': { screen: TestComponent },
-  ' Test FlatList ' : { screen: TestFlatList},
-  ' Test FlatList 3' : { screen: SortableFlatList},
   // Zobacz: { screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> }
 },
 {

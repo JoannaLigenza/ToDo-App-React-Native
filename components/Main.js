@@ -9,6 +9,7 @@ import Footer from './Footer';
 import AddTask from './AddTask';
 import ListItem from './ListItem';
 import FilterTasks from './FilterTask';
+import ModalChangeTasksOrder from './ModalChangeTasksOrder';
 
 
 class Main extends PureComponent {
@@ -226,7 +227,19 @@ class Main extends PureComponent {
   }
 
   openModal = (index) => {
-    this.setState({ changeTaskOrderModalVisibility: true, from: (index+1).toString() })
+    this.setState({ changeTaskOrderModalVisibility: true, from: (index+1).toString() });
+  }
+
+  changeTaskOrderModalVisibility = (bool) => {
+      this.setState({ changeTaskOrderModalVisibility: bool });
+  }
+
+  setFromOrderNumber = (from) => {
+    this.setState({ from: from });
+  }
+
+  setToOrderNumber = (to) => {
+    this.setState({ to: to });
   }
 
   getTaskFilter = (list, date, priority) => {
@@ -322,28 +335,10 @@ class Main extends PureComponent {
         <Footer primaryColor={primaryColor}/>
         <Modal transparent={true} animationType="fade" visible={this.state.changeTaskOrderModalVisibility} 
             onRequestClose={() => {this.setState({changeTaskOrderModalVisibility: false}) }}>
-            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.setState({changeTaskOrderModalVisibility: false}) }}>
-                <View style={[styles.modal, {borderColor: primaryColor}]}>
-                    <TouchableOpacity disabled={true} style={{borderColor: 'red', borderWidth: 2}}>
-                        <View style={styles.textInputArea}>
-                            <Text style={styles.text}>Change Task Order To:</Text>
-                            <TextInput
-                                style={styles.textInput}
-                                onChangeText={(text) => this.setState({to: text})}
-                                defaultValue={this.state.from}
-                                editable = {true}
-                                multiline = {false}
-                                maxLength = {3}
-                                //NumberOfLines = {4}
-                                //autoFocus = {true}
-                            />
-                        </View>
-                        <TouchableOpacity activeOpacity={1} onPress={()=> { this.handleChangeTaskOrderLeft(parseInt(this.state.from), parseInt(this.state.to)); this.setState({changeTaskOrderModalVisibility: false, from: '', to: ''  })}} >
-                          <Text style={styles.text}>Save</Text>
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                </View>  
-            </TouchableOpacity>                           
+              <ModalChangeTasksOrder changeTaskOrderModalVisibility={this.changeTaskOrderModalVisibility} 
+              primaryColor={primaryColor} handleChangeTaskOrderLeft={this.handleChangeTaskOrderLeft} 
+              setFromOrderNumber={this.setFromOrderNumber} setToOrderNumber={this.setToOrderNumber} 
+              state={this.state} />                
         </Modal>
       </View>
     );
@@ -420,27 +415,4 @@ const styles = StyleSheet.create({
     right: 10,
     borderRadius: 50,
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 3,
-  },
-  textInput: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 30,
-    borderColor: 'gray', 
-    borderBottomWidth: 2,
-  },
-  modal: {
-    width: Dimensions.get('window').width - 80,
-    height: Dimensions.get('window').height - 80,
-    padding: 3,
-    margin: 20,
-    alignSelf: 'center',
-    textAlign: 'center',
-    position: 'absolute',
-    backgroundColor: background,
-    borderWidth: 3,
-    },
 });
