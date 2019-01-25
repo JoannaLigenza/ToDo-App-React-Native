@@ -64,7 +64,7 @@ export default class App extends Component {
   }
 
   setDeletedList = async (list) => {
-    console.log('deleted list', list)
+    //console.log('deleted list', list)
     await this.setState({ deletedList: list});
     this.setDataToAsyncStore();
   }
