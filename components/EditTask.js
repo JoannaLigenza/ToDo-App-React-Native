@@ -144,7 +144,7 @@ export default class EditTask extends Component {
                     <View style={{height: 100}}></View>
                     
                 </ScrollView>
-                <TouchableOpacity activeOpacity={1} style={[styles.addButton, { backgroundColor: this.props.screenProps.primaryColor}]}
+                <TouchableOpacity activeOpacity={0.8} style={[styles.addButton, { backgroundColor: this.props.screenProps.primaryColor}]}
                     onPress={() => {this.handleEditTask(this.props.navigation.state.params.index); 
                     this.props.navigation.goBack(); } }>
                     {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}

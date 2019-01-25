@@ -85,7 +85,7 @@ export default class AddDeleteList extends Component {
                 </ScrollView> 
             </View>
             
-            <TouchableOpacity activeOpacity={1} 
+            <TouchableOpacity activeOpacity={0.9} 
                 onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists);
                                 this.props.screenProps.setDeletedList('') }} >
                 <Text style={[styles.button, styles.goBackButton]} >Save</Text>

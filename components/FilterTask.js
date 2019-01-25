@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView,} from 'react-native';
-import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
+import {background, greyColor} from "./styles/commonStyles";
 
 export default class FilterTasks extends Component {
     constructor() {
@@ -38,7 +38,7 @@ export default class FilterTasks extends Component {
         })
         return(
             <View style={styles.tabContainer}>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={[styles.text, this.props.taskFilter.lists === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>List</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                         onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
@@ -57,10 +57,10 @@ export default class FilterTasks extends Component {
                         </TouchableOpacity>                           
                     </Modal>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={[styles.text, this.props.taskFilter.date === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>Date</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor}]}>
                     <Text style={[styles.text, this.props.taskFilter.priority === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>Priority</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                         onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
@@ -124,8 +124,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         textAlign: 'center',
         position: 'absolute',
-       // top: ((Dimensions.get('window').height - 200) / 2)- 50,
-        //backgroundColor: colorPrimary,
     },
     items: {
         fontSize: 20,

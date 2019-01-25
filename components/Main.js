@@ -258,22 +258,20 @@ export default class Main extends PureComponent {
 
     const primaryColor = this.props.screenProps.primaryColor
     const item = this.returnFilteredTasks().map( (item, index) => {
-        return <View key={item.key}>
-            <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
-            handleDeleteTask={this.handleDeleteTask} setTasksCoordinations={this.setTasksCoordinations}
-            handleChangeTaskOrder={this.handleChangeTaskOrder}
-            primaryColor={primaryColor} setScroll={this.setScroll} setActiveItem={this.setActiveItem} openModal={this.openModal}
-            //scrollTo={this.scrollTo}
-            editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
-              />
-            <View style={{width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center'}}></View>
-         </View> 
+      return <View key={item.key}>
+                <ListItem item={item} index={index} state={this.state} handleDeleteTask={this.handleDeleteTask} 
+                setTasksCoordinations={this.setTasksCoordinations} handleChangeTaskOrder={this.handleChangeTaskOrder}
+                primaryColor={primaryColor} setScroll={this.setScroll} setActiveItem={this.setActiveItem} openModal={this.openModal}
+                editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
+                />
+                <View style={{width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center'}}></View>
+            </View> 
     })
     return (
-      <View style={styles.component2} >       
+      <View style={styles.mainComponent} >       
         <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
         <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} />
-        <ScrollView ref={(ref) => this.scrollList = ref}
+        <ScrollView //ref={(ref) => this.scrollList = ref}
             contentContainerStyle={{paddingBottom: 110}}
             scrollEnabled={this.state.canScroll} >
             <View>
@@ -281,7 +279,7 @@ export default class Main extends PureComponent {
             </View>
         </ScrollView>
         <View>
-          <TouchableOpacity activeOpacity={1} style={[styles.addButton, {backgroundColor: primaryColor }]}
+          <TouchableOpacity activeOpacity={0.8} style={[styles.addButton, {backgroundColor: primaryColor }]}
           onPress={() => {this.props.navigation.navigate('AddTask', {lists: this.props.screenProps.lists, 
               addTask: this.handleAddTask, taskKey: this.state.taskKey, changetaskKey: this.changetaskKey,
               primaryColor: primaryColor}) } }>
@@ -302,7 +300,7 @@ export default class Main extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  component2: {
+  mainComponent: {
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: background,
@@ -313,10 +311,8 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     width: 80,
     height: 80,
-    //backgroundColor:'#fec538',
     margin: 0,
     padding: 0,
-    elevation: 6,
     position: 'absolute',
     bottom: 10,
     right: 10,

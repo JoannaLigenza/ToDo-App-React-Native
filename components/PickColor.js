@@ -72,7 +72,7 @@ export default class PickColor extends Component {
                 onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setPrimaryColor(this.state.choosenColor)}} 
                 title="Go back home"
             /> */}
-            <TouchableOpacity activeOpacity={1} 
+            <TouchableOpacity activeOpacity={0.9} 
                 onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setPrimaryColor(this.state.choosenColor)}} >
                 <Text style={[styles.button, styles.goBackButton]} >Save</Text>
             </TouchableOpacity>
