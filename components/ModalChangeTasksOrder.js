@@ -21,13 +21,13 @@ export default class ModalChangeTasksOrder extends Component {
             return
         }
         this.props.handleChangeTaskOrderLeft(parseInt(this.props.state.from), parseInt(this.props.state.to));
-        this.props.changeTaskOrderModalVisibility(false); 
+        this.props.changeModalVisibility(false); 
         this.props.setToOrderNumber('');
     }
 
     render() {
         return (
-            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.props.changeTaskOrderModalVisibility(false) }}>
+            <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.props.changeModalVisibility(false) }}>
                 <View style={[styles.modal, {borderColor: this.props.primaryColor}]}>
                     <TouchableOpacity disabled={true} >
                         <View style={styles.textInputArea}>
