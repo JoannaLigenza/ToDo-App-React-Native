@@ -1,29 +1,25 @@
 <script src="http://localhost:8097"></script>
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, FlatList, UIManager, findNodeHandle, Dimensions, AsyncStorage, Animated, ScrollView, Modal, TextInput} from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import {colorPrimary, colorSecondary, background, greyColor} from "./styles/commonStyles";
-import EditTask from './EditTask';
+import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal,} from 'react-native';
+import {background, greyColor} from "./styles/commonStyles";
 import Header from './header';
 import Footer from './Footer';
-import AddTask from './AddTask';
 import ListItem from './ListItem';
 import FilterTasks from './FilterTask';
 import ModalChangeTasksOrder from './ModalChangeTasksOrder';
 
 
-class Main extends PureComponent {
+export default class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
             tasks: [],
             taskKey: '',
             firstTaskPositionY: 115.04762268066406,
-            getCoordinations: true,
             taskFilter: {lists: '', date: '', priority: ''},
             canScroll: true,
             isActive: -1,
-            changeTaskOrderModalVisibility: false,
+            changeModalVisibility: false,
             from: '',
             to: '',
     };
@@ -69,23 +65,10 @@ class Main extends PureComponent {
       }
   }
 
-  // handleInput = async (key) => {
-  //   const newState = this.state.tasks.map( task => {
-  //     if(task.key === key) {
-  //       task.isChecked = !task.isChecked
-  //       return task
-  //     }
-  //     return task
-  //   })
-  //   await this.setState({ tasks: newState });
-  //   this.setDataToAsyncStore();
-  // }
-
   handleAddTask = async (task) => {
     const newTasks = [...this.state.tasks, task];
     await this.setState({ tasks: newTasks });
     this.setDataToAsyncStore();
-    //console.log('this.state 1 ', this.state.tasks)
   }
 
   changetaskKey = async (key) => {
@@ -104,7 +87,7 @@ class Main extends PureComponent {
   }
 
   handleEditTask = async (choosenTask) => {
-    console.log('choosenTask ', choosenTask, choosenTask.key)
+    //console.log('choosenTask ', choosenTask, choosenTask.key)
     const newTasks = this.state.tasks.map( task => {
       if (task.key === choosenTask.key) {
         return choosenTask
@@ -127,10 +110,6 @@ class Main extends PureComponent {
       this.setDataToAsyncStore();
     }
 
-  getCoordinations = (bool) => {
-    this.setState({ getCoordinations: bool})
-  }
-
   handleChangeTaskOrder = (taskIndex, locationY, moveY) => {
     //console.log('moveY ', locationY, moveY)
     const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.returnFilteredTasks()[0].height],]
@@ -139,7 +118,7 @@ class Main extends PureComponent {
       //console.log('task height ', index, task.height)
       return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 2, allTasksHeightArray[index-1][2] + 2 + task.height])
     })
-    console.log("onDropTask full ", allTasksHeightArray)
+    //console.log("onDropTask full ", allTasksHeightArray)
 
     const whereToDrop = allTasksHeightArray[taskIndex][1] + locationY + moveY
     const findIndex = allTasksHeightArray.findIndex( (task) => {
@@ -147,8 +126,8 @@ class Main extends PureComponent {
           return task
         }
     })
-     console.log("tutaj ", whereToDrop)
-     console.log("findIndex ", findIndex)
+     //console.log("tutaj ", whereToDrop)
+     //console.log("findIndex ", findIndex)
     if (findIndex === -1) {
       return
     }
@@ -208,11 +187,11 @@ class Main extends PureComponent {
   }
 
   openModal = (index) => {
-    this.setState({ changeTaskOrderModalVisibility: true, from: (index+1).toString() });
+    this.setState({ changeModalVisibility: true, from: (index+1).toString() });
   }
 
-  changeTaskOrderModalVisibility = (bool) => {
-      this.setState({ changeTaskOrderModalVisibility: bool });
+  changeModalVisibility = (bool) => {
+      this.setState({ changeModalVisibility: bool });
   }
 
   setFromOrderNumber = (from) => {
@@ -261,7 +240,7 @@ class Main extends PureComponent {
   }
 
   setActiveItem =(index) => {
-   // console.log('show index active item', index)
+   // console.log('show index of active item', index)
     this.setState({ isActive: index})
   }
 
@@ -282,7 +261,7 @@ class Main extends PureComponent {
         return <View key={item.key}>
             <ListItem item={item} index={index} handleInput={this.handleInput} state={this.state}
             handleDeleteTask={this.handleDeleteTask} setTasksCoordinations={this.setTasksCoordinations}
-            handleChangeTaskOrder={this.handleChangeTaskOrder} getCoordinations={this.getCoordinations} 
+            handleChangeTaskOrder={this.handleChangeTaskOrder}
             primaryColor={primaryColor} setScroll={this.setScroll} setActiveItem={this.setActiveItem} openModal={this.openModal}
             //scrollTo={this.scrollTo}
             editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
@@ -296,11 +275,7 @@ class Main extends PureComponent {
         <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} />
         <ScrollView ref={(ref) => this.scrollList = ref}
             contentContainerStyle={{paddingBottom: 110}}
-            scrollEnabled={this.state.canScroll}
-            //onLayout={(event)=> console.log('layout ', event.nativeEvent)}
-            //onScroll={(event) => {this.setState({ scrollContentOffset: event.nativeEvent.contentOffset.y }) } }
-            >
-            
+            scrollEnabled={this.state.canScroll} >
             <View>
                 {item}
             </View>
@@ -314,64 +289,15 @@ class Main extends PureComponent {
           </TouchableOpacity>
         </View>
         <Footer primaryColor={primaryColor}/>
-        <Modal transparent={true} animationType="fade" visible={this.state.changeTaskOrderModalVisibility} 
-            onRequestClose={() => {this.setState({changeTaskOrderModalVisibility: false}) }}>
-              <ModalChangeTasksOrder changeTaskOrderModalVisibility={this.changeTaskOrderModalVisibility} 
+        <Modal transparent={true} animationType="fade" visible={this.state.changeModalVisibility} 
+            onRequestClose={() => {this.setState({changeModalVisibility: false}) }}>
+              <ModalChangeTasksOrder changeModalVisibility={this.changeModalVisibility} 
               primaryColor={primaryColor} handleChangeTaskOrderLeft={this.handleChangeTaskOrderLeft} 
               setFromOrderNumber={this.setFromOrderNumber} setToOrderNumber={this.setToOrderNumber} 
               state={this.state} />                
         </Modal>
       </View>
     );
-  }
-}
-
-const StackNavigator = createStackNavigator(
-  {    
-    Home: Main,
-    EditTask: EditTask,
-    AddTask: AddTask,
-  },
-  {
-    initialRouteName: 'Home',
-    defaultNavigationOptions: {   // Header style
-      headerStyle: { height: 55, shadowRadius: 0, },
-      headerTintColor: '#fff',
-      headerTitleStyle: { fontWeight: 'bold' },
-    },
-    transitionConfig: () => ({
-      transitionSpec: {
-        duration: 500,
-      },
-      screenInterpolator: sceneProps => {
-      const { position, layout, scene } = sceneProps
-      const index = scene.index
-      const width = layout.initWidth
-
-      const slideFromRight = { 
-        opacity: position.interpolate({
-              inputRange: [ index, index + 1],
-              outputRange: [1, 1], 
-            }),
-        transform: [{ 
-          translateX: position.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [width, 0, -20],
-            })
-      }] }
-        return slideFromRight
-      },
-    }),
-  }
-);
-
-const AppContainer = createAppContainer(StackNavigator);
-
-export default class MainArea extends React.Component {
-  render() {
-    //console.log('show me props ', this.props)
-    return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor, 
-            deletedList: this.props.deletedList }} />;
   }
 }
 

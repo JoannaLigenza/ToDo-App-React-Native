@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Button, Image, TouchableOpacity, TouchableHighlight} from 'react-native';
+import {StyleSheet, View,Image,} from 'react-native';
 import { DrawerActions, } from "react-navigation";
-import MainArea from './Main';
+import { background } from "./styles/commonStyles";
+import StackNavigator from './StackNavigator';
 
 export default class HomeScreen extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state= { 
-  //           lists: ['Default', 'Private', 'Work'],    // read from data base
-  //           }
-  // }
+
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Home', 
@@ -23,16 +19,14 @@ export default class HomeScreen extends Component {
     }
   };
 
-
   render() {
     //console.log("props homescreen",  this.props)
     return (
       <View style={styles.container}>
         {/* <Header /> */}
-        <MainArea openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}
+        <StackNavigator openDraw={()=> { this.props.navigation.dispatch(DrawerActions.openDrawer())}}
                   lists={this.props.screenProps.lists} primaryColor={this.props.screenProps.primaryColor}
-                  deletedList={this.props.screenProps.deletedList} />
-        {/* <Button title="Press" onPress={() => {this.props.navigation.dispatch(DrawerActions.openDrawer())}}></Button> */}       
+                  deletedList={this.props.screenProps.deletedList} />      
       </View>
     );
   }
@@ -41,10 +35,8 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: 'white',
+    backgroundColor: background,
     flexDirection: 'column',
-    //justifyContent: 'space-between',
   },
 });
