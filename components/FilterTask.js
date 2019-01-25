@@ -47,7 +47,7 @@ export default class FilterTasks extends Component {
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
                                         {list}
-                                        {/* OnPress button wywoluje funkcje sortowania w main */}
+                                        {/* OnPress button calls sort function in Main */}
                                         <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter(this.state.choosenList, '', ''); this.setState({listModalVisibility: false, choosenList: "", }) }} >
                                             <Text style={styles.text}>Save</Text>
                                         </TouchableOpacity>
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     touchableOpacity: {
-        //backgroundColor: colorPrimary,
         width: Dimensions.get('window').width / 3,
         height: 50, 
         borderColor: 'white',

@@ -11,7 +11,13 @@ export default class ModalChangeTasksOrder extends Component {
     }
 
     modalTextChange = () => {
-        //this.setState({ modalText: text})
+        console.log('text: ', this.state.modalText, this.props.state.to )
+        if (this.props.state.to === '') {
+            this.props.handleChangeTaskOrderLeft(parseInt(this.props.state.from), parseInt(this.props.state.from));
+            this.props.changeModalVisibility(false); 
+            this.props.setToOrderNumber('');
+            return
+        }
         if (this.props.state.to > this.props.state.tasks.length) {
             this.setState({ modalText: 'You have only ' + this.props.state.tasks.length + ' tasks'});
             return
@@ -39,7 +45,6 @@ export default class ModalChangeTasksOrder extends Component {
                                 editable = {true}
                                 multiline = {false}
                                 maxLength = {3}
-                                //NumberOfLines = {4}
                                 //autoFocus = {true}
                             />
                             <Text style={{margin: 10}}> {this.state.modalText} </Text>
@@ -69,8 +74,6 @@ const styles = StyleSheet.create({
     width: 50, 
     alignSelf: 'center',
     textAlign: 'center',
-    // marginLeft: 10,
-    // marginRight: 10,
     marginBottom: 30,
     fontSize: 20,
     fontWeight: 'bold',

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
-import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
+import {background} from "./styles/commonStyles";
 
 export default class AddTask extends Component {
     constructor() {
@@ -17,7 +17,6 @@ export default class AddTask extends Component {
     }
 
     static navigationOptions = ({ navigation }) => {
-        //console.log(" add Task props " , navigation.state.params.primaryColor  )
         return { 
             title: 'Add Task',
             headerStyle: { backgroundColor: navigation.state.params.primaryColor, height: 55, shadowRadius: 0, },
@@ -43,7 +42,6 @@ export default class AddTask extends Component {
     }
 
     render() {
-        //console.log("this.state.add.tasks ", this.state.tasks)
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, modalVisible1: false}) }}>{list}</Text>
         })
@@ -56,11 +54,10 @@ export default class AddTask extends Component {
                         <TextInput
                             style={styles.textInput}
                             onChangeText={(text) => this.setState({inputText: text})}
-                            //value={this.state.text}
                             multiline = {true}
                             maxLength = {200}
                             //NumberOfLines = {4}
-                            //autoFocus = {true}
+                            autoFocus = {true}
                         />
                     </View>
 
@@ -111,7 +108,6 @@ export default class AddTask extends Component {
                         <TextInput
                             style={styles.textInput}
                             onChangeText={(text) => this.setState({note: text})}
-                            //value={this.state.text}
                             multiline = {true}
                             maxLength = {200}
                             NumberOfLines = {2}
@@ -122,7 +118,6 @@ export default class AddTask extends Component {
                 </ScrollView>
                 <TouchableOpacity activeOpacity={0.8} style={[styles.addButton, { backgroundColor: this.props.screenProps.primaryColor}]}
                     onPress={() => {this.props.navigation.goBack(); this.handleAddTask() } }>
-                    {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}
                     <Text>+</Text>
                 </TouchableOpacity>
             </View>

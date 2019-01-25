@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
-import {colorPrimary, colorSecondary, background} from "./styles/commonStyles";
+import {background} from "./styles/commonStyles";
 
 export default class EditTask extends Component {
     constructor() {
@@ -138,7 +138,6 @@ export default class EditTask extends Component {
                             editable = {true}
                             multiline = {true}
                             maxLength = {200}
-                            //NumberOfLines = {2}
                         />
                     </View>
                     <View style={{height: 100}}></View>
@@ -147,7 +146,6 @@ export default class EditTask extends Component {
                 <TouchableOpacity activeOpacity={0.8} style={[styles.addButton, { backgroundColor: this.props.screenProps.primaryColor}]}
                     onPress={() => {this.handleEditTask(this.props.navigation.state.params.index); 
                     this.props.navigation.goBack(); } }>
-                    {/* this.props.screenProps.addTask({key: '10', text: this.state.inputText, isChecked: false, list: this.state.choosenList, priority: this.state.choosenPriority, Date: this.state.choosenDate }) }}> */}
                     <Text>+</Text>
                 </TouchableOpacity>
             </View>
@@ -157,7 +155,6 @@ export default class EditTask extends Component {
 
 const styles = StyleSheet.create({
     textInputArea: {
-        //backgroundColor: colorSecondary,
         padding: 5,
     },
     textInput: {
@@ -181,8 +178,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
     touchableOpacity: {
-        //backgroundColor: 'rgba(216, 216, 216, 0.5)',
-       // borderColor: colorPrimary, 
         borderBottomWidth: 2,
         borderTopWidth: 1,
         padding: 3,
@@ -194,7 +189,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     modal: {
-        //flex: 1,
         width: Dimensions.get('window').width - 80,
         height: 'auto',
         maxHeight: Dimensions.get('window').height - 60,
@@ -203,8 +197,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         textAlign: 'center',
         position: 'absolute',
-        //top: ((Dimensions.get('window').height - 200) / 2)- 50,
-        //backgroundColor: colorPrimary,
     },
     select: {
         fontSize: 20,
