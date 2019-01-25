@@ -38,7 +38,7 @@ export default class PickColor extends Component {
             </View>
             <View style={styles.colorContainer }>
                 <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#fec538', borderColor: (this.state.choosenColor === '#fec538') ? (darkGreyColor) : ('#fec538') }]}
-                    onPress={() => {this.setAppColor('#fec538'); console.log('orange') }}>
+                    onPress={() => {this.setAppColor('#fec538'); }}>
                     <Text style={styles.textColor} >Orange</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#75ff5a', borderColor: (this.state.choosenColor === '#75ff5a') ? (darkGreyColor) : ('#75ff5a') }]}

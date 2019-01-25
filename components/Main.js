@@ -48,7 +48,7 @@ export default class Main extends PureComponent {
                 taskKey = '2'
                 await AsyncStorage.setItem('taskKey', taskKey );
             }
-            console.log('key ' , taskKey );
+            //console.log('key ' , taskKey );
             tasks = JSON.parse(tasks);
             this.setState({ tasks: tasks, taskKey: taskKey })
         } catch (error) {

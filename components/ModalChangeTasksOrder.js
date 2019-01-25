@@ -11,7 +11,7 @@ export default class ModalChangeTasksOrder extends Component {
     }
 
     modalTextChange = () => {
-        console.log('text: ', this.state.modalText, this.props.state.to )
+        //console.log('text: ', this.state.modalText, this.props.state.to )
         if (this.props.state.to === '') {
             this.props.handleChangeTaskOrderLeft(parseInt(this.props.state.from), parseInt(this.props.state.from));
             this.props.changeModalVisibility(false); 
