@@ -1,40 +1,9 @@
 import React, {Component} from 'react';
-import { AsyncStorage} from 'react-native';
-import { createDrawerNavigator, createAppContainer} from "react-navigation";
-import {colorPrimary} from "./components/styles/commonStyles";
-import HomeScreen from './components/HomeScreen';
-import PickColor from './components/PickColor';
-import AddDeleteList from './components/AddDeleteList';
-//import TestComponent from './components/testComponent';
-//import TestFlatList from './components/TestFlatList';
-//import SortableFlatList from './components/TestFlatList3'
+import { AsyncStorage } from 'react-native';
+import { colorPrimary } from './components/styles/commonStyles';
+import { AppContainer } from './components/DrawerNavigator';
 
 
-
-const MyDrawerNavigator = createDrawerNavigator({
-  Home: { screen: HomeScreen },
-  'App Color': {screen: PickColor },
-  'Add/Delete List' : {screen: AddDeleteList },
-  // Zobacz: { screen: (props) => <TasksOrder {...props} screenProps={"prop"} tasks={'prop'}/> }
-},
-{
-    initialRouteName: 'Home',
-    //contentComponent: HomeScreen,
-    drawerWidth: 300,
-    drawerPosition: 'left',
-    navigationOptions: {
-      headerStyle: { backgroundColor: colorPrimary },
-      //title: 'My Chats'
-      headerLeft: navigation => {
-        return  <Button title="menu" style={{ paddingLeft: 10 }} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
-      },
-      headerBackTitleVisible: true,
-      headerVisible: true,
-      gesturesEnabled: true,
-    }
-});
-
-const AppContainer = createAppContainer(MyDrawerNavigator);
 
 export default class App extends Component {
   constructor(props) {
@@ -76,7 +45,6 @@ export default class App extends Component {
             const saveLists = this.state.lists;
             const savePrimaryColor = this.state.primaryColor;
             await AsyncStorage.multiSet([['lists', JSON.stringify(saveLists)], ['primaryColor', savePrimaryColor] ]);
-            // await AsyncStorage.multiSet([['key 2', key], ['text 2', this.state.inputText]]);
             // await AsyncStorage.multiRemove([ '12', '13' ]);
             // console.log('reading data 1 ', await AsyncStorage.getItem('tasks'));
              //console.log('reading data 2 ', await AsyncStorage.getAllKeys(), );            

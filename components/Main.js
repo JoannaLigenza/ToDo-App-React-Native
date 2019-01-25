@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     width: 80,
     height: 80,
-    backgroundColor:'#fec538',
+    //backgroundColor:'#fec538',
     margin: 0,
     padding: 0,
     elevation: 6,

@@ -12,8 +12,8 @@ export default class Header extends Component {
         <View style={styles.component2}>
             <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
               <Image
-                style={styles.headerButton}
-                source={require('../world.png')}
+                //style={styles.headerButton}
+                source={require('../img/world.png')}
               />
             </TouchableOpacity>
             {/* <Button title="Press" onPress={()=> {console.log("presniety")}}></Button> */}

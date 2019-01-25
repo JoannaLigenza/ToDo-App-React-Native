@@ -16,8 +16,8 @@ export default class HomeScreen extends Component {
       drawerLabel: 'Home',
       drawerIcon: ({ tintColor }) => (
         <Image
-          source={require('../world.png')}
-          //style={[styles.icon, {tintColor: tintColor}]}
+          source={require('../img/world.png')}
+          //style={{tintColor: tintColor}}
         />
       ),
     }
