@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, Animated, Image, CheckBox, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, Text, View, Animated, Image, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import { background } from "./styles/commonStyles";
 
 
@@ -19,15 +19,13 @@ export default class ListItem extends PureComponent {
             onPressOutEvtLocationY: null,
     };
     this.panResponder = PanResponder.create({    //Step 2
-      //onStartShouldSetPanResponder: () => true,
       onStartShouldSetPanResponderCapture: () => false,
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-          this.props.getCoordinations(false)
+      onPanResponderGrant: (evt) => {
           this.setState({locationY: evt.nativeEvent.locationY})
-          console.log('move')
+          //console.log('move')
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
@@ -37,20 +35,7 @@ export default class ListItem extends PureComponent {
         //if ( gestureState.x0 > Dimensions.get('window').width - 50) { 
         if ( this.state.canMove === true) { 
             //console.log('jak sie przesuwa ', gestureState, evt.nativeEvent.target)
-            // if ( gestureState.moveY > Dimensions.get('window').height - 200 ) {
-            //   console.log('is bigger', this.state.pan2.y._value)
-            //   this.props.scrollTo('down')
-            //   //this.state.pan2.setOffset( { x: 0, y: this.state.pan2.y._value + 30} )
-            // }
-            // if ( gestureState.moveY < 150 ) {
-            //   console.log('is less')
-            //   this.props.scrollTo('up')
-            // }
-            // else { this.props.setScroll(false) }
             this.setState({ backgroundColor: '#ededed', elevation: 5});
-            // if(gestureState.dy > this.props.state.tasks[this.props.index+1].height/2) {
-            //   console.log('jestem nastepny ');
-            // }
             return Animated.event([null, {dy: this.state.pan2.y} ])(evt, gestureState);
         }
       },
@@ -81,7 +66,7 @@ export default class ListItem extends PureComponent {
           this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
         },
       onPanResponderRelease: (evt, gestureState) => {        //Step 4
-      console.log("release")
+      //console.log("release")
               if (gestureState.dx < 150) {
                 Animated.timing(this.state.pan, {
                   toValue: {x: 0, y: 0},
@@ -93,7 +78,7 @@ export default class ListItem extends PureComponent {
                   toValue: {x: Dimensions.get('window').width, y: 0},
                   duration: 300,
                 }).start(() => {
-                    console.log("usuniety ")
+                    //console.log("removed ")
                     this.delete(this.props.item.key)
                 });
               }
@@ -112,7 +97,6 @@ export default class ListItem extends PureComponent {
                     }).start(() => {
                       LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
                       this.props.handleChangeTaskOrder(this.props.index, this.state.locationY, this.state.moveY)
-                      this.props.getCoordinations(true);
                     });
                   }   
               }
@@ -143,23 +127,22 @@ export default class ListItem extends PureComponent {
   // }
   
   render() {
-   //console.log("render ", this.props.index, this.props.state.isActive, this.props.state.isActive===this.props.index)
-  // console.log("onPressOutEvtLocationY ", this.state.onPressOutEvtLocationY)
     const taskNumberBackgroundColor = () => {
       if( this.props.item.priority === 'None') { return null}
       if( this.props.item.priority === 'Low') { return 'yellow'}
       if( this.props.item.priority === 'Middle') { return 'orange'}
       if( this.props.item.priority === 'High') { return 'red'}
     }
+    const initHeihgt = this.props.item.height || 67
     return (
       <Animated.View style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]}>
-          <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (this.props.item.height-33)/2 }]}/>
+          <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (initHeihgt-33)/2 }]}/>
           <Animated.View ref="task" style={[styles.oneTask, {backgroundColor: this.state.backgroundColor, elevation: this.state.elevation}, 
           this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
           onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
           } }
           >
-              <TouchableOpacity activeOpacity={1} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
+              <TouchableOpacity activeOpacity={0.7} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
                   onPress={() => { (this.props.state.taskFilter.lists === '' && this.props.state.taskFilter.date === '' && this.props.state.taskFilter.priority === '') ? (this.props.openModal(this.props.index, this.props.item)) : (null) }}>
                   <Text style={styles.taskNumber}>{this.props.index+1}</Text>
               </TouchableOpacity>
@@ -170,14 +153,16 @@ export default class ListItem extends PureComponent {
                       {this.props.item.text}
                   </Text>
               </TouchableOpacity>
-              <TouchableWithoutFeedback onPressIn={(evt) => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ onPressOutEvtLocationY: evt.nativeEvent.locationY}); console.log('in ')}}
-                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('press') }} 
+
+              <TouchableWithoutFeedback onPressIn={(evt) => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ onPressOutEvtLocationY: evt.nativeEvent.locationY}) }}
+                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}) }} 
                 onPressOut={(evt) => {this.state.onPressOutEvtLocationY === evt.nativeEvent.locationY ? (this.onPressOut()) : (null)} } 
                 >
                   <View style={styles.moveTaskVertically} >
-                    <Text>.....</Text>
+                    <Image source={require('../img/dots.png')} />
                   </View>
               </TouchableWithoutFeedback>
+
           </Animated.View>
       </Animated.View>
     );
@@ -191,9 +176,6 @@ const styles = StyleSheet.create({
     height: 33,
     position: 'absolute',
     left: 10,
-    //top: '33%',
-    // borderColor: 'white',
-    // borderWidth: 2,
   },
   oneTask: {
     flex: 1,
@@ -247,5 +229,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // borderColor: 'red',
     // borderWidth: 1,
-  }
+  },
 });
