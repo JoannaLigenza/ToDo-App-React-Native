@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Button, Image, TouchableOpacity, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight, Dimensions} from 'react-native';
 import { background, darkGreyColor } from "./styles/commonStyles";
 
 export default class PickColor extends Component {
@@ -13,7 +13,7 @@ export default class PickColor extends Component {
         drawerLabel: 'App Color',
         drawerIcon: ({ tintColor }) => (
         <Image
-            source={require('../world.png')}
+            source={require('../img/world.png')}
             style={[ {tintColor: tintColor}]}
         />
         ),
@@ -27,12 +27,18 @@ export default class PickColor extends Component {
       //console.log("props", this.props)
       return(
           <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}>
-            <Text style={[styles.textColor, {margin: 15}]}>
-                Change color of Your App:
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+                <TouchableHighlight underlayColor={'rgba(0,0,0,0.4)'} onPress={() => {this.props.navigation.goBack()}}
+                                    style={styles.touchableHighlight}>
+                    <Image source={require('../img/arrow.png')} ></Image>
+                </TouchableHighlight>
+                <Text style={[styles.textColor, {margin: 15}]}>
+                    Change color of Your App:
+                </Text>
+            </View>
             <View style={styles.colorContainer }>
                 <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#fec538', borderColor: (this.state.choosenColor === '#fec538') ? (darkGreyColor) : ('#fec538') }]}
-                    onPress={() => {this.setAppColor('#fec538');  }}>
+                    onPress={() => {this.setAppColor('#fec538'); console.log('orange') }}>
                     <Text style={styles.textColor} >Orange</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#75ff5a', borderColor: (this.state.choosenColor === '#75ff5a') ? (darkGreyColor) : ('#75ff5a') }]}
@@ -79,6 +85,14 @@ export default class PickColor extends Component {
 const styles = StyleSheet.create({
     containerAll: {
         flex: 1,
+    },
+    touchableHighlight: {
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        alignItems:'center',
+        justifyContent:'center',
+        margin: 7,
     },
     colorContainer: {
         //flexDirection: 'row',

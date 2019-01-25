@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, Text, TextInput, View, Image, TouchableOpacity, TouchableHighlight, ScrollView, Dimensions} from 'react-native';
 import { background } from "./styles/commonStyles";
 
 export default class AddDeleteList extends Component {
@@ -15,7 +15,7 @@ export default class AddDeleteList extends Component {
         drawerLabel: 'Add/Delete List',
         drawerIcon: ({ tintColor }) => (
         <Image
-            source={require('../world.png')}
+            source={require('../img/world.png')}
             style={[ {tintColor: tintColor}]}
         />
         ),
@@ -34,7 +34,7 @@ export default class AddDeleteList extends Component {
         const isListExist = []
         this.state.lists.map( list => {
             if (list === this.state.inputText) {
-                this.setState({ addListInfo: 'This list already exist!', })
+                this.setState({ addListInfo: 'This list already exists!', })
                 isListExist.push(list)
             }
         })
@@ -54,6 +54,12 @@ export default class AddDeleteList extends Component {
       })
       return(
           <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}> 
+            <View>
+                <TouchableHighlight underlayColor={'rgba(0,0,0,0.4)'} onPress={() => {this.props.navigation.goBack()}}
+                                    style={styles.touchableHighlight}>
+                    <Image source={require('../img/arrow.png')} ></Image>
+                </TouchableHighlight>
+            </View>
             <View style={styles.row}>
                 <View style={{ width: '65%',}}>
                     <TextInput
@@ -69,10 +75,10 @@ export default class AddDeleteList extends Component {
                     </View>
                 </View>
                 <TouchableOpacity activeOpacity={1} onPress={this.handleAddList} >
-                    <Text style={[styles.button, styles.addTaskButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
+                    <Text style={[styles.button, styles.addListButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
                 </TouchableOpacity>
             </View>
-            <View style={[styles.csrollViewContainer, {backgroundColor: this.props.screenProps.primaryColor}]} >
+            <View style={{backgroundColor: this.props.screenProps.primaryColor}} >
                 <ScrollView style={[styles.scrollView, {backgroundColor: this.props.screenProps.primaryColor}]}>
                     {lists}
                     <View style={{height: 15}}></View>
@@ -94,9 +100,28 @@ const styles = StyleSheet.create({
     containerAll: {
         flex: 1,
     },
-    // csrollViewContainer: {
-    //     padding: 20,
-    // },
+    touchableHighlight: {
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        alignItems:'center',
+        justifyContent:'center',
+        margin: 5,
+    },
+    textInput: {
+        ///width: 200,
+        //height: 50,
+        marginLeft: 10,
+        marginRight: 5,
+        marginBottom: 10,
+        borderColor: 'gray', 
+        borderBottomWidth: 2,
+        // borderWidth: 2,
+        // borderColor: 'red',
+    },
+    text: {
+        marginLeft: 10,
+    },
     scrollView: {
         width: Dimensions.get('window').width - 10,
         height: 'auto',
@@ -132,17 +157,6 @@ const styles = StyleSheet.create({
         padding: 8,
         backgroundColor: background,
     },
-    textInput: {
-        ///width: 200,
-        //height: 50,
-        marginLeft: 10,
-        marginRight: 5,
-        marginBottom: 30,
-        borderColor: 'gray', 
-        borderBottomWidth: 2,
-        // borderWidth: 2,
-        // borderColor: 'red',
-    },
     touchaleopacity: {
         // borderWidth: 2,
         // borderColor: 'green',
@@ -163,7 +177,7 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         paddingLeft: 10,
     },
-    addTaskButton: {
+    addListButton: {
         width: 'auto',
         marginRight: 10,
         marginTop: 15,
@@ -173,7 +187,6 @@ const styles = StyleSheet.create({
     goBackButton: {
         padding: 15,
         margin: 10,
-        marginTop: 25,
         marginBottom: 25,
         backgroundColor: background,
     },
