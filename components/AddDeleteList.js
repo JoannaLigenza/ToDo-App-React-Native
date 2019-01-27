@@ -39,8 +39,8 @@ export default class AddDeleteList extends Component {
             }
         })
         if (isListExist.length > 0) { return }
-        const newTasks = [...this.state.lists, this.state.inputText]
-        this.setState({ lists: newTasks, inputText: '', addListInfo: '' })
+        const newLists = [...this.state.lists, this.state.inputText]
+        this.setState({ lists: newLists, inputText: '', addListInfo: '' })
     }
 
   render() {
@@ -55,7 +55,8 @@ export default class AddDeleteList extends Component {
       return(
           <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}> 
             <View>
-                <TouchableHighlight underlayColor={'rgba(0,0,0,0.4)'} onPress={() => {this.props.navigation.goBack()}}
+                <TouchableHighlight underlayColor={'rgba(0,0,0,0.4)'} onPress={() => {this.props.navigation.goBack();
+                    this.setState({ lists: this.props.screenProps.lists, inputText: '', addListInfo: ''}) }}
                                     style={styles.touchableHighlight}>
                     <Image source={require('../img/arrow.png')} ></Image>
                 </TouchableHighlight>
@@ -78,12 +79,12 @@ export default class AddDeleteList extends Component {
                     <Text style={[styles.button, styles.addListButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
                 </TouchableOpacity>
             </View>
-            <View style={{backgroundColor: this.props.screenProps.primaryColor}} >
-                <ScrollView style={[styles.scrollView, {backgroundColor: this.props.screenProps.primaryColor}]}>
+            <ScrollView style={[styles.scrollView, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                <View>
                     {lists}
                     <View style={{height: 15}}></View>
-                </ScrollView> 
-            </View>
+                </View>
+            </ScrollView> 
             
             <TouchableOpacity activeOpacity={0.9} 
                 onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists);
