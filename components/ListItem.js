@@ -16,20 +16,26 @@ export default class ListItem extends PureComponent {
             backgroundColor: '#fff',
             elevation: 0,
             canMove: false,
-            onPressOutEvtLocationY: null,
+            isMoving: false,
     };
     this.panResponder = PanResponder.create({    //Step 2
       onStartShouldSetPanResponderCapture: () => false,
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
-      onPanResponderGrant: (evt) => {
-          this.setState({locationY: evt.nativeEvent.locationY})
-          //console.log('move')
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+        const { dx, dy } = gestureState
+        //console.log('gesture dy', dy)
+        if (dx > 2 || dx < -2 || dy > 7 || dy < -7) {
+          return true
+        } else { return false }
+      },
+      onPanResponderGrant: () => {
+          this.setState({ isMoving: true })
+          console.log('move')
         },
       onPanResponderMove: (evt, gestureState) => {       //Step 3
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
-        if ( gestureState.x0 < Dimensions.get('window').width - 50) {
+        if ( gestureState.x0 < Dimensions.get('window').width - 50 && gestureState.dx > 50) {
             return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState);
         } 
         //if ( gestureState.x0 > Dimensions.get('window').width - 50) { 
@@ -61,6 +67,7 @@ export default class ListItem extends PureComponent {
                     }); 
             }
             this.props.setActiveItem(-1);
+            this.setState({ isMoving: false })
         },
       onPanResponderEnd: (evt, gestureState) => {
           this.setState({moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
@@ -102,7 +109,7 @@ export default class ListItem extends PureComponent {
               }
           this.props.setScroll(true);
           this.props.setActiveItem(-1);
-          this.setState({canMove: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
+          this.setState({canMove: false, isMoving: false, moveY: gestureState.dy, backgroundColor: '#fff', elevation: 0})
       } 
     });
   }
@@ -113,9 +120,8 @@ export default class ListItem extends PureComponent {
   }  
 
   onPressOut = () => {
-    //console.log('out ', )
+    console.log('out ', this.state.isMoving)
     this.setState({ canMove: false, backgroundColor: '#fff', elevation: 0}); 
-    
   }
 
   // Not using, but keep for the future
@@ -147,16 +153,17 @@ export default class ListItem extends PureComponent {
                   <Text style={styles.taskNumber}>{this.props.index+1}</Text>
               </TouchableOpacity>
               
-              <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity} 
+              <TouchableOpacity activeOpacity={1} style={styles.TouchableOpacity}
                   onPress={() => {this.props.editTask(); this.props.setScroll(true)} }>
                   <Text style={this.props.item.isChecked ? (styles.taskTextDone) : (styles.taskText) } >
                       {this.props.item.text}
                   </Text>
               </TouchableOpacity>
 
-              <TouchableWithoutFeedback onPressIn={(evt) => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ onPressOutEvtLocationY: evt.nativeEvent.locationY}) }}
-                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}) }} 
-                onPressOut={(evt) => {this.state.onPressOutEvtLocationY === evt.nativeEvent.locationY ? (this.onPressOut()) : (null)} } 
+              <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('press in') }}
+                onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('long press') }} 
+                delayLongPress={30} 
+                onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut())  } } delayPressOut={30}
                 >
                   <View style={styles.moveTaskVertically} >
                     <Image source={require('../img/dots.png')} />
