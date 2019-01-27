@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { AsyncStorage } from 'react-native';
-import { colorPrimary } from './components/styles/commonStyles';
 import { AppContainer } from './components/DrawerNavigator';
 
 
@@ -10,7 +9,7 @@ export default class App extends Component {
     super(props);
     this.state= { 
             lists: ['Default', 'Private', 'Work'], 
-            primaryColor: '',
+            primaryColor: '#fec538',
             deletedList: '',
             }
   }
@@ -21,17 +20,19 @@ export default class App extends Component {
 
   getDataFromAsyncStore = async () => {
         try {
-            const initLists = ['Default', 'Private', 'Work'];
-            const initColor = colorPrimary;
+            const initLists = ["Default", "Private", "Work"];
+            const initColor = '#fec538';
             let lists = await AsyncStorage.getItem('lists');
             let primaryColor = await AsyncStorage.getItem('primaryColor');
-            if (lists === null ) {
-                lists = initLists;
-                await AsyncStorage.setItem('lists', JSON.stringify(lists));
-            }
             if (primaryColor === null) {
                 primaryColor = initColor;
                 await AsyncStorage.setItem( 'primaryColor', primaryColor);
+            }
+            if (lists === null ) {
+                lists = initLists;
+                await AsyncStorage.setItem('lists', JSON.stringify(lists));
+                this.setState({ lists: lists, primaryColor: primaryColor});
+                return
             }
             lists = JSON.parse(lists);
             this.setState({ lists: lists, primaryColor: primaryColor})

@@ -1,4 +1,4 @@
-<script src="http://localhost:8097"></script>
+
 import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal,} from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
@@ -13,8 +13,8 @@ export default class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
-            tasks: [],
-            taskKey: '',
+            tasks: [ {key: '1', text: 'Sample task 1', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
+            taskKey: '2',
             firstTaskPositionY: 115.04762268066406,
             taskFilter: {lists: '', date: '', priority: ''},
             canScroll: true,
@@ -37,18 +37,21 @@ export default class Main extends PureComponent {
 
   getDataFromAsyncStore = async () => {
         try {
-            const initTask = {key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}
+            const initTask = [{key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}]
             let tasks = await AsyncStorage.getItem('tasks');
             let taskKey = await AsyncStorage.getItem('taskKey');
-            if (tasks === null) {
-                tasks = [initTask]
-                await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
-            }
             if (taskKey === null) {
                 taskKey = '2'
+                // saving data as string
                 await AsyncStorage.setItem('taskKey', taskKey );
             }
-            //console.log('key ' , taskKey );
+            if (tasks === null) {
+                tasks = initTask
+                // saving data as string
+                await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
+                this.setState({ tasks: tasks, taskKey: taskKey })
+                return
+            }
             tasks = JSON.parse(tasks);
             this.setState({ tasks: tasks, taskKey: taskKey })
         } catch (error) {
