@@ -13,7 +13,7 @@ export default class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
-            tasks: [ {key: '1', text: 'Sample task 1', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
+            tasks: [ {key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
             taskKey: '2',
             firstTaskPositionY: 115.04762268066406,
             taskFilter: {lists: '', date: '', priority: ''},
@@ -23,6 +23,7 @@ export default class Main extends PureComponent {
             from: '',
             to: '',
     };
+    this.getDataFromAsyncStore();
   }
 
   static navigationOptions = ({ }) => {
@@ -31,9 +32,9 @@ export default class Main extends PureComponent {
     }
   };
 
-  componentDidMount() {
-        this.getDataFromAsyncStore()
-  }
+  // componentDidMount() {
+  //       this.getDataFromAsyncStore()
+  // }
 
   getDataFromAsyncStore = async () => {
         try {

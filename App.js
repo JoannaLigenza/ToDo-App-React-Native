@@ -8,15 +8,16 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state= { 
-            lists: ['Default', 'Private', 'Work'], 
-            primaryColor: '#fec538',
-            deletedList: '',
-            }
+        lists: ['Default', 'Private', 'Work'], 
+        primaryColor: '#fff',
+        deletedList: '',
+    };
+    this.getDataFromAsyncStore();
   }
 
-  componentDidMount() {
-      this.getDataFromAsyncStore();
-  }
+//   componentDidMount() {
+//       this.getDataFromAsyncStore();
+//   }
 
   getDataFromAsyncStore = async () => {
         try {

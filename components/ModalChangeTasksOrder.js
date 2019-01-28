@@ -34,7 +34,7 @@ export default class ModalChangeTasksOrder extends Component {
     render() {
         return (
             <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.props.changeModalVisibility(false) }}>
-                <View style={[styles.modal, {borderColor: this.props.primaryColor}]}>
+                <View style={[styles.modal, {borderColor: this.props.primaryColor, width: Dimensions.get('window').width - 80, height: Dimensions.get('window').height - 80,}]}>
                     <TouchableOpacity disabled={true} >
                         <View style={styles.textInputArea}>
                             <Text style={styles.text}>Change Task Order To:</Text>
@@ -81,8 +81,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   modal: {
-    width: Dimensions.get('window').width - 80,
-    height: Dimensions.get('window').height - 80,
     padding: 3,
     margin: 20,
     alignSelf: 'center',

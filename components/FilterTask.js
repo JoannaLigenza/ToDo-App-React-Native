@@ -43,7 +43,7 @@ export default class FilterTasks extends Component {
                     <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                         onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
                         <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({listModalVisibility: false}) }}>
-                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor}]}>
+                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60,}]}>
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
                                         {list}
@@ -65,7 +65,7 @@ export default class FilterTasks extends Component {
                     <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                         onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
                         <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
-                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor}]}>
+                            <View style={[styles.modal, {backgroundColor: this.props.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60,}]}>
                                 <TouchableOpacity disabled={true}>
                                     <ScrollView>
                                         <Text onPress={() => {this.setState({choosenPriority: 'None',}) }}   style={this.state.choosenPriority !== 'None' ? (styles.items) : (styles.selectedItem) }>None</Text>
@@ -114,9 +114,7 @@ const styles = StyleSheet.create({
     },
     modal: {
         //flex: 1,
-        width: Dimensions.get('window').width - 80,
         height: 'auto',
-        maxHeight: Dimensions.get('window').height - 60,
         padding: 3,
         margin: 20,
         alignSelf: 'center',

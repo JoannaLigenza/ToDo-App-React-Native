@@ -82,7 +82,7 @@ export default class EditTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                                 onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({listModalVisibility: false}) }}>
-                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60}]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             {list}
@@ -108,7 +108,7 @@ export default class EditTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                                 onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({priorityModalVisibility: false}) }}>
-                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60 }]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',priorityModalVisibility: false}) }}>None</Text>
@@ -189,9 +189,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     modal: {
-        width: Dimensions.get('window').width - 80,
         height: 'auto',
-        maxHeight: Dimensions.get('window').height - 60,
         padding: 3,
         margin: 20,
         alignSelf: 'center',

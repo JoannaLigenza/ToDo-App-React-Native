@@ -67,7 +67,7 @@ export default class AddTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.modalVisible1} 
                                 onRequestClose={() => {this.setState({modalVisible1: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({modalVisible1: false}) }}>
-                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60 }]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             {list}
@@ -89,7 +89,7 @@ export default class AddTask extends Component {
                         <Modal transparent={true} animationType="fade" visible={this.state.modalVisible2} 
                                 onRequestClose={() => {this.setState({modalVisible2: false}) }}>
                             <TouchableOpacity activeOpacity={1} style={styles.aboveModal} onPress={() => {this.setState({modalVisible2: false}) }}>
-                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor}]}>
+                                <View style={[styles.modal, {backgroundColor: this.props.screenProps.primaryColor, width: Dimensions.get('window').width - 80, maxHeight: Dimensions.get('window').height - 60 }]}>
                                     <TouchableOpacity disabled={true}>
                                         <ScrollView>
                                             <Text style={styles.select} onPress={() => {this.setState({choosenPriority: 'None',modalVisible2: false}) }}>None</Text>
@@ -161,9 +161,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     modal: {
-        width: Dimensions.get('window').width - 80,
         height: 'auto',
-        maxHeight: Dimensions.get('window').height - 60,
         padding: 3,
         margin: 20,
         alignSelf: 'center',

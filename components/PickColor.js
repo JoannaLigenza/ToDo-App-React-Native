@@ -37,7 +37,7 @@ export default class PickColor extends Component {
                 </Text>
             </View>
             <ScrollView >
-                <View style={styles.contentContainer }>
+                <View style={[styles.contentContainer ]}>
                     <TouchableOpacity activeOpacity={1} style={[styles.color, {backgroundColor: '#fec538', borderColor: (this.state.choosenColor === '#fec538') ? (darkGreyColor) : ('#fec538') }]}
                         onPress={() => {this.setAppColor('#fec538'); }}>
                         <Text style={styles.textColor} >Orange</Text>
@@ -92,14 +92,13 @@ const styles = StyleSheet.create({
         margin: 7,
     },
     contentContainer: {
-        //flexDirection: 'row',
-        height: Dimensions.get('window').height - 100,
+        height: 'auto',
         backgroundColor: background,
-        alignItems: 'center',
+        alignItems: 'stretch',
     },
     color: {
-        //flex: 1,
-        width: Dimensions.get('window').width - 100,
+        flex: 1,
+        flexDirection: 'row',
         height: 60,
         margin: 5,
         padding: 12,

@@ -163,10 +163,10 @@ export default class ListItem extends PureComponent {
               <TouchableWithoutFeedback onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('press in') }}
                 onLongPress={() => {this.setState({ canMove: true, backgroundColor: '#ededed', elevation: 5}); console.log('long press') }} 
                 delayLongPress={30} 
-                onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut())  } } delayPressOut={30}
+                onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut()) }} delayPressOut={30}
                 >
                   <View style={styles.moveTaskVertically} >
-                    <Image source={require('../img/dots.png')} />
+                    <Image source={require('../img/dots.jpg')}  />
                   </View>
               </TouchableWithoutFeedback>
 
@@ -179,7 +179,7 @@ export default class ListItem extends PureComponent {
 
 const styles = StyleSheet.create({
   image: {
-    width: 40,
+    width: 35,
     height: 33,
     position: 'absolute',
     left: 10,

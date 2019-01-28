@@ -61,7 +61,7 @@ export default class AddDeleteList extends Component {
                     <Image source={require('../img/arrow.png')} ></Image>
                 </TouchableHighlight>
             </View>
-            <View style={styles.row}>
+            <View style={[styles.row, {marginBottom: 10}]}>
                 <View style={{ width: '65%',}}>
                     <TextInput
                         style={styles.textInput}
@@ -76,11 +76,13 @@ export default class AddDeleteList extends Component {
                     </View>
                 </View>
                 <TouchableOpacity activeOpacity={1} onPress={this.handleAddList} >
-                    <Text style={[styles.button, styles.addListButton, {backgroundColor: this.props.screenProps.primaryColor}]}> Add List </Text>
+                    <Text style={[styles.button, styles.addListButton, {backgroundColor: this.props.screenProps.primaryColor}]}> 
+                        Add List 
+                    </Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={[styles.scrollView, {backgroundColor: this.props.screenProps.primaryColor}]}>
-                <View>
+            <ScrollView>  
+                <View style={[styles.contentContainer, {backgroundColor: this.props.screenProps.primaryColor}]}>
                     {lists}
                     <View style={{height: 15}}></View>
                 </View>
@@ -123,18 +125,13 @@ const styles = StyleSheet.create({
     text: {
         marginLeft: 10,
     },
-    scrollView: {
-        width: Dimensions.get('window').width - 10,
+    contentContainer: {
         height: 'auto',
-        maxHeight: Dimensions.get('window').height - 280,
         padding: 2,
-        margin: 10,
-        alignSelf: 'center',
-        textAlign: 'center',
+        marginBottom: 10,
+        alignItems: 'center',
         // borderWidth: 2,
-        // borderColor: 'red',
-        // position: 'absolute',
-        // bottom: ((Dimensions.get('window').height - 200) / 2)- 50,
+        // borderColor: 'blue',
     },
     row: {
         //flex: 1,
