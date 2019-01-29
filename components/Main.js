@@ -13,7 +13,7 @@ export default class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
-            tasks: [ {key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
+            tasks: [ {key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
             taskKey: '2',
             firstTaskPositionY: 115.04762268066406,
             taskFilter: {lists: '', date: '', priority: ''},
@@ -116,11 +116,11 @@ export default class Main extends PureComponent {
 
   handleChangeTaskOrder = (taskIndex, locationY, moveY) => {
     //console.log('moveY ', locationY, moveY)
-    const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.returnFilteredTasks()[0].height],]
+    const allTasksHeightArray = [[0, this.state.firstTaskPositionY, this.state.firstTaskPositionY + this.returnFilteredTasks()[0].height + 2],]
     this.returnFilteredTasks().map( (task, index) => {
       if ( index === 0 ) { return }
       //console.log('task height ', index, task.height)
-      return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 2, allTasksHeightArray[index-1][2] + 2 + task.height])
+      return allTasksHeightArray.push([index, allTasksHeightArray[index-1][2] + 0.0000000000001, allTasksHeightArray[index-1][2] + 0.0000000000001 + task.height + 2])
     })
     //console.log("onDropTask full ", allTasksHeightArray)
 
@@ -290,7 +290,7 @@ export default class Main extends PureComponent {
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-        <Footer primaryColor={primaryColor}/>
+        {/* <Footer primaryColor={primaryColor}/> */}
         <Modal transparent={true} animationType="fade" visible={this.state.changeModalVisibility} 
             onRequestClose={() => {this.setState({changeModalVisibility: false}) }}>
               <ModalChangeTasksOrder changeModalVisibility={this.changeModalVisibility} 
