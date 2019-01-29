@@ -185,7 +185,6 @@ const styles = StyleSheet.create({
         height: 80,
         margin: 0,
         padding: 0,
-        elevation: 6,
         position: 'absolute',
         bottom: 10,
         right: 10,
