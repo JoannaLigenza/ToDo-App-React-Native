@@ -12,7 +12,11 @@ export default class FilterTasks extends Component {
             choosenList: '',
             choosenDate: '',
             choosenPriority: '',
-        }
+            width: Dimensions.get('window').width,
+        };
+        Dimensions.addEventListener("change", (e) => {
+            this.setState(e.window);
+        });
     }
 
     setDateAndroid = async () => {
@@ -37,8 +41,8 @@ export default class FilterTasks extends Component {
             onPress={() => {this.setState({choosenList: [list , index]}) }}>{list}</Text>
         })
         return(
-            <View style={styles.tabContainer}>
-                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: Dimensions.get('window').width / 3,}]}>
+            <View style={[styles.tabContainer, {width: this.state.width}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({listModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
                     <Text style={[styles.text, this.props.taskFilter.lists === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>List</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.listModalVisibility} 
                         onRequestClose={() => {this.setState({listModalVisibility: false}) }}>
@@ -57,10 +61,10 @@ export default class FilterTasks extends Component {
                         </TouchableOpacity>                           
                     </Modal>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: Dimensions.get('window').width / 3,}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
                     <Text style={[styles.text, this.props.taskFilter.date === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>Date</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: Dimensions.get('window').width / 3,}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
                     <Text style={[styles.text, this.props.taskFilter.priority === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>Priority</Text>
                     <Modal transparent={true} animationType="fade" visible={this.state.priorityModalVisibility} 
                         onRequestClose={() => {this.setState({priorityModalVisibility: false}) }}>
