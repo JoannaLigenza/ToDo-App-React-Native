@@ -9,15 +9,10 @@ export default class ListItem extends PureComponent {
     super(props);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
     this.state= { 
-            pan: new Animated.ValueXY(),      //Step 1
-            pan2: new Animated.ValueXY(), 
-            moveY: null,
-            locationY: null,
-            elevation: 0,
             canMove: false,
             isMoving: false,
     };
-    this.panResponder = PanResponder.create({    //Step 2
+    this.panResponder = PanResponder.create({
       onStartShouldSetPanResponderCapture: () => false,
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetResponderCapture: () => true,
@@ -29,74 +24,32 @@ export default class ListItem extends PureComponent {
         } else { return false }
       },
       onPanResponderGrant: (evt, gestureState) => {
-          this.setState({ isMoving: true, locationY: evt.nativeEvent.locationY })
+          this.setState({ isMoving: true })
           console.log('move')
         },
-      onPanResponderMove: (evt, gestureState) => {       //Step 3
+      onPanResponderMove: (evt, gestureState) => {
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
         if ( gestureState.x0 < Dimensions.get('window').width - 50 && gestureState.dx > 0) {
-             LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-             return Animated.event([null, {dx: this.state.pan.x} ])(evt, gestureState);
-            //this.state.pan.setValue({x: gestureState.dx})
+             this.onMoveX(gestureState.dx);
         } 
-        //if ( gestureState.x0 > Dimensions.get('window').width - 50) { 
         if ( this.state.canMove === true) { 
+             this.onMoveY(gestureState.dy);
             //console.log('jak sie przesuwa ',  evt.nativeEvent)
-            this.setState({ elevation: 5});
-            return Animated.event([null, {dy: this.state.pan2.y} ])(evt, gestureState);
         }
       },
-      onPanResponderTerminate: () => {
-            Animated.timing(this.state.pan, {
-              toValue: {x: 0, y: 0},
-              duration: 150,
-            }).start(() => {
-            });
+      onPanResponderTerminate: (evt, gestureState) => {
+        console.log('terminate')
+            this.onResponderRelease(evt, gestureState);
             this.props.setActiveItem(-1);
             this.setState({ isMoving: false })
         },
-      onPanResponderEnd: (evt, gestureState) => {
-          this.setState({moveY: gestureState.dy, elevation: 0})
-        },
-      onPanResponderRelease: (evt, gestureState) => {        //Step 4
-      //console.log("release")
-              if (gestureState.dx < 150) {
-                Animated.timing(this.state.pan, {
-                  toValue: {x: 0, y: 0},
-                  duration: 150,
-                }).start(() => {
-                });
-              } else {
-                Animated.timing(this.state.pan, {
-                  toValue: {x: Dimensions.get('window').width, y: 0},
-                  duration: 300,
-                }).start(() => {
-                    //console.log("removed ")
-                    LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                    this.delete(this.props.item.key)
-                });
-              }
-              if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
-                  if (gestureState.dy < 50 || gestureState.dy > -50) {
-                    Animated.timing(this.state.pan2, {
-                      toValue: {x: 0, y: 0},
-                      duration: 150,
-                    }).start(() => {
-                    });
-                    }
-                  if (gestureState.dy > 50 || gestureState.dy < -50) {
-                    Animated.timing(this.state.pan2, {
-                      toValue: {x: 0, y: 0},
-                      duration: 150,
-                    }).start(() => {
-                      LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
-                      this.props.handleChangeTaskOrder(this.props.index, this.state.locationY, this.state.moveY)
-                    });
-                  }   
-              }
+      onPanResponderEnd: (evt, gestureState) => { },
+      onPanResponderRelease: (evt, gestureState) => {
+      console.log("release")
+          this.onResponderRelease(evt, gestureState);
           this.props.setScroll(true);
           this.props.setActiveItem(-1);
-          this.setState({canMove: false, isMoving: false, moveY: gestureState.dy, elevation: 0})
+          this.setState({canMove: false, isMoving: false})
       } 
     });
   }
@@ -108,7 +61,34 @@ export default class ListItem extends PureComponent {
 
   onPressOut = () => {
     console.log('out ', this.state.isMoving)
-    this.setState({ canMove: false, elevation: 0}); 
+    this.setState({ canMove: false }); 
+  }
+
+  onMoveX = (dx) => {
+    this.refs['task'].setNativeProps({style: { transform: [{translateX: dx}] } });
+  }
+
+  onMoveY = (dy) => {
+    this.refs['allTask'].setNativeProps({style: { elevation: 5, transform: [{translateY: dy}] } });
+  }
+
+  onResponderRelease = (evt, gestureState) => {
+    if (gestureState.dx < Dimensions.get('window').width/2 ) {
+        this.refs['task'].setNativeProps({style: { transform: [{translateX: 0}] } });
+    }
+    if (gestureState.dx >= Dimensions.get('window').width/2 ) {
+        LayoutAnimation.configureNext( LayoutAnimation.create(300, 'easeInEaseOut', 'opacity') );
+        this.refs['task'].setNativeProps({style: { transform: [{translateX: Dimensions.get('window').width}] } });
+        this.refs['allTask'].setNativeProps({style: { opacity: 0 } });
+        this.delete(this.props.item.key)
+    }
+    if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
+        this.refs['allTask'].setNativeProps({style: { elevation: 0, transform: [{translateY: 0}] } });
+    }
+    if (gestureState.dy > 50 || gestureState.dy < -50) {
+        LayoutAnimation.configureNext( LayoutAnimation.create(300, 'easeInEaseOut', 'opacity') );
+        this.props.handleChangeTaskOrder(this.props.index, evt.nativeEvent.locationY, gestureState.dy)
+    }
   }
 
   // Not using, but keep for the future
@@ -120,6 +100,7 @@ export default class ListItem extends PureComponent {
   // }
   
   render() {
+    console.log('render ', this.props.index)
     const taskNumberBackgroundColor = () => {
       if( this.props.item.priority === 'None') { return null}
       if( this.props.item.priority === 'Low') { return 'yellow'}
@@ -128,10 +109,9 @@ export default class ListItem extends PureComponent {
     }
     const initHeihgt = this.props.item.height || 67
     return (
-      <Animated.View style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1}, this.state.pan2.getLayout()]} {...this.panResponder.panHandlers} >
+      <Animated.View ref='allTask' style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1} ]} {...this.panResponder.panHandlers} >
           <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (initHeihgt-33)/2 }]}/>
-          <Animated.View ref="task" style={[styles.oneTask, {elevation: this.state.elevation}, 
-          this.state.pan.getLayout()]} {...this.panResponder.panHandlers} 
+          <Animated.View ref='task' style={styles.oneTask} {...this.panResponder.panHandlers} 
           onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
           } }
           >
@@ -148,8 +128,8 @@ export default class ListItem extends PureComponent {
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={1} onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('press in') }}
-                onLongPress={() => {this.setState({ canMove: true, elevation: 5}); console.log('long press') }} 
-                delayLongPress={20} 
+                onLongPress={() => {this.setState({ canMove: true }); console.log('long press') }} 
+                delayLongPress={1} 
                 onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut()) }} delayPressOut={200}
                 >
                   <View style={styles.moveTaskVertically} >

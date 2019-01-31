@@ -1,4 +1,3 @@
-
 import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal,} from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
