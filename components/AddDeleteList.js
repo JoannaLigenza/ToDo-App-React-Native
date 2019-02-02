@@ -22,6 +22,7 @@ export default class AddDeleteList extends Component {
     };
 
     handleDeleteList = (dispatchList) => {
+        if (dispatchList === 'Default') { return }
         const newLists = this.state.lists.filter( list => {
             return list !== dispatchList
         })
@@ -45,10 +46,17 @@ export default class AddDeleteList extends Component {
 
   render() {
       const lists = this.state.lists.map( (list, index) => {
+          const XButton = () => {
+                if (list === 'Default') {
+                    return null
+                } else {
+                    return <Text style={[styles.button, styles.xButton]} onPress={() => {this.handleDeleteList(list)} } >X</Text>
+                }
+            }
           return <View key={index} style={styles.row}>
                     <Text style={styles.items} > {list} </Text>
                     <TouchableOpacity activeOpacity={1} style={styles.touchaleopacity} >
-                        <Text style={[styles.button, styles.xButton]} onPress={() => {this.handleDeleteList(list)} } >X</Text>
+                        {XButton()}
                     </TouchableOpacity>
                 </View>
       })
