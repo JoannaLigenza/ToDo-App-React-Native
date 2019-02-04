@@ -35,13 +35,18 @@ export default class AddDeleteList extends Component {
         const isListExist = []
         this.state.lists.map( list => {
             if (list === this.state.inputText) {
-                this.setState({ addListInfo: 'This list already exists!', })
-                isListExist.push(list)
+                this.setState({ addListInfo: 'This list already exists!', });
+                isListExist.push(list);
             }
         })
         if (isListExist.length > 0) { return }
+        if (this.state.lists.length > 50) {
+            this.setState({ addListInfo: 'You can only add 50 list', });
+            return
+        }
         const newLists = [...this.state.lists, this.state.inputText]
-        this.setState({ lists: newLists, inputText: '', addListInfo: '' })
+        this.setState({ lists: newLists, inputText: '', addListInfo: '' });
+        this.textInput.blur()
     }
 
   render() {
@@ -72,11 +77,13 @@ export default class AddDeleteList extends Component {
             <View style={[styles.row, {marginBottom: 10}]}>
                 <View style={{ width: '65%',}}>
                     <TextInput
+                        ref={ref => { this.textInput = ref }}
                         style={styles.textInput}
-                        onChangeText={(text) => this.setState({inputText: text})}
+                        onChangeText={(text) => this.setState({inputText: text}) }
                         multiline = {false}
                         maxLength = {40}
-                        defaultValue={this.state.inputText} >
+                        value={this.state.inputText} 
+                        >
 
                     </TextInput>
                     <View style={{height: 20, backgroundColor: background}}>
