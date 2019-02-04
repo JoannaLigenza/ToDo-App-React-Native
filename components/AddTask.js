@@ -54,7 +54,7 @@ export default class AddTask extends Component {
                         <TextInput
                             style={styles.textInput}
                             onChangeText={(text) => this.setState({inputText: text})}
-                            multiline = {true}
+                            multiline = {false}
                             maxLength = {200}
                             //NumberOfLines = {4}
                             autoFocus = {true}

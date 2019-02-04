@@ -67,7 +67,7 @@ export default class EditTask extends Component {
                             onChangeText={(text) => this.setState({inputText: text})}
                             defaultValue={this.props.navigation.state.params.task.text}
                             editable = {true}
-                            multiline = {true}
+                            multiline = {false}
                             maxLength = {200}
                             //NumberOfLines = {4}
                             //autoFocus = {true}
