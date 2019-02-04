@@ -4,7 +4,7 @@ import { background } from "./styles/commonStyles";
 
 
 
-export default class ListItem extends PureComponent {
+export default class ListItem extends Component {
   constructor(props) {
     super(props);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);  // animated Views settings
@@ -25,27 +25,30 @@ export default class ListItem extends PureComponent {
       },
       onPanResponderGrant: (evt, gestureState) => {
           this.setState({ isMoving: true })
-          console.log('move')
+          //console.log('move')
         },
       onPanResponderMove: (evt, gestureState) => {
         // gestureState.x0 - place where finger touch screen horizontally // Dimensions.get('window').width - 50 - button (...) to move tasks vertically
         if ( gestureState.x0 < Dimensions.get('window').width - 50 && gestureState.dx > 0) {
              this.onMoveX(gestureState.dx);
         } 
-        if ( this.state.canMove === true) { 
+        //console.log('gesturestate ', gestureState)
+        //if ( this.state.canMove === true) { 
+        if ( gestureState.x0 > Dimensions.get('window').width - 50 && (gestureState.dy > 5 || gestureState.dy < -5) && this.state.canMove === true ) { 
+          //console.log('bigger than ', gestureState.dy)
              this.onMoveY(gestureState.dy);
             //console.log('jak sie przesuwa ',  evt.nativeEvent)
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {
-        console.log('terminate')
+        //console.log('terminate')
             this.onResponderRelease(evt, gestureState);
             this.props.setActiveItem(-1);
             this.setState({ isMoving: false })
         },
       onPanResponderEnd: (evt, gestureState) => { },
       onPanResponderRelease: (evt, gestureState) => {
-      console.log("release")
+      //console.log("release")
           this.onResponderRelease(evt, gestureState);
           this.props.setScroll(true);
           this.props.setActiveItem(-1);
@@ -54,13 +57,26 @@ export default class ListItem extends PureComponent {
     });
   }
 
-  delete = (key) => {
-      const newTasks = this.props.state.tasks.filter(task => task.key !== key);
-      this.props.handleDeleteTask(newTasks)
-  }  
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log('true / false: ', this.props.index, this.props.item === nextProps.item, this.props.index === nextProps.index) 
+    if (this.props.item === nextProps.item && this.props.index === nextProps.index && this.props.primaryColor === nextProps.primaryColor) {
+      return false
+    } else return true
+    //console.log('this.props ', this.props) 
+    // if (this.props === nextProps) { console.log('props true')}
+    // if (this.state === nextState) { console.log('state true')}
+    // if (this.props.index === 20 ) {
+    // console.log('props ', this.props)
+    // console.log('next props ',nextProps) 
+  }
+
+  // delete = (key) => {
+  //     const newTasks = this.props.state.tasks.filter(task => task.key !== key);
+  //     this.props.handleDeleteTask(newTasks)
+  // }  
 
   onPressOut = () => {
-    console.log('out ', this.state.isMoving)
+    //console.log('out ', this.state.isMoving)
     this.setState({ canMove: false }); 
   }
 
@@ -80,12 +96,12 @@ export default class ListItem extends PureComponent {
         LayoutAnimation.configureNext( LayoutAnimation.create(300, 'easeInEaseOut', 'opacity') );
         this.refs['task'].setNativeProps({style: { transform: [{translateX: Dimensions.get('window').width}] } });
         this.refs['allTask'].setNativeProps({style: { opacity: 0 } });
-        this.delete(this.props.item.key)
+        this.props.handleDeleteTask(this.props.item.key)
     }
     if ( gestureState.x0 > Dimensions.get('window').width - 50 && this.state.canMove === true) {
         this.refs['allTask'].setNativeProps({style: { elevation: 0, transform: [{translateY: 0}] } });
     }
-    if (gestureState.dy > 50 || gestureState.dy < -50) {
+    if ( gestureState.x0 > Dimensions.get('window').width - 50 && (gestureState.dy > 50 || gestureState.dy < -50) ) {
         LayoutAnimation.configureNext( LayoutAnimation.create(300, 'easeInEaseOut', 'opacity') );
         this.props.handleChangeTaskOrder(this.props.index, evt.nativeEvent.locationY, gestureState.dy)
     }
@@ -109,14 +125,15 @@ export default class ListItem extends PureComponent {
     }
     const initHeihgt = this.props.item.height || 67
     return (
-      <Animated.View ref='allTask' style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.state.isActive===this.props.index ? 10 : 1} ]} {...this.panResponder.panHandlers} >
+      <Animated.View ref='allTask' style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.isActive===this.props.index ? 10 : 1} ]} {...this.panResponder.panHandlers} >
           <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (initHeihgt-33)/2 }]}/>
           <Animated.View ref='task' style={styles.oneTask} {...this.panResponder.panHandlers} 
           onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
           } }
           >
               <TouchableOpacity activeOpacity={0.7} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
-                  onPress={() => { (this.props.state.taskFilter.lists === '' && this.props.state.taskFilter.date === '' && this.props.state.taskFilter.priority === '') ? (this.props.openModal(this.props.index, this.props.item)) : (null) }}>
+                  //onPress={() => { (this.props.taskFilter.lists === '' && this.props.taskFilter.date === '' && this.props.taskFilter.priority === '') ? (this.props.openModal(this.props.index, this.props.item)) : (null) }}>
+                  onPress={() => { this.props.openModal(this.props.index, this.props.item) }}>
                   <Text style={styles.taskNumber}>{this.props.index+1}</Text>
               </TouchableOpacity>
               
@@ -127,9 +144,9 @@ export default class ListItem extends PureComponent {
                   </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={1} onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); console.log('press in') }}
-                onLongPress={() => {this.setState({ canMove: true }); console.log('long press') }} 
-                delayLongPress={1} 
+              <TouchableOpacity activeOpacity={1} onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ canMove: true }); console.log('press in') }}
+               // onLongPress={() => {this.setState({ canMove: true }); console.log('long press') }} 
+               // delayLongPress={1} 
                 onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut()) }} delayPressOut={200}
                 >
                   <View style={styles.moveTaskVertically} >

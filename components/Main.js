@@ -84,8 +84,9 @@ export default class Main extends PureComponent {
     }
   }
 
-  handleDeleteTask = async (tasks) => {
-    await this.setState({tasks: tasks})
+  handleDeleteTask = async (key) => {
+    const newTasks = this.state.tasks.filter(task => task.key !== key);
+    await this.setState({tasks: newTasks})
     this.setDataToAsyncStore();
   }
 
@@ -100,6 +101,17 @@ export default class Main extends PureComponent {
     await this.setState({ tasks: newTasks });
     this.setDataToAsyncStore();
   }
+
+  // array = []
+
+  // test = (index, height) => {
+  //   if (this.array[index] === 'undefined') {
+  //     this.array[index] = 0
+  //   }
+  //   //console.log('array index ', index, this.array)
+  //   this.array.splice(index, 1, height);
+  //   console.log('array ', index,  this.array)
+  // }
 
   setTasksCoordinations = async (key, height) => {
       const newTasks = this.state.tasks.map( (task) => {
@@ -139,6 +151,27 @@ export default class Main extends PureComponent {
     const movedTask = NewTasks.splice(taskIndex, 1);
     NewTasks.splice(findIndex, 0, movedTask[0]);
 
+    this.changeTasksOrder(NewTasks);
+    this.setDataToAsyncStore();
+  }
+
+  handleChangeTaskOrderLeft = (from, to) => {
+    const NewTasks = this.returnFilteredTasks();
+    const movedTask = NewTasks.splice(from-1, 1);
+    NewTasks.splice(to-1, 0, movedTask[0]);
+    this.changeTasksOrder(NewTasks);
+    this.setDataToAsyncStore();
+  }
+
+  // handleChangeTaskOrderLeft = (from, to) => {
+  //   const NewTasks = this.state.tasks;
+  //   const movedTask = NewTasks.splice(from-1, 1);
+  //   NewTasks.splice(to-1, 0, movedTask[0]);
+  //   this.setState({ tasks: NewTasks })
+  //   this.setDataToAsyncStore();
+  // }
+
+  changeTasksOrder = (NewTasks) => {
     if (this.state.taskFilter.lists !== '') {
       let counter = 0
       const NewFilteredTasks = this.state.tasks.map( task => {
@@ -178,15 +211,6 @@ export default class Main extends PureComponent {
     if (this.state.taskFilter.lists === '' && this.state.taskFilter.date === '' && this.state.taskFilter.priority === '') {
         this.setState({ tasks: NewTasks })
     }
-    this.setDataToAsyncStore();
-  }
-
-  handleChangeTaskOrderLeft = (from, to) => {
-    const NewTasks = this.state.tasks;
-    const movedTask = NewTasks.splice(from-1, 1);
-    NewTasks.splice(to-1, 0, movedTask[0]);
-    this.setState({ tasks: NewTasks })
-    this.setDataToAsyncStore();
   }
 
   openModal = (index) => {
@@ -242,7 +266,7 @@ export default class Main extends PureComponent {
     this.setState({ canScroll: bool })
   }
 
-  setActiveItem =(index) => {
+  setActiveItem = (index) => {
    // console.log('show index of active item', index)
     this.setState({ isActive: index})
   }
@@ -262,7 +286,8 @@ export default class Main extends PureComponent {
     const primaryColor = this.props.screenProps.primaryColor
     const item = this.returnFilteredTasks().map( (item, index) => {
       return <View key={item.key}>
-                <ListItem item={item} index={index} state={this.state} handleDeleteTask={this.handleDeleteTask} 
+                <ListItem item={item} index={index} isActive={this.state.isActive} taskFilter={this.state.taskFilter} 
+                handleDeleteTask={this.handleDeleteTask} 
                 setTasksCoordinations={this.setTasksCoordinations} handleChangeTaskOrder={this.handleChangeTaskOrder}
                 primaryColor={primaryColor} setScroll={this.setScroll} setActiveItem={this.setActiveItem} openModal={this.openModal}
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
