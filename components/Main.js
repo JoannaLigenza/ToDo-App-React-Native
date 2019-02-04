@@ -136,13 +136,20 @@ export default class Main extends PureComponent {
     //console.log("onDropTask full ", allTasksHeightArray)
 
     const whereToDrop = allTasksHeightArray[taskIndex][1] + locationY + moveY
-    const findIndex = allTasksHeightArray.findIndex( (task) => {
+    let findIndex = allTasksHeightArray.findIndex( (task) => {
         if (whereToDrop >= task[1] && whereToDrop < task[2]) {
           return task
         }
     })
-     //console.log("tutaj ", whereToDrop)
-     //console.log("findIndex ", findIndex)
+    //  console.log("tutaj ", whereToDrop)
+    //  console.log("findIndex ", findIndex)
+    
+    if (whereToDrop > allTasksHeightArray[allTasksHeightArray.length-1][2] ) {
+      findIndex = allTasksHeightArray.length-1
+    }
+    if (whereToDrop < this.state.firstTaskPositionY ) {
+      findIndex = 0
+    } 
     if (findIndex === -1) {
       return
     }
@@ -163,14 +170,6 @@ export default class Main extends PureComponent {
     this.setDataToAsyncStore();
   }
 
-  // handleChangeTaskOrderLeft = (from, to) => {
-  //   const NewTasks = this.state.tasks;
-  //   const movedTask = NewTasks.splice(from-1, 1);
-  //   NewTasks.splice(to-1, 0, movedTask[0]);
-  //   this.setState({ tasks: NewTasks })
-  //   this.setDataToAsyncStore();
-  // }
-
   changeTasksOrder = (NewTasks) => {
     if (this.state.taskFilter.lists !== '') {
       let counter = 0
@@ -185,11 +184,11 @@ export default class Main extends PureComponent {
         this.setState({ tasks: NewFilteredTasks })
     } 
     if (this.state.taskFilter.date !== '') {
-      let counter2 = 0
+      let counter = 0
       const NewFilteredTasks2 = this.state.tasks.map( task => {
         if (this.state.taskFilter.date === task.date) {
-          task = NewTasks[counter2]
-          counter2 += 1
+          task = NewTasks[counter]
+          counter += 1
           return task
         }
         return task
@@ -197,11 +196,11 @@ export default class Main extends PureComponent {
         this.setState({ tasks: NewFilteredTasks2 })
     }
     if (this.state.taskFilter.priority !== '') {
-      let counter2 = 0
+      let counter = 0
       const NewFilteredTasks2 = this.state.tasks.map( task => {
         if (this.state.taskFilter.priority === task.priority) {
-          task = NewTasks[counter2]
-          counter2 += 1
+          task = NewTasks[counter]
+          counter += 1
           return task
         }
         return task
