@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView,} from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
 
-export default class FilterTasks extends Component {
+export default class FilterTasks extends PureComponent {
     constructor() {
         super();
         this.state = {
@@ -16,6 +16,7 @@ export default class FilterTasks extends Component {
         };
         Dimensions.addEventListener("change", (e) => {
             this.setState(e.window);
+            //this.setState({width: e.window.width});
         });
     }
 
@@ -35,7 +36,7 @@ export default class FilterTasks extends Component {
     };
     
     render() {
-        //console.log("this.state ", this.state)
+        //console.log("filter tasks ",)
         const list = this.props.lists.map( (list, index) => {
             return <Text key={index} style={this.state.choosenList[1] !== index ? (styles.items) : (styles.selectedItem) } 
             onPress={() => {this.setState({choosenList: [list , index]}) }}>{list}</Text>
@@ -52,7 +53,7 @@ export default class FilterTasks extends Component {
                                     <ScrollView>
                                         {list}
                                         {/* OnPress button calls sort function in Main */}
-                                        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter(this.state.choosenList, '', ''); this.setState({listModalVisibility: false, choosenList: "", }) }} >
+                                        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter(this.state.choosenList, '', ''); this.setState({listModalVisibility: false, choosenList: "", }); this.props.numToRender(); this.props.scrollToTop() }} >
                                             <Text style={styles.text}>Save</Text>
                                         </TouchableOpacity>
                                     </ScrollView>
@@ -61,7 +62,8 @@ export default class FilterTasks extends Component {
                         </TouchableOpacity>                           
                     </Modal>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false });}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setDateAndroid(); this.setState({priorityModalVisibility: false }); this.props.numToRender(); this.props.scrollToTop() }} 
+                    style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
                     <Text style={[styles.text, this.props.taskFilter.date === '' ? ({color: 'white'}) : ({color: '#2b2b2b'})]}>Date</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.9} onPress={() => {this.setState({priorityModalVisibility: true})}} style={[styles.touchableOpacity, {backgroundColor: this.props.primaryColor, width: this.state.width / 3,}]}>
@@ -77,7 +79,7 @@ export default class FilterTasks extends Component {
                                         <Text onPress={() => {this.setState({choosenPriority: 'Middle',}) }} style={this.state.choosenPriority !== 'Middle' ? (styles.items) : (styles.selectedItem) }>Middle</Text>
                                         <Text onPress={() => {this.setState({choosenPriority: 'High',}) }}   style={this.state.choosenPriority !== 'High' ? (styles.items) : (styles.selectedItem) }>High</Text>
                                     </ScrollView>
-                                    <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('', '', this.state.choosenPriority); this.setState({priorityModalVisibility: false, choosenPriority: "" })}} >
+                                    <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('', '', this.state.choosenPriority); this.setState({priorityModalVisibility: false, choosenPriority: "" }); this.props.numToRender(); this.props.scrollToTop() }} >
                                             <Text style={styles.text}>Save</Text>
                                     </TouchableOpacity>
                                 </TouchableOpacity>

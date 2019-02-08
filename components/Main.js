@@ -12,9 +12,17 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
 
-    this.initialNumToRender = 20,
-    this.initHeight = 67,
     this.screenHeight = Dimensions.get('window').height
+    this.initHeight = 57,
+    this.initialNumToRender = () => {
+      if (Dimensions.get('window').height < 1100) {
+        return 20
+      }
+      if (Dimensions.get('window').height < 2500) {
+        return 50
+      } else return 80
+    },
+    
 
     this.state= { 
             tasks: [ {key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
@@ -26,7 +34,7 @@ export default class Main extends Component {
             changeModalVisibility: false,
             from: '',
             to: '',
-            numToRender: this.initialNumToRender,
+            numToRender: this.initialNumToRender(),
     };
     this.getDataFromAsyncStore();
   }
@@ -196,8 +204,9 @@ export default class Main extends Component {
   }
 
   handleAddTask = async (task) => {
-    const newTasks = [...this.state.tasks, task];
-    await this.setState({ tasks: newTasks });
+    const newTasks = [ task, ...this.state.tasks ];
+    this.refs['scrollList'].scrollTo({y: 0});
+    await this.setState({ tasks: newTasks, numToRender: this.initialNumToRender() });
     this.setDataToAsyncStore();
   }
 
@@ -395,7 +404,11 @@ export default class Main extends Component {
   }
 
   numToRender = () => {
-    this.setState({ numToRender: this.initialNumToRender })
+    this.setState({ numToRender: this.initialNumToRender() })
+  }
+
+  scrollToTop = () => {
+    this.refs['scrollList'].scrollTo({y: 0, animated: false});
   }
 
   render() {
@@ -412,7 +425,7 @@ export default class Main extends Component {
     
     let allTasksHeightArray = []
     this.returnFilteredTasks().map( (task, index) => {
-      const height = task.height || 67
+      const height = task.height || this.initHeight
       if (index === 0) {
         allTasksHeightArray.push([index, 0, height+2])
         return
@@ -436,12 +449,12 @@ export default class Main extends Component {
     })
     return (
       <View style={styles.mainComponent} >       
-        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} numToRender={this.numToRender}/>
-        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} numToRender={this.numToRender}/>
-        <ScrollView //ref={(ref) => this.scrollList = ref}
+        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} numToRender={this.numToRender} scrollToTop={this.scrollToTop} />
+        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} numToRender={this.numToRender} scrollToTop={this.scrollToTop} />
+        <ScrollView ref='scrollList'
             contentContainerStyle={{paddingBottom: 110}}
             scrollEnabled={this.state.canScroll} 
-            onContentSizeChange={ (contentWidth, contentHeight ) => this.getContentSize(contentHeight)}
+            onContentSizeChange={ (contentWidth, contentHeight ) => {this.getContentSize(contentHeight); }}
             onMomentumScrollEnd={(e) => { 
               const scrollPosition = e.nativeEvent.contentOffset.y;
 

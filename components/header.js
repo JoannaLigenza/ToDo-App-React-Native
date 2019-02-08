@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity,} from 'react-native';
 
 
-export default class Header extends Component {
+export default class Header extends PureComponent {
   render() {
+    //console.log('header')
     return (
       <View style={[styles.component1, {backgroundColor: this.props.primaryColor }]}>
         <View style={styles.component2}>
@@ -13,7 +14,7 @@ export default class Header extends Component {
             <Text style={styles.headerText}>Home</Text>
         </View>
         
-        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('','','')}} >
+        <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.getTaskFilter('','',''); this.props.numToRender(); this.props.scrollToTop() }} >
             <Text style={styles.headerText}>All Tasks</Text>
         </TouchableOpacity>
       </View>
