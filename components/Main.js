@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal, RefreshControl} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal, Dimensions } from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
 import Header from './header';
 import Footer from './Footer';
@@ -14,6 +14,7 @@ export default class Main extends Component {
 
     this.initialNumToRender = 20,
     this.initHeight = 67,
+    this.screenHeight = Dimensions.get('window').height
 
     this.state= { 
             tasks: [ {key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
@@ -172,7 +173,7 @@ export default class Main extends Component {
                 await AsyncStorage.setItem('taskKey', taskKey );
             }
             if (tasks === null) {
-                tasks = this.init
+                tasks = initTask
                 // saving data as string
                 await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
                 this.setState({ tasks: tasks, taskKey: taskKey })
@@ -386,11 +387,16 @@ export default class Main extends Component {
     this.setState({ isActive: index})
   }
 
+  getContentSize = (contentHeight) => {
+    if (contentHeight <= this.screenHeight+200 ) {
+      this.setState({ numToRender: this.state.numToRender+10 })
+    }
+    //console.log('layout view  ', contentHeight, this.screenHeight+200)
+  }
+
   numToRender = () => {
     this.setState({ numToRender: this.initialNumToRender })
   }
-
-  lastScrollPosition = 0
 
   render() {
     console.log('main ', this.state.numToRender)
@@ -435,6 +441,7 @@ export default class Main extends Component {
         <ScrollView //ref={(ref) => this.scrollList = ref}
             contentContainerStyle={{paddingBottom: 110}}
             scrollEnabled={this.state.canScroll} 
+            onContentSizeChange={ (contentWidth, contentHeight ) => this.getContentSize(contentHeight)}
             onMomentumScrollEnd={(e) => { 
               const scrollPosition = e.nativeEvent.contentOffset.y;
 
@@ -444,21 +451,8 @@ export default class Main extends Component {
                   taskOnTopScreen = item[0]
                 }
               })
-              console.log('taskOnTop ', taskOnTopScreen)
-              
+              //console.log('taskOnTop ', taskOnTopScreen)
               this.setState({ numToRender: taskOnTopScreen + 20 })
-              
-              {/* if (e.nativeEvent.contentOffset.y > 0 && e.nativeEvent.contentOffset.y <= 600) {
-                this.setState({ numToRender: this.initialNumToRender })
-              };
-              if (e.nativeEvent.contentOffset.y > 600 && e.nativeEvent.contentOffset.y <= 1200) {
-                this.setState({ numToRender: 30 })
-              };
-              if (e.nativeEvent.contentOffset.y > 1200) {
-                this.setState({ numToRender: 40 })
-              }; */}
-              this.lastScrollPosition = e.nativeEvent.contentOffset.y
-              //console.log('stop scrolling 2 ', this.lastScrollPosition, e.nativeEvent)
               }}
             >
             <View>
