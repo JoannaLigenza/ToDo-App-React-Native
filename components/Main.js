@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal,} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ScrollView, Modal, RefreshControl} from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
 import Header from './header';
 import Footer from './Footer';
@@ -8,9 +8,13 @@ import FilterTasks from './FilterTask';
 import ModalChangeTasksOrder from './ModalChangeTasksOrder';
 
 
-export default class Main extends PureComponent {
+export default class Main extends Component {
   constructor(props) {
     super(props);
+
+    this.initialNumToRender = 20,
+    this.initHeight = 67,
+
     this.state= { 
             tasks: [ {key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
             taskKey: '2',
@@ -21,6 +25,7 @@ export default class Main extends PureComponent {
             changeModalVisibility: false,
             from: '',
             to: '',
+            numToRender: this.initialNumToRender,
     };
     this.getDataFromAsyncStore();
   }
@@ -31,9 +36,130 @@ export default class Main extends PureComponent {
     }
   };
 
-  // componentDidMount() {
-  //       this.getDataFromAsyncStore()
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props === nextProps && JSON.stringify(this.state) === JSON.stringify(nextState)) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  init = [{key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '2', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '3', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '4', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '5', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '6', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '7', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '8', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '9', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '10', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '11', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '12', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '13', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '14', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '15', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '16', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '17', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '18', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '19', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '20', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '21', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '22', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '23', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '24', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '25', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '26', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '27', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '28', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '29', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '30', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '31', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '32', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '33', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '34', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '35', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '36', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '37', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '38', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '39', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '40', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '41', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '42', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '43', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '44', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '45', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '46', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '47', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '48', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '49', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '50', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '51', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '52', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '53', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '54', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '55', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '56', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '57', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '58', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '59', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '60', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '61', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '62', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '63', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '64', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '65', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '66', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '67', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '68', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '69', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '70', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '71', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '72', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '73', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '74', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '75', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '76', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '77', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '78', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '79', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '80', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '81', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '82', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '83', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '84', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '85', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '86', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '87', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '88', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '89', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '90', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '91', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '92', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '93', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '94', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '95', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '96', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '97', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '98', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '99', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '100', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '101', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '102', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '103', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '104', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '105', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '106', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '107', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '108', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '109', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '110', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '111', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '112', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '113', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '114', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  {key: '115', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''},
+  ]
 
   getDataFromAsyncStore = async () => {
         try {
@@ -46,7 +172,7 @@ export default class Main extends PureComponent {
                 await AsyncStorage.setItem('taskKey', taskKey );
             }
             if (tasks === null) {
-                tasks = initTask
+                tasks = this.init
                 // saving data as string
                 await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
                 this.setState({ tasks: tasks, taskKey: taskKey })
@@ -102,18 +228,8 @@ export default class Main extends PureComponent {
     this.setDataToAsyncStore();
   }
 
-  // array = []
-
-  // test = (index, height) => {
-  //   if (this.array[index] === 'undefined') {
-  //     this.array[index] = 0
-  //   }
-  //   //console.log('array index ', index, this.array)
-  //   this.array.splice(index, 1, height);
-  //   console.log('array ', index,  this.array)
-  // }
-
   setTasksCoordinations = async (key, height) => {
+    //console.log('onLayout')
       const newTasks = this.state.tasks.map( (task) => {
         if(task.key === key) {
           task.height = height;
@@ -270,8 +386,14 @@ export default class Main extends PureComponent {
     this.setState({ isActive: index})
   }
 
+  numToRender = () => {
+    this.setState({ numToRender: this.initialNumToRender })
+  }
+
+  lastScrollPosition = 0
+
   render() {
-   // console.log('isActive ', this.state.from, this.state.to)
+    console.log('main ', this.state.numToRender)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
           if (this.props.screenProps.deletedList === task.list ) {
@@ -281,9 +403,21 @@ export default class Main extends PureComponent {
           return task
         })
     }
+    
+    let allTasksHeightArray = []
+    this.returnFilteredTasks().map( (task, index) => {
+      const height = task.height || 67
+      if (index === 0) {
+        allTasksHeightArray.push([index, 0, height+2])
+        return
+      }
+      allTasksHeightArray.push([index, allTasksHeightArray[index-1][2], allTasksHeightArray[index-1][2] + height + 2])
+    })
+    //console.log('allTasksHeightArray ', allTasksHeightArray)
 
     const primaryColor = this.props.screenProps.primaryColor
     const item = this.returnFilteredTasks().map( (item, index) => {
+      if (index <= this.state.numToRender ) {
       return <View key={item.key}>
                 <ListItem item={item} index={index} isActive={this.state.isActive} taskFilter={this.state.taskFilter} 
                 handleDeleteTask={this.handleDeleteTask} 
@@ -292,15 +426,41 @@ export default class Main extends PureComponent {
                 editTask={() => {this.props.navigation.navigate('EditTask', {task: item, handleEditTask: this.handleEditTask, index: index, primaryColor: primaryColor })}  } 
                 />
                 <View style={{width: '80%', height: 2, backgroundColor: greyColor, alignSelf: 'center'}}></View>
-            </View> 
+      </View> }
     })
     return (
       <View style={styles.mainComponent} >       
-        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor}/>
-        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} />
+        <Header openDraw={this.props.screenProps.openDraw} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} numToRender={this.numToRender}/>
+        <FilterTasks lists={this.props.screenProps.lists} getTaskFilter={this.getTaskFilter} primaryColor={primaryColor} taskFilter={this.state.taskFilter} numToRender={this.numToRender}/>
         <ScrollView //ref={(ref) => this.scrollList = ref}
             contentContainerStyle={{paddingBottom: 110}}
-            scrollEnabled={this.state.canScroll} >
+            scrollEnabled={this.state.canScroll} 
+            onMomentumScrollEnd={(e) => { 
+              const scrollPosition = e.nativeEvent.contentOffset.y;
+
+              let taskOnTopScreen = 0
+              allTasksHeightArray.map( item => {
+                if ( scrollPosition >= item[1] && scrollPosition < item[2]) {
+                  taskOnTopScreen = item[0]
+                }
+              })
+              console.log('taskOnTop ', taskOnTopScreen)
+              
+              this.setState({ numToRender: taskOnTopScreen + 20 })
+              
+              {/* if (e.nativeEvent.contentOffset.y > 0 && e.nativeEvent.contentOffset.y <= 600) {
+                this.setState({ numToRender: this.initialNumToRender })
+              };
+              if (e.nativeEvent.contentOffset.y > 600 && e.nativeEvent.contentOffset.y <= 1200) {
+                this.setState({ numToRender: 30 })
+              };
+              if (e.nativeEvent.contentOffset.y > 1200) {
+                this.setState({ numToRender: 40 })
+              }; */}
+              this.lastScrollPosition = e.nativeEvent.contentOffset.y
+              //console.log('stop scrolling 2 ', this.lastScrollPosition, e.nativeEvent)
+              }}
+            >
             <View>
                 {item}
             </View>
