@@ -12,8 +12,10 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
 
+    this.initTask = [{key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}]
     this.screenHeight = Dimensions.get('window').height
     this.initHeight = 57,
+    this.firstTaskPositionY = 115.04762268066406,
     this.initialNumToRender = () => {
       if (Dimensions.get('window').height < 1100) {
         return 20
@@ -25,9 +27,9 @@ export default class Main extends Component {
     
 
     this.state= { 
-            tasks: [ {key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''} ],
+            tasks: [{key: '1', text: '', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}],
             taskKey: '2',
-            firstTaskPositionY: 115.04762268066406,
+            firstTaskPositionY: this.firstTaskPositionY,
             taskFilter: {lists: '', date: '', priority: ''},
             canScroll: true,
             isActive: -1,
@@ -46,9 +48,13 @@ export default class Main extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
+    //console.log('this.props === nextProps ', this.props === nextProps)
     if (this.props === nextProps && JSON.stringify(this.state) === JSON.stringify(nextState)) {
       return false
     } else {
+      if (nextProps.screenProps.deletedTasks !== '') {
+        this.setState({ tasks: nextProps.screenProps.deletedTasks});
+      }
       return true
     }
   }
@@ -172,7 +178,6 @@ export default class Main extends Component {
 
   getDataFromAsyncStore = async () => {
         try {
-            const initTask = [{key: '1', text: 'Sample task', isChecked: false, list: "Default", priority: "None", date: "", note: '', height: ''}]
             let tasks = await AsyncStorage.getItem('tasks');
             let taskKey = await AsyncStorage.getItem('taskKey');
             if (taskKey === null) {
@@ -181,7 +186,7 @@ export default class Main extends Component {
                 await AsyncStorage.setItem('taskKey', taskKey );
             }
             if (tasks === null) {
-                tasks = initTask
+                tasks = this.initTask
                 // saving data as string
                 await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
                 this.setState({ tasks: tasks, taskKey: taskKey })
@@ -413,13 +418,14 @@ export default class Main extends Component {
 
   render() {
     console.log('main ', this.state.numToRender)
+    //console.log('main props', this.props)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
           if (this.props.screenProps.deletedList === task.list ) {
             task.list = 'Default'
-            return task
+            return task //?
           }
-          return task
+          return task //?
         })
     }
     

@@ -1,23 +1,20 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import { AsyncStorage } from 'react-native';
 import { AppContainer } from './components/DrawerNavigator';
 
 
 
-export default class App extends Component {
+export default class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state= { 
         lists: ['Default', 'Private', 'Work'], 
         primaryColor: '#fff',
         deletedList: '',
+        deletedTasks: '',
     };
     this.getDataFromAsyncStore();
   }
-
-//   componentDidMount() {
-//       this.getDataFromAsyncStore();
-//   }
 
   getDataFromAsyncStore = async () => {
         try {
@@ -55,6 +52,15 @@ export default class App extends Component {
       }
   }
 
+  setTasksToAsyncStore = async () => {
+      try {
+            const saveNewTasks = this.state.deletedTasks;
+            await AsyncStorage.setItem('tasks', JSON.stringify(saveNewTasks));            
+        } catch (error) {
+            console.log('storage set data error in App', error.message)
+      }
+  }
+
   setLists = async (lists) => {
     await this.setState({ lists: lists});
     this.setDataToAsyncStore();
@@ -66,15 +72,23 @@ export default class App extends Component {
   }
 
   setDeletedList = async (list) => {
-    //console.log('deleted list', list)
     await this.setState({ deletedList: list});
-    this.setDataToAsyncStore();
+    this.setState({ deletedList: ''});
+    //this.setDataToAsyncStore();
+  }
+
+  setDeletedTasks = async (tasks) => {
+    await this.setState({ deletedTasks: tasks});
+    await this.setTasksToAsyncStore();
+    this.setState({ deletedTasks: ''});
   }
 
   render() {
+      //console.log('App')
     return <AppContainer screenProps={{ lists: this.state.lists, setLists: this.setLists, 
         primaryColor: this.state.primaryColor, setPrimaryColor: this.setPrimaryColor,
-        deletedList: this.state.deletedList, setDeletedList: this.setDeletedList }} />;
+        deletedList: this.state.deletedList, setDeletedList: this.setDeletedList ,
+        deletedTasks: this.state.deletedTasks, setDeletedTasks: this.setDeletedTasks }} />;
   }
 }
 
