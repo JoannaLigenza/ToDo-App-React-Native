@@ -1,14 +1,15 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, TextInput, View, Image, TouchableOpacity, TouchableHighlight, ScrollView, Dimensions} from 'react-native';
 import { background } from "./styles/commonStyles";
 
-export default class AddDeleteList extends Component {
+export default class AddDeleteList extends PureComponent {
     constructor(props) {
         super(props);
         this.state= {
             lists: this.props.screenProps.lists,
             inputText: '',
             addListInfo: '',
+            deletedList: '',
         }
     }
     static navigationOptions = {
@@ -26,8 +27,8 @@ export default class AddDeleteList extends Component {
         const newLists = this.state.lists.filter( list => {
             return list !== dispatchList
         })
-        this.setState({ lists: newLists })
-        this.props.screenProps.setDeletedList(dispatchList)
+        this.setState({ lists: newLists, deletedList: dispatchList })
+        //this.props.screenProps.setDeletedList(dispatchList)
     }
 
     handleAddList = () => {
@@ -50,6 +51,7 @@ export default class AddDeleteList extends Component {
     }
 
   render() {
+      //console.log('AddDeleteList')
       const lists = this.state.lists.map( (list, index) => {
           const XButton = () => {
                 if (list === 'Default') {
@@ -105,7 +107,7 @@ export default class AddDeleteList extends Component {
             
             <TouchableOpacity activeOpacity={0.9} 
                 onPress={() => {this.props.navigation.goBack(); this.props.screenProps.setLists(this.state.lists);
-                                this.props.screenProps.setDeletedList('') }} >
+                                this.props.screenProps.setDeletedList(this.state.deletedList); this.setState({ deletedList: ''}) }} >
                 <Text style={[styles.button, styles.goBackButton]} >Save</Text>
             </TouchableOpacity>
                     
@@ -127,15 +129,11 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     textInput: {
-        ///width: 200,
-        //height: 50,
         marginLeft: 10,
         marginRight: 5,
         marginBottom: 10,
         borderColor: 'gray', 
         borderBottomWidth: 2,
-        // borderWidth: 2,
-        // borderColor: 'red',
     },
     text: {
         marginLeft: 10,
@@ -149,7 +147,6 @@ const styles = StyleSheet.create({
         // borderColor: 'blue',
     },
     row: {
-        //flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: background,
@@ -159,8 +156,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         borderColor: 'gray', 
         borderBottomWidth: 1,
-        // borderWidth: 2,
-        // borderColor: 'blue',
     },
     items: {
         flex: 1,
@@ -171,8 +166,6 @@ const styles = StyleSheet.create({
         backgroundColor: background,
     },
     touchaleopacity: {
-        // borderWidth: 2,
-        // borderColor: 'green',
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -181,8 +174,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         padding: 3,
-        // borderWidth: 2,
-        // borderColor: 'red',
     },
     xButton: {
         width: 50,
