@@ -58,22 +58,11 @@ export default class ListItem extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    //console.log('true / false: ', this.props.index, this.props.item === nextProps.item, this.props.index === nextProps.index) 
+     //console.log('true / false: ', this.props.index, this.props.item === nextProps.item, this.props.index === nextProps.index) 
     if (this.props.item === nextProps.item && this.props.index === nextProps.index && this.props.primaryColor === nextProps.primaryColor) {
       return false
     } else return true
-    //console.log('this.props ', this.props) 
-    // if (this.props === nextProps) { console.log('props true')}
-    // if (this.state === nextState) { console.log('state true')}
-    // if (this.props.index === 20 ) {
-    // console.log('props ', this.props)
-    // console.log('next props ',nextProps) 
   }
-
-  // delete = (key) => {
-  //     const newTasks = this.props.state.tasks.filter(task => task.key !== key);
-  //     this.props.handleDeleteTask(newTasks)
-  // }  
 
   onPressOut = () => {
     //console.log('out ', this.state.isMoving)
@@ -123,16 +112,16 @@ export default class ListItem extends Component {
       if( this.props.item.priority === 'Middle') { return 'orange'}
       if( this.props.item.priority === 'High') { return 'red'}
     }
-    const initHeihgt = this.props.item.height || 67
     return (
       <Animated.View ref='allTask' style={[{backgroundColor: this.props.primaryColor, zIndex: this.props.isActive===this.props.index ? 10 : 1} ]} {...this.panResponder.panHandlers} >
-          <Image source={require('../img/trashIcon.png')} style={[styles.image, { top: (initHeihgt-33)/2 }]}/>
+          <View style={styles.absolute} >
+            <Image source={require('../img/trashIcon.png')} style={styles.image} />
+          </View>
           <Animated.View ref='task' style={styles.oneTask} {...this.panResponder.panHandlers} 
-          onLayout={(event) => { this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height); 
+          onLayout={(event) => { this.props.item.height !== event.nativeEvent.layout.height ? (this.props.setTasksCoordinations(this.props.item.key, event.nativeEvent.layout.height)) : (null);
           } }
           >
               <TouchableOpacity activeOpacity={0.7} style={[styles.TouchableOpacityNumber, {backgroundColor: taskNumberBackgroundColor(), }]}
-                  //onPress={() => { (this.props.taskFilter.lists === '' && this.props.taskFilter.date === '' && this.props.taskFilter.priority === '') ? (this.props.openModal(this.props.index, this.props.item)) : (null) }}>
                   onPress={() => { this.props.openModal(this.props.index, this.props.item) }}>
                   <Text style={styles.taskNumber}>{this.props.index+1}</Text>
               </TouchableOpacity>
@@ -162,10 +151,16 @@ export default class ListItem extends Component {
 }
 
 const styles = StyleSheet.create({
+  absolute: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center', 
+    alignItems: 'flex-start',
+  },
   image: {
     width: 35,
     height: 33,
-    position: 'absolute',
     left: 10,
   },
   oneTask: {
@@ -180,7 +175,7 @@ const styles = StyleSheet.create({
   }, 
   TouchableOpacity: {
     flex: 1,
-    margin: 10,
+    margin: 5,
   }, 
   TouchableOpacityNumber: {
     alignItems: 'center',
