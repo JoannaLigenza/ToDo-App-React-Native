@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, CheckBox, Image, ScrollView, Animated, AsyncStorage, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, CheckBox, Image, ScrollView, AsyncStorage, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {background, greyColor} from "./styles/commonStyles";
 
 
@@ -69,7 +69,7 @@ export default class DeleteTasks extends PureComponent {
       return <View key={item.key}>
                 <View style={styles.oneTask}>
                   <CheckBox value={item.isChecked} onValueChange={(e) => this.setCheckBox(e, item)} ></CheckBox>
-                  <Text style={{flex: 1}}>
+                  <Text style={styles.text}>
                     {item.text}
                   </Text>
                 </View>
@@ -77,9 +77,18 @@ export default class DeleteTasks extends PureComponent {
              </View> 
     })
     return (
-        <View>
+        <View style={{backgroundColor: this.props.screenProps.primaryColor, flex: 1}}>
+          <View style={{ flexDirection: 'row' }}>
+              <TouchableHighlight underlayColor={'rgba(0,0,0,0.4)'} onPress={() => {this.props.navigation.goBack()}}
+                                  style={styles.touchableHighlight}>
+                  <Image source={require('../img/arrow.png')} ></Image>
+              </TouchableHighlight>
+              <Text style={[styles.textColor, {margin: 15}]}>
+                  Delete tasks:
+              </Text>
+          </View>
           <ScrollView >
-              <View>
+              <View style={{backgroundColor: background}}>
                   {item}
               </View>
           </ScrollView>
@@ -104,16 +113,38 @@ const styles = StyleSheet.create({
     // borderColor: 'red',
     // borderWidth: 2,
   }, 
+  text: {
+    flex: 1,
+    fontSize: 20,
+    padding: 10,
+    textAlign: 'left',
+    // borderWidth: 1,
+    // borderRadius: 4,
+  }, 
+  textColor: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  touchableHighlight: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    alignItems:'center',
+    justifyContent:'center',
+    margin: 7,
+  },
   button: {
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: 'bold',
-        padding: 15,
-        margin: 10,
-        marginTop: 25,
-        marginBottom: 25,
-        backgroundColor: background,
-        // borderWidth: 2,
-        // borderColor: 'red',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 15,
+    margin: 10,
+    marginTop: 25,
+    marginBottom: 25,
+    backgroundColor: background,
+    // borderWidth: 2,
+    // borderColor: 'red',
     },
 });
