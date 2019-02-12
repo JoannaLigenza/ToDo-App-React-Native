@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, TextInput, View, DatePickerAndroid, Dimensions, TouchableOpacity, Modal, ScrollView} from 'react-native';
 import {background} from "./styles/commonStyles";
 
-export default class EditTask extends Component {
+export default class EditTask extends PureComponent {
     constructor() {
         super();
         this.state = { 
@@ -53,6 +53,7 @@ export default class EditTask extends Component {
     }
 
     render() {
+        //console.log('edit task')
         const list = this.props.screenProps.lists.map( list => {
             return <Text key={list} style={styles.select} onPress={() => {this.setState({choosenList: list, listModalVisibility: false}) }}>{list}</Text>
         })

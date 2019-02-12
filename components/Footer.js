@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component,PureComponent} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 
-export default class Footer extends Component {
+export default class Footer extends PureComponent {
   render() {
     return (
       <View style={[styles.component, {backgroundColor: this.props.primaryColor }]}>

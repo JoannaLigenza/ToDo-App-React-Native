@@ -9,7 +9,10 @@ export default class Header extends PureComponent {
       <View style={[styles.component1, {backgroundColor: this.props.primaryColor }]}>
         <View style={styles.component2}>
             <TouchableOpacity activeOpacity={1} onPress={()=> {this.props.openDraw()}} style={styles.touchableButton}>
-              <Image source={require('../img/world.png')} />
+              {/* <Image source={require('../img/world.png')} /> */}
+              <View style={styles.menu}></View>
+              <View style={styles.menu}></View>
+              <View style={styles.menu}></View>
             </TouchableOpacity>
             <Text style={styles.headerText}>Home</Text>
         </View>
@@ -26,6 +29,7 @@ const styles = StyleSheet.create({
   component1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     height: 55,
     elevation: 4,
   },
@@ -37,6 +41,13 @@ const styles = StyleSheet.create({
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  menu: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#fff',
+    margin: 2,
+    borderRadius: 3,
   },
   headerText: {
     fontSize: 20,

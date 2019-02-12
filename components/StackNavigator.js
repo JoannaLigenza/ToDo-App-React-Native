@@ -49,6 +49,6 @@ export default class StackNavigator extends React.Component {
   render() {
     //console.log('show me props ', this.props)
     return <AppContainer screenProps={{openDraw: this.props.openDraw, lists: this.props.lists, primaryColor: this.props.primaryColor, 
-            deletedList: this.props.deletedList }} />;
+            deletedList: this.props.deletedList, deletedTasks: this.props.deletedTasks }} />;
   }
 }
