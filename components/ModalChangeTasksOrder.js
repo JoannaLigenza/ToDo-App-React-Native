@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {background} from "./styles/commonStyles";
 
-export default class ModalChangeTasksOrder extends Component {
+export default class ModalChangeTasksOrder extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,8 +18,8 @@ export default class ModalChangeTasksOrder extends Component {
             this.props.setToOrderNumber('');
             return
         }
-        if (this.props.state.to > this.props.state.tasks.length) {
-            this.setState({ modalText: 'You have only ' + this.props.state.tasks.length + ' tasks'});
+        if (this.props.state.to > this.props.filteredTasks.length) {
+            this.setState({ modalText: 'You have only ' + this.props.filteredTasks.length + ' tasks'});
             return
         }
         if (this.props.state.to < 1) {
@@ -32,10 +32,11 @@ export default class ModalChangeTasksOrder extends Component {
     }
 
     render() {
+       // console.log('Modal change tasks order', this.props.filteredTasks)
         return (
             <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={() => {this.props.changeModalVisibility(false) }}>
                 <View style={[styles.modal, {borderColor: this.props.primaryColor, width: Dimensions.get('window').width - 80, height: Dimensions.get('window').height - 80,}]}>
-                    <TouchableOpacity disabled={true} >
+                    <TouchableOpacity disabled={false} activeOpacity={1}>
                         <View style={styles.textInputArea}>
                             <Text style={styles.text}>Change Task Order To:</Text>
                             <TextInput
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   textInput: {
-    width: 50, 
+    width: 80, 
     alignSelf: 'center',
     textAlign: 'center',
     marginBottom: 30,

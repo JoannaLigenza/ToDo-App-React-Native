@@ -417,7 +417,7 @@ export default class Main extends Component {
   }
 
   render() {
-    console.log('main ', this.state.numToRender)
+    //console.log('main ', this.state.numToRender)
     //console.log('main props', this.props)
     if (this.props.screenProps.deletedList !== '') {
         this.state.tasks.map( task => {
@@ -492,7 +492,7 @@ export default class Main extends Component {
               <ModalChangeTasksOrder changeModalVisibility={this.changeModalVisibility} 
               primaryColor={primaryColor} handleChangeTaskOrderLeft={this.handleChangeTaskOrderLeft} 
               setFromOrderNumber={this.setFromOrderNumber} setToOrderNumber={this.setToOrderNumber} 
-              state={this.state} />                
+              state={this.state} filteredTasks={this.returnFilteredTasks()} />                
         </Modal>
       </View>
     );
