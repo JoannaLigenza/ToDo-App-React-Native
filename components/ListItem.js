@@ -2,8 +2,6 @@ import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, Animated, Image, TouchableOpacity, PanResponder, UIManager, LayoutAnimation, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import { background } from "./styles/commonStyles";
 
-
-
 export default class ListItem extends Component {
   constructor(props) {
     super(props);
@@ -105,7 +103,7 @@ export default class ListItem extends Component {
   // }
   
   render() {
-    console.log('render ', this.props.index)
+    //console.log('render ', this.props.index)
     const taskNumberBackgroundColor = () => {
       if( this.props.item.priority === 'None') { return null}
       if( this.props.item.priority === 'Low') { return 'yellow'}
@@ -133,13 +131,37 @@ export default class ListItem extends Component {
                   </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={1} onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ canMove: true }); console.log('press in') }}
+              <TouchableOpacity activeOpacity={1} onPressIn={() => {this.props.setScroll(false); this.props.setActiveItem(this.props.index); this.setState({ canMove: true }) }}
                // onLongPress={() => {this.setState({ canMove: true }); console.log('long press') }} 
                // delayLongPress={1} 
                 onPressOut={() => { this.state.isMoving ? (null) : (this.onPressOut()) }} delayPressOut={200}
                 >
                   <View style={styles.moveTaskVertically} >
-                    <Image source={require('../img/dots.png')}  />
+                    {/* <Image source={require('../img/dots2.png')}  /> */}
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
+                    <View style={styles.circleRow}>
+                      <View style={styles.circle}></View>
+                      <View style={styles.circle}></View>
+                    </View>
                   </View>
               </TouchableOpacity>
 
@@ -209,4 +231,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  circleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  circle: {
+    width: 5,
+    height: 5,
+    margin: 1,
+    borderRadius: 50,
+    backgroundColor: '#d6d6d6'
+  }
 });
