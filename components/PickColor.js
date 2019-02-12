@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TouchableHighlight, Dimensions} from 'react-native';
 import { background, darkGreyColor } from "./styles/commonStyles";
 
-export default class PickColor extends Component {
+export default class PickColor extends PureComponent {
     constructor(props) {
         super(props);
         this.state= {
@@ -12,10 +12,15 @@ export default class PickColor extends Component {
     static navigationOptions = {
         drawerLabel: 'App Color',
         drawerIcon: ({ tintColor }) => (
-        <Image
-            source={require('../img/world.png')}
-            style={[ {tintColor: tintColor}]}
-        />
+       // <Image
+       //     source={require('../img/world.png')}
+       //     style={[ {tintColor: tintColor}]}
+       // />
+        <View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+        </View>
         ),
     };
 
@@ -24,7 +29,7 @@ export default class PickColor extends Component {
   }  
 
   render() {
-      //console.log("props", this.props)
+      //console.log('Pick color')
       return(
           <View style={[styles.containerAll, {backgroundColor: this.props.screenProps.primaryColor}]}>
             <View style={{ flexDirection: 'row' }}>
@@ -80,6 +85,13 @@ export default class PickColor extends Component {
 }
 
 const styles = StyleSheet.create({
+    menu: {
+        width: 20,
+        height: 2,
+        backgroundColor: '#111',
+        margin: 2,
+        borderRadius: 3,
+    },
     containerAll: {
         flex: 1,
     },
@@ -125,5 +137,6 @@ const styles = StyleSheet.create({
         marginTop: 25,
         marginBottom: 25,
         backgroundColor: background,
+        borderRadius: 3,
     },
 })

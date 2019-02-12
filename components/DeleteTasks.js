@@ -27,10 +27,11 @@ export default class DeleteTasks extends PureComponent {
   static navigationOptions = {
         drawerLabel: 'Delete Tasks',
         drawerIcon: ({ tintColor }) => (
-        <Image
-            source={require('../img/world.png')}
-            style={[ {tintColor: tintColor}]}
-        />
+        <View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+        </View>
         ),
     }
 
@@ -103,6 +104,13 @@ export default class DeleteTasks extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+  menu: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#111',
+    margin: 2,
+    borderRadius: 3,
+  },
   oneTask: {
     flex: 1,
     flexDirection: 'row',
@@ -144,6 +152,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 25,
     backgroundColor: background,
+    borderRadius: 3,
     // borderWidth: 2,
     // borderColor: 'red',
     },

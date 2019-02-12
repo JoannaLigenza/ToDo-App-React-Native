@@ -15,10 +15,11 @@ export default class AddDeleteList extends PureComponent {
     static navigationOptions = {
         drawerLabel: 'Add/Delete List',
         drawerIcon: ({ tintColor }) => (
-        <Image
-            source={require('../img/world.png')}
-            style={[ {tintColor: tintColor}]}
-        />
+        <View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+          <View style={styles.menu}></View>
+        </View>
         ),
     };
 
@@ -117,6 +118,13 @@ export default class AddDeleteList extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+    menu: {
+        width: 20,
+        height: 2,
+        backgroundColor: '#111',
+        margin: 2,
+        borderRadius: 3,
+    },
     containerAll: {
         flex: 1,
     },
@@ -193,6 +201,7 @@ const styles = StyleSheet.create({
         margin: 10,
         marginBottom: 25,
         backgroundColor: background,
+        borderRadius: 3,
     },
     
 })
