@@ -25,7 +25,7 @@ const MyDrawerNavigator = createDrawerNavigator({
     //   labelStyle: { color: 'black' },
     //   //itemsContainerStyle: {flex: 1, width: 300, backgroundColor: 'white', borderColor: 'red', borderWidth: 2}
     // },
-    // navigationOptions: {
+    // defaultNavigationOptions: {
     //   headerStyle: { backgroundColor: colorPrimary },
     //   title: 'My Chats',
     //   headerLeft: navigation => {
