@@ -35,7 +35,7 @@ export default class ContentComponent extends PureComponent {
                         <View style={{flexDirection: 'row'}}>
                             {menu}
                             <Text style={styles.text}> 
-                                Add/Delete Lis
+                                Add/Delete List
                             </Text>
                         </View>
                     </TouchableHighlight>
